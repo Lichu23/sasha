@@ -14,6 +14,7 @@ import { formatPrice, type Product } from "@/lib/menu";
 import { noun, shop, shortName } from "@/lib/shop";
 
 const sizeNotes = shop.orders.sizeNotes ?? {};
+const CARD_SIZES = "(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw";
 const one = noun.g("una", "uno");
 
 type Section = { slug: string; name: string; products: Product[] };
@@ -85,7 +86,7 @@ export function CakeCatalog({ sections }: { sections: Section[] }) {
                           src={cake.image}
                           alt={cake.name}
                           fill
-                          sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw"
+                          sizes={CARD_SIZES}
                           // The first row is on screen right away: don't wait for the lazy-load check.
                           loading={sectionIndex === 0 && i < 4 ? "eager" : "lazy"}
                           className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
@@ -183,12 +184,30 @@ function CakeDetail({ cake, onAdd }: { cake: Product; onAdd: (sizeId: string, qu
   // Default to the most popular size (the largest) so one tap is enough.
   const [sizeId, setSizeId] = useState(cake.sizes.at(-1)!.id);
   const [quantity, setQuantity] = useState(1);
+  const [sharp, setSharp] = useState(false);
   const size = cake.sizes.find((s) => s.id === sizeId)!;
 
   return (
     <>
       <div className="relative h-48 shrink-0 bg-blush sm:h-56">
-        {cake.image ? <Image src={cake.image} alt={cake.name} fill sizes="448px" className="object-cover" /> : null}
+        {cake.image ? (
+          <>
+            {/* Same URL as the card's photo (same `sizes`), so it comes from the browser cache and shows
+                instantly; the sharper one fades in over it once it has loaded. */}
+            <Image src={cake.image} alt="" aria-hidden="true" fill sizes={CARD_SIZES} className="object-cover" />
+            <Image
+              src={cake.image}
+              alt={cake.name}
+              fill
+              sizes="448px"
+              onLoad={() => setSharp(true)}
+              ref={(img) => {
+                if (img?.complete) setSharp(true);
+              }}
+              className={`object-cover transition-opacity duration-300 ${sharp ? "opacity-100" : "opacity-0"}`}
+            />
+          </>
+        ) : null}
         <Drawer.Close
           className="absolute top-3 right-3 grid size-10 place-items-center rounded-full bg-paper/95 shadow"
           aria-label="Cerrar"

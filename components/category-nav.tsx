@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { m } from "motion/react";
+import { useEffect, useState } from "react";
+import { SlidingPill, useSlidingPill } from "@/components/ui/sliding-pill";
 
 /** Distance from the viewport top, just below the header and the chip bar. */
 const ACTIVE_LINE = 150;
@@ -15,7 +15,8 @@ export function CategoryNav({
   className?: string;
 }) {
   const [active, setActive] = useState(categories[0]?.slug);
-  const listRef = useRef<HTMLUListElement>(null);
+
+  const { listRef, box } = useSlidingPill<HTMLUListElement>(active);
 
   // The section being read is the last one whose top has passed the sticky bars.
   // Checked once per frame while scrolling.
@@ -55,7 +56,7 @@ export function CategoryNav({
       left: chip.offsetLeft - (list.clientWidth - chip.offsetWidth) / 2,
       behavior: "smooth",
     });
-  }, [active]);
+  }, [active, listRef]);
 
   return (
     <nav
@@ -63,20 +64,18 @@ export function CategoryNav({
       className={`sticky top-16 z-30 border-b border-line/70 bg-cream/90 backdrop-blur-md ${className}`}
     >
       <ul ref={listRef} className="no-scrollbar relative mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 py-2.5 sm:px-6">
+        <SlidingPill box={box} className="rounded-full bg-brand" />
         {categories.map((c) => {
           const isActive = c.slug === active;
           return (
-            <li key={c.slug} data-slug={c.slug} className="shrink-0">
+            <li key={c.slug} data-slug={c.slug} data-pill-active={isActive ? "" : undefined} className="shrink-0">
               <a
                 href={`#${c.slug}`}
                 aria-current={isActive ? "true" : undefined}
                 className={`relative block rounded-full px-4 py-1.5 text-sm font-medium whitespace-nowrap transition-colors ${
                   isActive ? "text-white" : "text-muted hover:text-ink"
-                }`}
+                } ${isActive && !box ? "bg-brand" : ""}`}
               >
-                {isActive ? (
-                  <m.span layoutId="category-pill" className="absolute inset-0 rounded-full bg-brand" />
-                ) : null}
                 <span className="relative">{c.name}</span>
               </a>
             </li>

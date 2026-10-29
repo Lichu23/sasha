@@ -61,6 +61,9 @@ export function earliestPickup(now: number): number {
   throw new Error("The shop has no pickup slots on any day of the week.");
 }
 
+/** Stable id of a calendar day (Argentina time), month 0-based like Date. */
+export const dayKey = (year: number, month: number, date: number) => `${year}-${month + 1}-${date}`;
+
 export type PickupDay = { key: string; label: string; slots: { value: string; label: string }[] };
 
 const dayLabel = new Intl.DateTimeFormat("es-AR", {
@@ -99,7 +102,7 @@ export function pickupDays(now: number): PickupDay[] {
       if (t >= first) slots.push({ value: new Date(t).toISOString(), label: `${hour}:00` });
     }
     if (slots.length) {
-      days.push({ key: `${p.year}-${p.month + 1}-${p.date}`, label: dayLabel.format(dayStart + 12 * HOUR_MS), slots });
+      days.push({ key: dayKey(p.year, p.month, p.date), label: dayLabel.format(dayStart + 12 * HOUR_MS), slots });
     }
   }
   return days;

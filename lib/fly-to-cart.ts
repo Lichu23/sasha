@@ -5,6 +5,10 @@ const DURATION = 450;
 // Strong ease-in-out: the copy moves across the screen rather than entering or leaving.
 const EASE_IN_OUT = "cubic-bezier(0.77, 0, 0.175, 1)";
 
+// The header's bag listens to these to show its states: waiting for the product, then received.
+export const CART_INCOMING = "cart:incoming";
+export const CART_LANDED = "cart:landed";
+
 /** Resolves when the copy reaches the cart, right away when there is nothing to animate. */
 export function flyToCart(source: Element | null | undefined): Promise<void> {
   const target = document.querySelector("[data-cart-target]");
@@ -26,6 +30,7 @@ export function flyToCart(source: Element | null | undefined): Promise<void> {
     willChange: "transform, opacity",
   });
   document.body.append(ghost);
+  window.dispatchEvent(new Event(CART_INCOMING));
 
   const dx = to.left + to.width / 2 - (from.left + from.width / 2);
   const dy = to.top + to.height / 2 - (from.top + from.height / 2);
@@ -40,8 +45,9 @@ export function flyToCart(source: Element | null | undefined): Promise<void> {
     { duration: DURATION, easing: EASE_IN_OUT },
   );
 
-  return flight.finished.then(
-    () => ghost.remove(),
-    () => ghost.remove(),
-  );
+  const land = () => {
+    ghost.remove();
+    window.dispatchEvent(new Event(CART_LANDED));
+  };
+  return flight.finished.then(land, land);
 }
