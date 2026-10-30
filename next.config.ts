@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 import { shop } from "./shops/current";
 
 const nextConfig: NextConfig = {
+  // Lets a phone open the dev server through a Cloudflare quick tunnel (AR needs https).
+  allowedDevOrigins: ["*.trycloudflare.com"],
   cacheComponents: true,
   partialPrefetching: true,
   images: {
