@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { m } from "motion/react";
+import { PillTabs } from "@/components/ui/pill-tabs";
 import { ShopBrand } from "@/components/shop-logo";
 import { shop } from "@/lib/shop";
 
@@ -24,26 +24,12 @@ export function AdminHeader() {
           <span className="hidden font-display font-semibold sm:inline">Panel</span>
         </Link>
 
-        <nav aria-label="Panel" className="flex items-center gap-1 rounded-full bg-cream p-1 ring-1 ring-line">
-          {tabs.map((tab, i) => {
-            const active = i === activeIndex;
-            return (
-              <Link
-                key={tab.href}
-                href={tab.href}
-                aria-current={active ? "page" : undefined}
-                // Tabs to the right slide in from the right, and vice versa.
-                transitionTypes={[i > activeIndex ? "nav-forward" : "nav-back"]}
-                className={`relative rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${
-                  active ? "text-cream" : "text-muted hover:text-ink"
-                }`}
-              >
-                {active ? <m.span layoutId="admin-tab" className="absolute inset-0 rounded-full bg-ink" /> : null}
-                <span className="relative">{tab.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
+        <PillTabs
+          label="Panel"
+          activeHref={tabs[activeIndex]?.href}
+          // Tabs to the right slide in from the right, and vice versa.
+          tabs={tabs.map((t, i) => ({ ...t, transitionTypes: [i > activeIndex ? "nav-forward" : "nav-back"] }))}
+        />
 
         <Link href="/" className="ml-auto text-sm font-semibold text-brand-ink hover:underline">
           Ver tienda
