@@ -133,3 +133,9 @@ export const BriefcaseIcon = (p: IconProps) => (
     <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18" />
   </Icon>
 );
+
+export const ChevronIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="m6 9 6 6 6-6" />
+  </Icon>
+);

@@ -23,7 +23,8 @@ const panel = `bg-cream text-ink shadow-2xl outline-none transition-transform du
 export function BottomSheet({ children }: { children: React.ReactNode }) {
   return (
     <Drawer.Portal>
-      <Drawer.Backdrop className={backdrop} />
+      {/* forceRender: a sheet opened over another drawer still dims everything behind it. */}
+      <Drawer.Backdrop forceRender className={backdrop} />
       <Drawer.Viewport className="fixed inset-0 z-50 flex items-end justify-center">
         <Drawer.Popup
           className={`${panel} relative -mb-12 flex max-h-[calc(92dvh+3rem)] w-full max-w-md flex-col overflow-y-auto overscroll-contain rounded-t-3xl pb-[calc(3rem+env(safe-area-inset-bottom))] [transform:translateY(var(--drawer-swipe-movement-y))] data-starting-style:[transform:translateY(calc(100%-3rem+2px))] data-ending-style:[transform:translateY(calc(100%-3rem+2px))]`}

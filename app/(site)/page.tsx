@@ -174,7 +174,7 @@ export default function HomePage() {
             Ver {noun.g("las", "los")} {noun.count(cakes.length)} <ArrowIcon />
           </Link>
         </Reveal>
-        <ul className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-2 after:w-px after:shrink-0 sm:mx-0 sm:after:hidden sm:scroll-px-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
+        <ul className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain px-4 pb-2 after:w-px after:shrink-0 sm:mx-0 sm:after:hidden sm:scroll-px-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
           {featuredCakes.map((cake, i) => (
             <li key={cake.id} className="w-[72%] shrink-0 snap-start sm:w-auto">
               <Reveal delay={i * 0.06}>
