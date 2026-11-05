@@ -23,8 +23,11 @@ export function shiftsOn(weekday: number): readonly Shift[] {
 
 export const isClosedDay = (weekday: number) => shiftsOn(weekday).length === 0;
 
+// 8 → "8", 7.5 → "7:30".
+const formatHour = (hour: number) => (Number.isInteger(hour) ? String(hour) : `${Math.floor(hour)}:30`);
+
 // "8 a 20 hs", or "8 a 13 y 16 a 21 hs" for split hours.
-const formatHours = (shifts: readonly Shift[]) => `${shifts.map(([opens, closes]) => `${opens} a ${closes}`).join(" y ")} hs`;
+const formatHours = (shifts: readonly Shift[]) => `${shifts.map(([opens, closes]) => `${formatHour(opens)} a ${formatHour(closes)}`).join(" y ")} hs`;
 
 /** The week from Monday, as shown in schedules. */
 export const weekSchedule = [1, 2, 3, 4, 5, 6, 0].map((weekday) => {
@@ -99,7 +102,10 @@ export const shortName = (name: string) =>
 export const lineLabel = (name: string, size: { id: string; label: string }) =>
   size.id === "unica" ? name : `${name} (${size.label})`;
 
-export const leadTimeLabel = shop.orders.leadTimeHours > 0 ? `${shop.orders.leadTimeHours} hs hábiles` : null;
+// Whole days read better from 3 days up: "5 días" rather than "120 hs hábiles".
+const { leadTimeHours } = shop.orders;
+export const leadTimeLabel =
+  leadTimeHours === 0 ? null : leadTimeHours >= 72 && leadTimeHours % 24 === 0 ? `${leadTimeHours / 24} días` : `${leadTimeHours} hs hábiles`;
 
 export const paysOnline = shop.orders.payment === "mercadopago";
 

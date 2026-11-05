@@ -1,0 +1,1064 @@
+{
+  "salon": [
+    {
+      "id": "desayunos",
+      "name": "Desayunos y meriendas",
+      "products": [
+        {
+          "id": 1001,
+          "name": "Clásico Tranqui",
+          "description": "Infusión con una medialuna, factura o bizcocho.",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": "/shops/magnolia/products/medialuna.webp"
+        },
+        {
+          "id": 1002,
+          "name": "Clásico",
+          "description": "Infusión con dos medialunas, facturas o bizcochos.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": "/shops/magnolia/products/medialuna.webp"
+        },
+        {
+          "id": 1003,
+          "name": "Súper Clásico",
+          "description": "Infusión con tres medialunas, facturas o bizcochos.",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": "/shops/magnolia/products/medialuna.webp"
+        },
+        {
+          "id": 1004,
+          "name": "Americano",
+          "description": "Infusión con rollitos de jamón y queso, queso crema y dos tostadas.",
+          "price": 6500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6500
+            }
+          ],
+          "image": "/shops/magnolia/products/tostado-arabe.webp"
+        },
+        {
+          "id": 1005,
+          "name": "De campo",
+          "description": "Infusión con dos tostadas (integrales o lactal) con dos dips a elección.",
+          "price": 6000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1006,
+          "name": "Avocado Toast",
+          "description": "Infusión con tostada con palta, huevo y semillas.",
+          "price": 9000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9000
+            }
+          ],
+          "image": "/shops/magnolia/products/avocado-toast.webp"
+        },
+        {
+          "id": 1007,
+          "name": "Peonía",
+          "description": "Infusión con cookie, alfajor o cuadradito a elección.",
+          "price": 8000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8000
+            }
+          ],
+          "image": "/shops/magnolia/products/cookies.webp"
+        },
+        {
+          "id": 1008,
+          "name": "Magnolia",
+          "description": "Infusión con mini-cake.",
+          "price": 9500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9500
+            }
+          ],
+          "image": "/shops/magnolia/products/red-velvet.webp"
+        },
+        {
+          "id": 1009,
+          "name": "Pausa",
+          "description": "Infusión con yogurt (saborizado o griego), frutas de estación y granola.",
+          "price": 10000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 10000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1010,
+          "name": "Tostado",
+          "description": "Infusión con tostado de pan árabe.",
+          "price": 6500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6500
+            }
+          ],
+          "image": "/shops/magnolia/products/tostado-arabe.webp"
+        },
+        {
+          "id": 1011,
+          "name": "Potente",
+          "description": "Infusión con dos medialunas con jamón y queso.",
+          "price": 6500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6500
+            }
+          ],
+          "image": "/shops/magnolia/products/medialuna-jyq.webp"
+        },
+        {
+          "id": 1012,
+          "name": "Regular",
+          "description": "Infusión con tostada con huevo, tomates cherry y semillas.",
+          "price": 9000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9000
+            }
+          ],
+          "image": "/shops/magnolia/products/cherry-toast.webp"
+        },
+        {
+          "id": 1013,
+          "name": "Extra",
+          "description": "Infusión con laminado a elección.",
+          "price": 8500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8500
+            }
+          ],
+          "image": "/shops/magnolia/products/croissant.webp"
+        },
+        {
+          "id": 1014,
+          "name": "Extra 2.0",
+          "description": "Infusión con laminado relleno a elección.",
+          "price": 9500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9500
+            }
+          ],
+          "image": "/shops/magnolia/products/croissant-relleno.webp"
+        }
+      ]
+    },
+    {
+      "id": "cafeteria",
+      "name": "Cafetería",
+      "products": [
+        {
+          "id": 1101,
+          "name": "Café chico",
+          "description": "Consultá por leche vegetal (+$500) o deslactosada.",
+          "price": 2800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 2800
+            }
+          ],
+          "image": "/shops/magnolia/products/cafe-chico.webp"
+        },
+        {
+          "id": 1102,
+          "name": "Café doble",
+          "description": "Café doble.",
+          "price": 3300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3300
+            }
+          ],
+          "image": "/shops/magnolia/products/cafe-doble.webp"
+        },
+        {
+          "id": 1103,
+          "name": "Cortado",
+          "description": "Espresso con un toque de leche.",
+          "price": 2800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 2800
+            }
+          ],
+          "image": "/shops/magnolia/products/cortado.webp"
+        },
+        {
+          "id": 1104,
+          "name": "Cortado doble",
+          "description": "Cortado doble.",
+          "price": 3300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3300
+            }
+          ],
+          "image": "/shops/magnolia/products/cortado-doble.webp"
+        },
+        {
+          "id": 1105,
+          "name": "Café con leche",
+          "description": "Café con leche caliente.",
+          "price": 3300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3300
+            }
+          ],
+          "image": "/shops/magnolia/products/cafe-con-leche.webp"
+        },
+        {
+          "id": 1106,
+          "name": "Café con leche tazón",
+          "description": "Café con leche en tazón.",
+          "price": 3800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3800
+            }
+          ],
+          "image": "/shops/magnolia/products/cafe-tazon.webp"
+        },
+        {
+          "id": 1107,
+          "name": "Lágrima",
+          "description": "Leche con unas gotas de café.",
+          "price": 2800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 2800
+            }
+          ],
+          "image": "/shops/magnolia/products/lagrima.webp"
+        },
+        {
+          "id": 1108,
+          "name": "Lágrima en jarrita",
+          "description": "Lágrima servida en jarrita.",
+          "price": 3300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3300
+            }
+          ],
+          "image": "/shops/magnolia/products/lagrima.webp"
+        },
+        {
+          "id": 1109,
+          "name": "Lágrima tazón",
+          "description": "Lágrima en tazón.",
+          "price": 3800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3800
+            }
+          ],
+          "image": "/shops/magnolia/products/lagrima.webp"
+        },
+        {
+          "id": 1110,
+          "name": "Té",
+          "description": "Té caliente.",
+          "price": 2800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 2800
+            }
+          ],
+          "image": "/shops/magnolia/products/te.webp"
+        }
+      ]
+    },
+    {
+      "id": "bebidas-frias",
+      "name": "Bebidas frías",
+      "products": [
+        {
+          "id": 1201,
+          "name": "Ice Latte",
+          "description": "Café con leche frío con hielo.",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": "/shops/magnolia/products/ice-latte.webp"
+        },
+        {
+          "id": 1202,
+          "name": "Caramel Ice Latte",
+          "description": "Ice latte con caramelo.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": "/shops/magnolia/products/ice-latte.webp"
+        },
+        {
+          "id": 1203,
+          "name": "Vainilla Ice Latte",
+          "description": "Ice latte con vainilla.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": "/shops/magnolia/products/vainilla-latte.webp"
+        },
+        {
+          "id": 1204,
+          "name": "Mocha Ice Latte",
+          "description": "Ice latte con chocolate.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": "/shops/magnolia/products/mocha-latte.webp"
+        },
+        {
+          "id": 1205,
+          "name": "Jugo de naranja",
+          "description": "Jugo de naranja natural.",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": "/shops/magnolia/products/jugo-naranja.webp"
+        },
+        {
+          "id": 1206,
+          "name": "Licuados",
+          "description": "Con leche o con agua. Consultá los gustos.",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1207,
+          "name": "Limonada (1L)",
+          "description": "Menta y jengibre, maracuyá o frutos rojos.",
+          "price": 7500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1208,
+          "name": "Gaseosas - Línea Coca",
+          "description": "",
+          "price": 3000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3000
+            }
+          ],
+          "image": "/shops/magnolia/products/gaseosa.webp"
+        }
+      ]
+    },
+    {
+      "id": "dulces",
+      "name": "Dulces",
+      "products": [
+        {
+          "id": 1301,
+          "name": "Porción de torta",
+          "description": "Consultá las del día en la vitrina.",
+          "price": 8500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8500
+            }
+          ],
+          "image": "/shops/magnolia/products/porcion-torta.webp"
+        },
+        {
+          "id": 1302,
+          "name": "Medialuna clásica",
+          "description": "Medialuna de manteca.",
+          "price": 1000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 1000
+            }
+          ],
+          "image": "/shops/magnolia/products/medialuna.webp"
+        },
+        {
+          "id": 1303,
+          "name": "Croissant",
+          "description": "Hojaldrado y crujiente.",
+          "price": 7000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7000
+            }
+          ],
+          "image": "/shops/magnolia/products/croissant.webp"
+        },
+        {
+          "id": 1304,
+          "name": "Croissant relleno",
+          "description": "Dulce de leche, pastelera, choco blanco y frambuesa, o chocolate y pistacho.",
+          "price": 8000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8000
+            }
+          ],
+          "image": "/shops/magnolia/products/croissant-relleno.webp"
+        },
+        {
+          "id": 1305,
+          "name": "Alfajores",
+          "description": "Consultá los gustos.",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": "/shops/magnolia/products/alfajores.webp"
+        },
+        {
+          "id": 1306,
+          "name": "Cuadraditos",
+          "description": "Brownie, lemonie, pastafrola, coco o crumble de manzana.",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": "/shops/magnolia/products/cuadraditos.webp"
+        },
+        {
+          "id": 1307,
+          "name": "Cookies NY",
+          "description": "Grandes y suaves, estilo neoyorquino.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": "/shops/magnolia/products/cookies.webp"
+        },
+        {
+          "id": 1308,
+          "name": "Pan de chocolate o Roll de canela",
+          "description": "Hojaldrado, a elección.",
+          "price": 7500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7500
+            }
+          ],
+          "image": "/shops/magnolia/products/pan-chocolate.webp"
+        }
+      ]
+    },
+    {
+      "id": "salados",
+      "name": "Salados",
+      "products": [
+        {
+          "id": 1401,
+          "name": "Chipá (3 u)",
+          "description": "Panecillos de queso y almidón.",
+          "price": 2500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 2500
+            }
+          ],
+          "image": "/shops/magnolia/products/chipa.webp"
+        },
+        {
+          "id": 1402,
+          "name": "Medialuna con jamón y queso",
+          "description": "Medialuna rellena de jamón y queso.",
+          "price": 2500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 2500
+            }
+          ],
+          "image": "/shops/magnolia/products/medialuna-jyq.webp"
+        },
+        {
+          "id": 1403,
+          "name": "Bizcocho de pan",
+          "description": "Suave y esponjoso.",
+          "price": 1000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 1000
+            }
+          ],
+          "image": "/shops/magnolia/products/bizcocho.webp"
+        },
+        {
+          "id": 1404,
+          "name": "Avocado Toast",
+          "description": "Tostada con palta y semillas.",
+          "price": 7500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7500
+            }
+          ],
+          "image": "/shops/magnolia/products/avocado-toast.webp"
+        },
+        {
+          "id": 1405,
+          "name": "Cherry Toast",
+          "description": "Tostada con tomates cherry.",
+          "price": 7500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7500
+            }
+          ],
+          "image": "/shops/magnolia/products/cherry-toast.webp"
+        },
+        {
+          "id": 1406,
+          "name": "Tostado de pan árabe",
+          "description": "De jamón y queso.",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": "/shops/magnolia/products/tostado-arabe.webp"
+        },
+        {
+          "id": 1407,
+          "name": "Fosforito / Sándwich de chipá",
+          "description": "Relleno de jamón y queso.",
+          "price": 7500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7500
+            }
+          ],
+          "image": "/shops/magnolia/products/fosforito.webp"
+        },
+        {
+          "id": 1408,
+          "name": "Croissant relleno salado",
+          "description": "Jamón y queso, jamón crudo y queso, o salame y queso.",
+          "price": 8000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1409,
+          "name": "Ciabatta / Baguettín",
+          "description": "Consultá las opciones.",
+          "price": 8000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "sin-tacc",
+      "name": "Opciones sin TACC",
+      "products": [
+        {
+          "id": 1501,
+          "name": "Alfajores sin TACC",
+          "description": "",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1502,
+          "name": "Cuadraditos sin TACC",
+          "description": "",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": "/shops/magnolia/products/cuadraditos-sin-tacc.webp"
+        },
+        {
+          "id": 1503,
+          "name": "Tostados sin TACC",
+          "description": "",
+          "price": 7000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1504,
+          "name": "Cookies NY sin TACC",
+          "description": "",
+          "price": 8000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8000
+            }
+          ],
+          "image": null
+        }
+      ]
+    }
+  ],
+  "takeaway": [
+    {
+      "id": "tortas",
+      "name": "Tortas enteras",
+      "products": [
+        {
+          "id": 2001,
+          "name": "Brownie con frutos rojos",
+          "description": "Base de brownie con crema y frutos rojos.",
+          "price": 58000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 58000
+            }
+          ],
+          "image": "/shops/magnolia/products/brownie-frutos-rojos.webp"
+        },
+        {
+          "id": 2002,
+          "name": "Torta Oreo",
+          "description": "Capas de chocolate y crema con Oreo.",
+          "price": 56000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 56000
+            }
+          ],
+          "image": "/shops/magnolia/products/torta-oreo.webp"
+        },
+        {
+          "id": 2003,
+          "name": "Brownie Bomba",
+          "description": "Brownie con dulce de leche.",
+          "price": 58000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 58000
+            }
+          ],
+          "image": "/shops/magnolia/products/brownie-bomba.webp"
+        },
+        {
+          "id": 2004,
+          "name": "Brownie con merengue",
+          "description": "Base de brownie con merengue.",
+          "price": 55000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 55000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2005,
+          "name": "Brownie con chocolates",
+          "description": "Base de brownie con chocolates.",
+          "price": 58000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 58000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2006,
+          "name": "Key Lime Pie",
+          "description": "Tarta de lima con crema.",
+          "price": 52000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 52000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2007,
+          "name": "Chocotorta",
+          "description": "Chocolinas, dulce de leche y queso crema.",
+          "price": 50000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 50000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2008,
+          "name": "Choco-Oreo",
+          "description": "Chocolate y Oreo.",
+          "price": 56000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 56000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2009,
+          "name": "Cheesecake Frutos Rojos",
+          "description": "Cheesecake con frutos rojos.",
+          "price": 58000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 58000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2010,
+          "name": "Tres Leches",
+          "description": "Bizcochuelo bañado en tres leches.",
+          "price": 52000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 52000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2011,
+          "name": "Rogel",
+          "description": "Capas de masa crocante con dulce de leche y merengue.",
+          "price": 54000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 54000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2012,
+          "name": "Tiramisú",
+          "description": "Café, cacao y crema.",
+          "price": 55000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 55000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "tartas",
+      "name": "Tartas",
+      "products": [
+        {
+          "id": 2101,
+          "name": "Lemon Pie",
+          "description": "Tarta de limón con merengue.",
+          "price": 46000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 46000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2102,
+          "name": "Toffe",
+          "description": "Tarta de dulce de leche.",
+          "price": 46000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 46000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2103,
+          "name": "Tarta Oreo",
+          "description": "Tarta de chocolate y Oreo.",
+          "price": 46000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 46000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2104,
+          "name": "Tarta de Coco",
+          "description": "Con dulce de leche y coco.",
+          "price": 44000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 44000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2105,
+          "name": "Tarta Frutal",
+          "description": "Con crema y frutas.",
+          "price": 48000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 48000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2106,
+          "name": "Tarta Frutos Rojos",
+          "description": "Con crema y frutos rojos.",
+          "price": 48000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 48000
+            }
+          ],
+          "image": "/shops/magnolia/products/tarta-frutos-rojos.webp"
+        },
+        {
+          "id": 2107,
+          "name": "Apple Crumble",
+          "description": "Manzana y crumble.",
+          "price": 44000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 44000
+            }
+          ],
+          "image": null
+        }
+      ]
+    }
+  ],
+  "rating": null,
+  "reviews": []
+}

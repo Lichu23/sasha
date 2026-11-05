@@ -28,12 +28,14 @@ export { isClosedDay };
 
 /**
  * Pickup slots on a weekday: in each shift, whole hours from the first hour after opening to the
- * last one before closing. Empty when the shop is closed that day.
+ * last one before closing, also when the shop opens or closes at half past. Empty when the shop is closed that day.
  */
 export function pickupHours(weekday: number): number[] {
-  return shiftsOn(weekday).flatMap(([opens, closes]) =>
-    Array.from({ length: Math.max(0, closes - opens - 1) }, (_, i) => opens + 1 + i),
-  );
+  return shiftsOn(weekday).flatMap(([opens, closes]) => {
+    const first = Math.floor(opens) + 1;
+    const last = Math.ceil(closes) - 1;
+    return Array.from({ length: Math.max(0, last - first + 1) }, (_, i) => first + i);
+  });
 }
 
 /**

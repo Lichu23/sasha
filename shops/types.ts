@@ -1,7 +1,7 @@
 // Everything that changes from one shop to the next lives in shops/<slug>/shop.ts,
 // typed by ShopConfig. The app code reads it through lib/shop.ts.
 
-/** Opening and closing hour (24 h, whole hours). */
+/** Opening and closing hour (24 h): whole hours or half past, e.g. 7.5 for 7:30. */
 export type Shift = readonly [opens: number, closes: number];
 
 /** One shift, several for split hours (e.g. [[8, 13], [16, 21]]), or null when closed all day. */
