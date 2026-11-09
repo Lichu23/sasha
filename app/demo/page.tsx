@@ -50,12 +50,6 @@ export default function DemoPage() {
         <h1 className="mt-6 font-display text-3xl leading-tight font-semibold tracking-tight text-balance sm:text-4xl">
           Así podría ser la página de {shop.shortName}
         </h1>
-        <p className="mt-3 text-muted text-pretty">
-          {paysOnline
-            ? "Sus clientes encargan online y pagan con Mercado Pago"
-            : "Sus clientes arman el pedido y les llega por WhatsApp"}
-          {shop.admin ? ", y ustedes ven los pedidos y las ventas en un panel." : "."}
-        </p>
       </header>
 
       {youtubeId ? (
