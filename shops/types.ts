@@ -133,6 +133,12 @@ export type ShopConfig = {
 
   /** The orders and sales panel at /admin. */
   admin: boolean;
+
+  /**
+   * The pitch page at /demo: one link to send the shop, with the video, the storefront and the panel.
+   * `youtubeId` is the part after youtu.be/, e.g. "095jFol3ey4". Without it, the page shows only the links.
+   */
+  demo?: { youtubeId?: string };
 };
 
 export const defineShop = (config: ShopConfig) => config;

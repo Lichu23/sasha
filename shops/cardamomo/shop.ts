@@ -67,4 +67,6 @@ export default defineShop({
   },
 
   admin: true,
+
+  demo: { youtubeId: "9GMn6r5Bnnc" },
 });
