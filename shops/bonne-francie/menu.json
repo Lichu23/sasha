@@ -1,0 +1,1076 @@
+{
+  "salon": [
+    {
+      "id": "cafe-a-repetir",
+      "name": "Café a repetir",
+      "products": [
+        {
+          "id": 469707922,
+          "name": "Café",
+          "description": "100% café. Pagás una vez y repetís las tazas que quieras durante tu visita.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 193469410,
+          "name": "Café au lait",
+          "description": "70% café, 30% leche. A repetir.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 79786416,
+          "name": "Lait taché",
+          "description": "Lágrima. A repetir.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 964778112,
+          "name": "Café noisette",
+          "description": "Cortado. A repetir.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 477653267,
+          "name": "Té",
+          "description": "",
+          "price": 4000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 297202697,
+          "name": "Mate cocido",
+          "description": "",
+          "price": 4000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 347900322,
+          "name": "Chocolatada fría",
+          "description": "",
+          "price": 4000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 317237142,
+          "name": "Submarino",
+          "description": "",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "especialidades",
+      "name": "Especialidades",
+      "products": [
+        {
+          "id": 250656012,
+          "name": "Cappuccino clásico",
+          "description": "Espresso, leche vaporizada, espuma y cacao.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 607061475,
+          "name": "Cappuccino à la cannelle",
+          "description": "Espresso, leche vaporizada, espuma y canela.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 75151693,
+          "name": "Moka",
+          "description": "Más suave y dulce que el cappuccino, con chocolate derretido.",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 193394044,
+          "name": "Café allongé",
+          "description": "Espresso al que se le agrega más agua caliente.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 196876053,
+          "name": "Café Tanqueray Royale",
+          "description": "Café con gin Tanqueray Royale.",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 706829431,
+          "name": "Café saborizado",
+          "description": "Toffee caramel, vainilla, pistacho, avellanas o chocolate blanco.",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 835890061,
+          "name": "Café froid",
+          "description": "Clásico, vainilla, avellanas, toffee caramel, pistacho, canela o cacao.",
+          "price": 6500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6500
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "combinaisons",
+      "name": "Combinaisons",
+      "products": [
+        {
+          "id": 290123960,
+          "name": "Infusión + medialunas",
+          "description": "",
+          "price": 6500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 453847328,
+          "name": "Infusión + croissant clásico",
+          "description": "",
+          "price": 7500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 94433985,
+          "name": "Infusión + croissant relleno",
+          "description": "",
+          "price": 11000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 11000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 290178985,
+          "name": "Infusión + tostadas clásicas",
+          "description": "",
+          "price": 9000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 32595890,
+          "name": "Infusión + tostada frutal o Nutella",
+          "description": "",
+          "price": 10500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 10500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 872135769,
+          "name": "Infusión + avocado toast",
+          "description": "",
+          "price": 12000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 12000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 22097408,
+          "name": "Infusión + saludable",
+          "description": "Yogurt con granola y frutos secos.",
+          "price": 12000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 12000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 711633957,
+          "name": "Combo saludable",
+          "description": "Yogurt natural sin azúcar con granola y frutos secos.",
+          "price": 7000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "boulangerie",
+      "name": "Boulangerie",
+      "products": [
+        {
+          "id": 490379779,
+          "name": "Medialuna",
+          "description": "",
+          "price": 2000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 2000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 960328914,
+          "name": "Chipá relleno de queso",
+          "description": "",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 689881110,
+          "name": "Croissant clásico",
+          "description": "Con o sin semillas.",
+          "price": 3500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 213566263,
+          "name": "Croissant relleno",
+          "description": "Pistacho y nueces, Nutella y nueces, pastelera y frutas u Oreo y dulce de leche.",
+          "price": 6000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 118471376,
+          "name": "Cookies clásicas",
+          "description": "Chips, red velvet, nuez, Kinder, Oreo, Nutella, Ferrero o pistacho.",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 217350262,
+          "name": "Rolls",
+          "description": "Canela, pistacho o Nutella.",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 274883871,
+          "name": "Muffins de vainilla",
+          "description": "Con arándanos, con dulce de leche o con pastelera y frutas.",
+          "price": 4000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 768340080,
+          "name": "Budines",
+          "description": "Chips, chocolate o carrot.",
+          "price": 4000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 402930807,
+          "name": "Cuadrados",
+          "description": "Pastafrola de dulce de leche, pastafrola de membrillo, coco, espumita de limón o brownie.",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 82336012,
+          "name": "Crêpes",
+          "description": "Dulce de leche, Nutella o pistacho.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 871310662,
+          "name": "Alfajor de maicena",
+          "description": "",
+          "price": 4000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 434318177,
+          "name": "Alfajor de chocolate",
+          "description": "",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 91287809,
+          "name": "Alfajor de pistacho",
+          "description": "",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "tostadas",
+      "name": "Tostadas",
+      "products": [
+        {
+          "id": 735994224,
+          "name": "Tostadas clásicas",
+          "description": "Queso y mermelada.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 973478359,
+          "name": "Tostada frutal",
+          "description": "Miel y frutas de estación.",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 899554210,
+          "name": "Tostada Nutella",
+          "description": "Nutella y frutos secos.",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 229808610,
+          "name": "Avocado toast",
+          "description": "Palta, huevo, tomates cherry y frutos secos.",
+          "price": 8000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 925366486,
+          "name": "Extra miel o Nutella",
+          "description": "",
+          "price": 1000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 1000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "platos",
+      "name": "Platos",
+      "products": [
+        {
+          "id": 387391892,
+          "name": "Croque monsieur",
+          "description": "Sándwich de jamón y queso cubierto con bechamel y queso gratinado.",
+          "price": 8000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 107275168,
+          "name": "Croque madame",
+          "description": "El croque monsieur, con huevo.",
+          "price": 9500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 674818837,
+          "name": "Focaccia farcie",
+          "description": "Focaccia rellena de jamón, queso, lechuga y tomate.",
+          "price": 9500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 909715171,
+          "name": "Crêpe noir",
+          "description": "Torta negra con jamón y queso.",
+          "price": 8000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "bebidas",
+      "name": "Bebidas",
+      "products": [
+        {
+          "id": 553552723,
+          "name": "Du jus d'orange",
+          "description": "Exprimido de naranja.",
+          "price": 6000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 373173643,
+          "name": "Smoothies",
+          "description": "Banana o multifrutal.",
+          "price": 6000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 25646805,
+          "name": "Jarra de limonada",
+          "description": "",
+          "price": 6000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 955309083,
+          "name": "Coca-Cola 500 ml",
+          "description": "Original o Zero.",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 30520390,
+          "name": "Sprite 500 ml",
+          "description": "",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 719642288,
+          "name": "Fanta 500 ml",
+          "description": "",
+          "price": 5000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 556206887,
+          "name": "Stella Artois",
+          "description": "Lata.",
+          "price": 6000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 319529571,
+          "name": "Schneider",
+          "description": "Lata.",
+          "price": 6000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6000
+            }
+          ],
+          "image": null
+        }
+      ]
+    }
+  ],
+  "takeaway": [
+    {
+      "id": "croissants-y-medialunas",
+      "name": "Croissants y medialunas",
+      "products": [
+        {
+          "id": 503319950,
+          "name": "Medialunas",
+          "description": "De manteca, horneadas en el día.",
+          "price": 12000,
+          "sizes": [
+            {
+              "id": "mediadocena",
+              "label": "Media docena",
+              "price": 12000
+            },
+            {
+              "id": "docena",
+              "label": "Docena",
+              "price": 24000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 673588741,
+          "name": "Croissants clásicos",
+          "description": "Con o sin semillas: contanos en los comentarios cómo los querés.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "cajade4",
+              "label": "Caja de 4",
+              "price": 14000
+            },
+            {
+              "id": "cajade8",
+              "label": "Caja de 8",
+              "price": 28000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 827248589,
+          "name": "Croissants de pistacho y nueces",
+          "description": "Rellenos de crema de pistacho, con nueces.",
+          "price": 12000,
+          "sizes": [
+            {
+              "id": "cajade2",
+              "label": "Caja de 2",
+              "price": 12000
+            },
+            {
+              "id": "cajade4",
+              "label": "Caja de 4",
+              "price": 24000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 632380572,
+          "name": "Croissants de Nutella y nueces",
+          "description": "Rellenos de Nutella, con nueces.",
+          "price": 12000,
+          "sizes": [
+            {
+              "id": "cajade2",
+              "label": "Caja de 2",
+              "price": 12000
+            },
+            {
+              "id": "cajade4",
+              "label": "Caja de 4",
+              "price": 24000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 911990754,
+          "name": "Croissants de pastelera y frutas",
+          "description": "Rellenos de crema pastelera y frutas de estación.",
+          "price": 12000,
+          "sizes": [
+            {
+              "id": "cajade2",
+              "label": "Caja de 2",
+              "price": 12000
+            },
+            {
+              "id": "cajade4",
+              "label": "Caja de 4",
+              "price": 24000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 823095736,
+          "name": "Croissants de Oreo y dulce de leche",
+          "description": "Rellenos de dulce de leche, con Oreo.",
+          "price": 12000,
+          "sizes": [
+            {
+              "id": "cajade2",
+              "label": "Caja de 2",
+              "price": 12000
+            },
+            {
+              "id": "cajade4",
+              "label": "Caja de 4",
+              "price": 24000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "cookies-rolls-y-alfajores",
+      "name": "Cookies, rolls y alfajores",
+      "products": [
+        {
+          "id": 143178737,
+          "name": "Cookies surtidas",
+          "description": "Chips, red velvet, nuez, Kinder, Oreo, Nutella, Ferrero y pistacho. Elegí los gustos en los comentarios.",
+          "price": 18000,
+          "sizes": [
+            {
+              "id": "cajade4",
+              "label": "Caja de 4",
+              "price": 18000
+            },
+            {
+              "id": "cajade8",
+              "label": "Caja de 8",
+              "price": 36000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 242664476,
+          "name": "Rolls de canela",
+          "description": "Masa tierna, canela y glaseado.",
+          "price": 11000,
+          "sizes": [
+            {
+              "id": "cajade2",
+              "label": "Caja de 2",
+              "price": 11000
+            },
+            {
+              "id": "cajade4",
+              "label": "Caja de 4",
+              "price": 22000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 56632175,
+          "name": "Alfajores de maicena",
+          "description": "Con dulce de leche y coco.",
+          "price": 12000,
+          "sizes": [
+            {
+              "id": "cajade3",
+              "label": "Caja de 3",
+              "price": 12000
+            },
+            {
+              "id": "cajade6",
+              "label": "Caja de 6",
+              "price": 24000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 869888770,
+          "name": "Alfajores de chocolate",
+          "description": "",
+          "price": 16500,
+          "sizes": [
+            {
+              "id": "cajade3",
+              "label": "Caja de 3",
+              "price": 16500
+            },
+            {
+              "id": "cajade6",
+              "label": "Caja de 6",
+              "price": 33000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 794559003,
+          "name": "Rolls de pistacho",
+          "description": "",
+          "price": 11000,
+          "sizes": [
+            {
+              "id": "cajade2",
+              "label": "Caja de 2",
+              "price": 11000
+            },
+            {
+              "id": "cajade4",
+              "label": "Caja de 4",
+              "price": 22000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "budines-muffins-y-cuadrados",
+      "name": "Budines, muffins y cuadrados",
+      "products": [
+        {
+          "id": 3549178,
+          "name": "Budines",
+          "description": "Chips, chocolate o carrot. Elegí los gustos en los comentarios.",
+          "price": 12000,
+          "sizes": [
+            {
+              "id": "cajade3",
+              "label": "Caja de 3",
+              "price": 12000
+            },
+            {
+              "id": "cajade6",
+              "label": "Caja de 6",
+              "price": 24000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 626955354,
+          "name": "Cuadrados surtidos",
+          "description": "Pastafrola de dulce de leche y de membrillo, coco, espumita de limón y brownie.",
+          "price": 18000,
+          "sizes": [
+            {
+              "id": "cajade4",
+              "label": "Caja de 4",
+              "price": 18000
+            },
+            {
+              "id": "cajade8",
+              "label": "Caja de 8",
+              "price": 36000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 470725733,
+          "name": "Muffins de vainilla",
+          "description": "Con arándanos, con dulce de leche o con pastelera y frutas.",
+          "price": 16000,
+          "sizes": [
+            {
+              "id": "cajade4",
+              "label": "Caja de 4",
+              "price": 16000
+            },
+            {
+              "id": "cajade8",
+              "label": "Caja de 8",
+              "price": 32000
+            }
+          ],
+          "image": null
+        }
+      ]
+    }
+  ],
+  "rating": null,
+  "reviews": []
+}
