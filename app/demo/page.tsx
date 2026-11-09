@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ShopBrand } from "@/components/shop-logo";
-import { ArrowIcon, BagIcon, CalendarIcon } from "@/components/icons";
+import { ArrowIcon } from "@/components/icons";
 import { paysOnline, shop } from "@/lib/shop";
 
 // The one link sent to a shop in a pitch: the video, the storefront and the panel together,
@@ -14,20 +14,27 @@ export const metadata: Metadata = {
 
 const youtubeId = shop.demo?.youtubeId;
 
-const links = [
+// A test order only makes sense with simulated payment: a WhatsApp order would message the shop's real number.
+const guided = paysOnline && shop.admin;
+
+const steps = [
   {
     href: "/",
-    icon: BagIcon,
-    title: "La tienda",
-    text: "Lo que ven sus clientes: el menú, el carrito y el pedido.",
+    title: "Probar la tienda",
+    text: guided
+      ? "Hagan un pedido de prueba, como si fueran un cliente."
+      : "Recorran el menú como si fueran un cliente.",
+    action: "Probar",
   },
   ...(shop.admin
     ? [
         {
           href: "/admin",
-          icon: CalendarIcon,
-          title: "El panel",
-          text: "Lo que ven ustedes: los pedidos por día y las ventas.",
+          title: guided ? "Ver el pedido en el panel" : "Ver el panel",
+          text: guided
+            ? "Ábranlo en el mismo celular o computadora: ahí aparecen su pedido y las ventas."
+            : "Lo que ven ustedes: los pedidos por día y las ventas.",
+          action: "Abrir",
         },
       ]
     : []),
@@ -70,35 +77,36 @@ export default function DemoPage() {
         </section>
       ) : null}
 
-      <nav aria-label="Probar la demo" className="mt-8">
-        <ul className="grid gap-3">
-          {links.map(({ href, icon: Icon, title, text }) => (
+      <section aria-labelledby="probar" className="mt-10">
+        <h2 id="probar" className="text-center font-display text-2xl font-semibold tracking-tight">
+          Pruébenla ustedes
+        </h2>
+        <p className="mt-1 text-center text-muted text-pretty">
+          {paysOnline ? "Es una demo: pueden tocar todo, el pago está simulado y no se cobra nada." : "Es una demo: pueden tocar todo."}
+        </p>
+        <ol className="mt-5 grid gap-3">
+          {steps.map(({ href, title, text, action }, i) => (
             <li key={href}>
               <Link
                 href={href}
                 className="group flex items-center gap-4 rounded-2xl bg-paper p-4 ring-1 ring-line transition-[background-color,transform] [-webkit-tap-highlight-color:transparent] hover:bg-blush active:scale-[0.98] motion-reduce:active:scale-100"
               >
-                <span className="grid size-12 shrink-0 place-items-center rounded-full bg-brand text-white">
-                  <Icon width={22} height={22} />
+                <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-full bg-blush font-display text-lg font-semibold text-brand-ink">
+                  {i + 1}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold">{title}</span>
                   <span className="block text-sm text-muted">{text}</span>
                 </span>
-                <ArrowIcon className="shrink-0 text-brand-ink transition-transform group-hover:translate-x-0.5" />
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors group-hover:bg-brand-ink">
+                  {action}
+                  <ArrowIcon width={16} height={16} className="transition-transform group-hover:translate-x-0.5" />
+                </span>
               </Link>
             </li>
           ))}
-        </ul>
-      </nav>
-
-      {/* Only with simulated payment: a WhatsApp order would message the shop's real number. */}
-      {paysOnline && shop.admin ? (
-        <p className="mt-6 rounded-2xl bg-blush/60 p-4 text-sm text-pretty">
-          Para verlo completo, hagan un pedido de prueba en la tienda y después abran el panel en el mismo celular o
-          computadora: ahí aparece. El pago está simulado, así que no se cobra nada.
-        </p>
-      ) : null}
+        </ol>
+      </section>
 
       <p className="mt-auto pt-10 text-center text-sm text-muted">Demo hecha por Lisandro, desarrollador web.</p>
     </main>
