@@ -65,6 +65,13 @@ npm run new-shop -- cafe-roma "Café Roma"
 5. Deploy: in Vercel, create a new project from this same repo and set the environment
    variable `SHOP=cafe-roma`. Each shop is its own project, so it gets its own domain.
 
+## Send one link
+
+Every shop has a pitch page at `/demo` (e.g. [delfis-pasteleria.vercel.app/demo](https://delfis-pasteleria.vercel.app/demo)):
+the YouTube video, a button to the store and a button to the panel, so a message needs one link
+instead of three. Add the video in `shop.ts` with `demo: { youtubeId: "095jFol3ey4" }` (the part
+after `youtu.be/`). Without it, the page shows only the two buttons. Nothing on the site links to it.
+
 ## Plans
 
 Two settings in `shop.ts` decide what the shop gets:

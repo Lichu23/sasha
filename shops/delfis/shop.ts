@@ -73,4 +73,6 @@ export default defineShop({
   hideProductsWithoutPhoto: true,
 
   admin: true,
+
+  demo: { youtubeId: "095jFol3ey4" },
 });
