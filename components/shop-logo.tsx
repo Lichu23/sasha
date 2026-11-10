@@ -33,7 +33,8 @@ export function ShopBrand({ size, name }: { size: number; name: React.ReactNode 
         width={Math.round((h * width) / height)}
         height={h}
         style={{ height: h, width: "auto" }}
-        className="shrink-0 object-contain"
+        // Very wide wordmarks (name + tagline) are capped on phones so the nav and the cart still fit.
+        className="max-w-34 shrink-0 object-contain object-left sm:max-w-none"
         preload
       />
     );

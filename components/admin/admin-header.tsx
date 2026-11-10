@@ -18,7 +18,7 @@ export function AdminHeader() {
   return (
     // Named so it stays fixed while page content slides (see globals.css).
     <header style={{ viewTransitionName: "admin-header" }} className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-5xl items-center gap-3 px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-4 sm:gap-3 sm:px-6">
         <Link href="/admin" className="flex items-center gap-2" aria-label={`Panel de ${shop.shortName}, pedidos`}>
           <ShopBrand size={30} name={null} />
           <span className="hidden font-display font-semibold sm:inline">Panel</span>
@@ -34,7 +34,7 @@ export function AdminHeader() {
                 aria-current={active ? "page" : undefined}
                 // Tabs to the right slide in from the right, and vice versa.
                 transitionTypes={[i > activeIndex ? "nav-forward" : "nav-back"]}
-                className={`relative rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${
+                className={`relative rounded-full px-2.5 py-1.5 sm:px-3.5 text-sm font-medium transition-colors ${
                   active ? "text-cream" : "text-muted hover:text-ink"
                 }`}
               >
@@ -45,8 +45,9 @@ export function AdminHeader() {
           })}
         </nav>
 
-        <Link href="/" className="ml-auto text-sm font-semibold text-brand-ink hover:underline">
-          Ver tienda
+        <Link href="/" className="ml-auto shrink-0 whitespace-nowrap text-sm font-semibold text-brand-ink hover:underline">
+          <span className="sm:hidden">Tienda</span>
+          <span className="hidden sm:inline">Ver tienda</span>
         </Link>
       </div>
     </header>

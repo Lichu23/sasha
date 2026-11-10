@@ -11,7 +11,8 @@ import { salonLabels, shop } from "@/lib/shop";
 const links = [
   { href: "/", label: "Inicio" },
   ...(shop.salon ? [{ href: "/salon", label: salonLabels.nav }] : []),
-  { href: "/take-away", label: shop.salon ? "Take away" : "Pedidos" },
+  // Without a salon, the order catalog is the shop's only menu.
+  { href: "/take-away", label: shop.salon ? "Take away" : "Menú" },
 ];
 
 export function SiteHeader() {
