@@ -1,0 +1,673 @@
+{
+  "salon": [
+    {
+      "id": "cafeteria",
+      "name": "Cafetería",
+      "products": [
+        {
+          "id": 776817420,
+          "name": "Espresso",
+          "description": "Café de especialidad.",
+          "price": 3800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 64966135,
+          "name": "Cortado",
+          "description": "Espresso con un toque de leche.",
+          "price": 4300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 718248327,
+          "name": "Café con leche",
+          "description": "Con medialuna de manteca.",
+          "price": 6200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 830160569,
+          "name": "Flat white",
+          "description": "Doble espresso con leche texturizada.",
+          "price": 5200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 160247892,
+          "name": "Capuchino",
+          "description": "Con espuma de leche y cacao.",
+          "price": 5400,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 900935246,
+          "name": "Chocolate caliente",
+          "description": "Con chocolate de cacao y crema batida.",
+          "price": 6500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 51802085,
+          "name": "Chai latte",
+          "description": "Té especiado con leche vaporizada.",
+          "price": 5600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5600
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "cafes-frios-y-bebidas",
+      "name": "Cafés fríos y bebidas",
+      "products": [
+        {
+          "id": 87069458,
+          "name": "Ice latte de frambuesa",
+          "description": "Espresso sobre hielo con leche y almíbar de frambuesa.",
+          "price": 6800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6800
+            }
+          ],
+          "image": "/shops/raices-de-cacao/products/ice-latte-frambuesa.webp"
+        },
+        {
+          "id": 676501949,
+          "name": "Ice coffee",
+          "description": "Café frío con leche y hielo.",
+          "price": 5800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 310229775,
+          "name": "Limonada del Bosque",
+          "description": "Limón, menta, jengibre, almíbar y frutos rojos.",
+          "price": 5900,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5900
+            }
+          ],
+          "image": "/shops/raices-de-cacao/products/limonada-del-bosque.webp"
+        },
+        {
+          "id": 867596989,
+          "name": "Jugo de naranja exprimido",
+          "description": "",
+          "price": 4800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 525491730,
+          "name": "Licuado de frutas",
+          "description": "Banana, frutilla o durazno, con agua o leche.",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "mesitas-y-desayunos",
+      "name": "Mesitas y desayunos",
+      "products": [
+        {
+          "id": 733888479,
+          "name": "Desayuno Raíces",
+          "description": "Café con leche, medialuna de manteca y jugo de naranja.",
+          "price": 9800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 479784891,
+          "name": "Tostado de jamón y queso",
+          "description": "En pan de campo.",
+          "price": 7900,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7900
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 714045544,
+          "name": "Tostadas con queso y mermelada",
+          "description": "Pan de masa madre tostado.",
+          "price": 6900,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6900
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 245250397,
+          "name": "Croissant de jamón y queso",
+          "description": "Hojaldre de manteca recién horneado.",
+          "price": 7500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7500
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "pasteleria-de-autor",
+      "name": "Pastelería de autor",
+      "products": [
+        {
+          "id": 218012861,
+          "name": "Croissant clásico",
+          "description": "Hojaldre de manteca.",
+          "price": 4200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 970049725,
+          "name": "Pain au chocolat",
+          "description": "Con barra de chocolate semiamargo.",
+          "price": 4800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 237850403,
+          "name": "Roll de canela",
+          "description": "Con glaseado de queso crema.",
+          "price": 5400,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 128213298,
+          "name": "Medialuna de manteca",
+          "description": "",
+          "price": 2400,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 2400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 75731910,
+          "name": "Brownie",
+          "description": "Con chocolate semiamargo y nueces.",
+          "price": 5200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 193954464,
+          "name": "Budín del día",
+          "description": "Porción.",
+          "price": 4600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4600
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 271199435,
+          "name": "Cheesecake",
+          "description": "Porción con salsa de frutos rojos.",
+          "price": 7400,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 315179593,
+          "name": "Lemon pie",
+          "description": "Porción con merengue.",
+          "price": 6900,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6900
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "alfajores-y-chocolateria",
+      "name": "Alfajores y chocolatería",
+      "products": [
+        {
+          "id": 817488338,
+          "name": "Alfajor de mousse de chocolate y naranja",
+          "description": "Ganache de chocolate con naranja, corazón de caramelo salado y baño de chocolate semiamargo.",
+          "price": 4900,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4900
+            }
+          ],
+          "image": "/shops/raices-de-cacao/products/alfajor-mousse.webp"
+        },
+        {
+          "id": 754018891,
+          "name": "Alfajor de merengue",
+          "description": "Tapa de merengue, dulce de leche y baño de chocolate semiamargo.",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": "/shops/raices-de-cacao/products/alfajor-merengue.webp"
+        },
+        {
+          "id": 486056222,
+          "name": "Alfajor de maicena",
+          "description": "Con dulce de leche y coco rallado.",
+          "price": 2600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 2600
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 53037553,
+          "name": "Bombones de cacao",
+          "description": "Selección artesanal. Por unidad.",
+          "price": 1800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 1800
+            }
+          ],
+          "image": null
+        }
+      ]
+    }
+  ],
+  "takeaway": [
+    {
+      "id": "alfajores",
+      "name": "Alfajores",
+      "products": [
+        {
+          "id": 972943903,
+          "name": "Alfajores de mousse de chocolate y naranja",
+          "description": "Con corazón de caramelo salado y baño de chocolate semiamargo. Caja de 3, 6 o 12.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "cajax3",
+              "label": "Caja x 3",
+              "price": 14000
+            },
+            {
+              "id": "cajax6",
+              "label": "Caja x 6",
+              "price": 27000
+            },
+            {
+              "id": "cajax12",
+              "label": "Caja x 12",
+              "price": 52000
+            }
+          ],
+          "image": "/shops/raices-de-cacao/products/alfajor-mousse.webp"
+        },
+        {
+          "id": 576918535,
+          "name": "Alfajores de merengue",
+          "description": "Rellenos de dulce de leche, con baño de chocolate semiamargo. Caja de 3, 6 o 12.",
+          "price": 12800,
+          "sizes": [
+            {
+              "id": "cajax3",
+              "label": "Caja x 3",
+              "price": 12800
+            },
+            {
+              "id": "cajax6",
+              "label": "Caja x 6",
+              "price": 25000
+            },
+            {
+              "id": "cajax12",
+              "label": "Caja x 12",
+              "price": 48000
+            }
+          ],
+          "image": "/shops/raices-de-cacao/products/alfajor-merengue.webp"
+        },
+        {
+          "id": 680529433,
+          "name": "Alfajores de maicena",
+          "description": "Con dulce de leche y coco rallado.",
+          "price": 14500,
+          "sizes": [
+            {
+              "id": "cajax6",
+              "label": "Caja x 6",
+              "price": 14500
+            },
+            {
+              "id": "cajax12",
+              "label": "Caja x 12",
+              "price": 27000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "box-para-regalar",
+      "name": "Box para regalar",
+      "products": [
+        {
+          "id": 443871792,
+          "name": "Box Día de la Madre",
+          "description": "Selección de alfajores, bombones y pastelería en caja de regalo con moño.",
+          "price": 32000,
+          "sizes": [
+            {
+              "id": "chico",
+              "label": "Chico",
+              "price": 32000
+            },
+            {
+              "id": "grande",
+              "label": "Grande",
+              "price": 48000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 987812601,
+          "name": "Box de bombones",
+          "description": "Bombones de cacao artesanales en caja de regalo.",
+          "price": 22000,
+          "sizes": [
+            {
+              "id": "x12",
+              "label": "x 12",
+              "price": 22000
+            },
+            {
+              "id": "x24",
+              "label": "x 24",
+              "price": 41000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "pasteleria",
+      "name": "Pastelería",
+      "products": [
+        {
+          "id": 477559749,
+          "name": "Medialunas de manteca",
+          "description": "Docena recién horneada.",
+          "price": 12500,
+          "sizes": [
+            {
+              "id": "mediadocena",
+              "label": "Media docena",
+              "price": 12500
+            },
+            {
+              "id": "docena",
+              "label": "Docena",
+              "price": 23000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 675025716,
+          "name": "Croissants clásicos",
+          "description": "",
+          "price": 16000,
+          "sizes": [
+            {
+              "id": "x4",
+              "label": "x 4",
+              "price": 16000
+            },
+            {
+              "id": "x8",
+              "label": "x 8",
+              "price": 30000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 391039892,
+          "name": "Rolls de canela",
+          "description": "Con glaseado de queso crema.",
+          "price": 20000,
+          "sizes": [
+            {
+              "id": "x4",
+              "label": "x 4",
+              "price": 20000
+            },
+            {
+              "id": "x8",
+              "label": "x 8",
+              "price": 38000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "tortas",
+      "name": "Tortas",
+      "products": [
+        {
+          "id": 455682066,
+          "name": "Torta de chocolate",
+          "description": "Bizcochuelo húmedo de chocolate, ganache y baño de cacao.",
+          "price": 34000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 34000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 48000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 791045384,
+          "name": "Cheesecake de frutos rojos",
+          "description": "Base de galleta y salsa de frutos rojos.",
+          "price": 32000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 32000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 45000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 696990752,
+          "name": "Lemon pie",
+          "description": "Masa sablée, crema de limón y merengue.",
+          "price": 29000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 29000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 41000
+            }
+          ],
+          "image": null
+        }
+      ]
+    }
+  ],
+  "rating": null,
+  "reviews": []
+}

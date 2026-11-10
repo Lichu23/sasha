@@ -23,9 +23,9 @@ export function ShopLogo({ size, className = "" }: { size: number; className?: s
  */
 export function ShopBrand({ size, name }: { size: number; name: React.ReactNode }) {
   if (shop.wordmark) {
-    const { src, width, height } = shop.wordmark;
+    const { src, width, height, scale = 1.1 } = shop.wordmark;
     // A bit taller than the round logo so its lettering reads; never squeezed by its neighbours.
-    const h = Math.round(size * 1.1);
+    const h = Math.round(size * scale);
     return (
       <Image
         src={src}

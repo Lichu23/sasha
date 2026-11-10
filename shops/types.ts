@@ -49,7 +49,13 @@ export type ShopConfig = {
   /** Square logo. Without one, the header shows the first letter of the name. */
   logo?: string;
   /** Wide logo that already spells the name (transparent PNG). Replaces logo + name in headers. */
-  wordmark?: { src: string; width: number; height: number };
+  wordmark?: {
+    src: string;
+    width: number;
+    height: number;
+    /** Height relative to the round logo (default 1.1). Raise it for a tall, detailed logo that needs the room. */
+    scale?: number;
+  };
   /** Large photo for the desktop hero. */
   cover: string;
   coverAlt: string;
