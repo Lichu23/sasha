@@ -65,6 +65,29 @@ npm run new-shop -- cafe-roma "Café Roma"
 5. Deploy: in Vercel, create a new project from this same repo and set the environment
    variable `SHOP=cafe-roma`. Each shop is its own project, so it gets its own domain.
 
+## Demo videos
+
+**Rule: every demo video is recorded frame by frame at 30 fps.** `scripts/record-demo.mjs` runs the
+store in a headless Chrome on a virtual clock (timers, `requestAnimationFrame`, `Date`, CSS/WAAPI animations
+and smooth scrolls only move when the script advances them) and takes one screenshot per 1/30 s, so every
+frame is different whatever the speed of the machine. A live screen recording only reaches 16–22 real fps,
+so don't use one.
+
+The video shows one phone on a 1920x1080 frame in the shop's colors: the customer's order (home, menu,
+take away, cart, simulated Mercado Pago, confirmation), then a slide to the same order in `/admin`.
+
+```bash
+node scripts/select-shop.mjs                    # with SHOP=<slug> in the environment
+SHOP=cafe-roma npm run dev -- -p 3100           # keep it running in another terminal
+NOTES="Para mamá 💝" npm run record-demo -- demo/cafe-roma-app.mp4
+```
+
+It writes `demo/cafe-roma-app.mp4` and `demo/cafe-roma-app-email.mp4` (same frames, smaller), about 3 minutes
+of rendering for a 90 s video. `TEST=1` renders only the home and the take-away notice (30 s). `NOTES` is the
+order comment: make it match what gets ordered. Needs Chrome (`CHROME=<path>` if it isn't in the default
+Windows location). In Git Bash, prefix the command with `MSYS_NO_PATHCONV=1` so `/admin` isn't turned into
+a Windows path. Don't change `FPS` unless asked.
+
 ## Send one link
 
 Every shop has a pitch page at `/demo` (e.g. [delfis-pasteleria.vercel.app/demo](https://delfis-pasteleria.vercel.app/demo)):
