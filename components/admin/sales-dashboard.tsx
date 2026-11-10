@@ -94,7 +94,7 @@ export function SalesDashboard() {
 
       {/* Today: independent of the period filter below. */}
       <section aria-label="Hoy" className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-3xl bg-ink p-5 text-cream">
+        <div className="min-w-0 rounded-3xl bg-ink p-5 text-cream">
           <p className="text-sm text-cream/70">Retiros de hoy</p>
           <p className="mt-1 text-4xl font-semibold">{data ? data.todayPickups.length : "–"}</p>
           <p className="mt-1 truncate text-sm text-cream/70">
@@ -103,7 +103,7 @@ export function SalesDashboard() {
               : "Sin retiros pendientes para hoy"}
           </p>
         </div>
-        <div className="rounded-3xl bg-paper p-5 ring-1 ring-line">
+        <div className="min-w-0 rounded-3xl bg-paper p-5 ring-1 ring-line">
           <p className="text-sm text-muted">Próximo retiro</p>
           {data?.next ? (
             <>
