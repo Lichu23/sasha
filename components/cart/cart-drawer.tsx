@@ -18,7 +18,7 @@ import { saveLastOrder } from "@/lib/last-order";
 import { formatPrice } from "@/lib/menu";
 import { pickupDays } from "@/lib/pickup";
 import { useNow } from "@/lib/use-now";
-import { closedLabel, hasBranches, leadTimeLabel, lineLabel, locations, noun, paysOnline, shop } from "@/lib/shop";
+import { closedLabel, hasBranches, leadTimeLabel, lineLabel, locations, needsApproval, noun, paysOnline, shop } from "@/lib/shop";
 
 const one = noun.g("una", "uno");
 
@@ -175,6 +175,19 @@ function CartContents() {
             </button>
             <p className="mt-2 text-center text-xs text-muted">
               Pago seguro en Mercado Pago. Tu pedido se confirma al acreditarse el pago.
+            </p>
+          </>
+        ) : needsApproval ? (
+          <>
+            <button
+              type="submit"
+              disabled={pending}
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-3.5 font-semibold text-white transition-[background-color,transform] hover:bg-brand-ink active:scale-[0.98] disabled:opacity-70"
+            >
+              {pending ? "Enviando tu pedido…" : "Enviar pedido"}
+            </button>
+            <p className="mt-2 text-center text-xs text-muted">
+              No se cobra nada ahora. {shop.shortName} revisa tu pedido y te confirma por WhatsApp. Pagás al retirar.
             </p>
           </>
         ) : (

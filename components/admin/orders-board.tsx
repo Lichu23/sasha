@@ -11,14 +11,29 @@ import { capitalize, dayLabel, formatTime, startOfArDay } from "@/lib/admin-date
 import { formatPrice } from "@/lib/menu";
 import { orderActions, useOrders, type Order } from "@/lib/orders";
 import { useNow } from "@/lib/use-now";
-import { REFERENCE, noun, paysOnline, shop } from "@/lib/shop";
+import { formatPickup, slotsAfter } from "@/lib/pickup";
+import { REFERENCE, needsApproval, noun, paysOnline, shop } from "@/lib/shop";
 
-const FILTERS = [
-  { value: "pendiente", label: "Por entregar" },
-  { value: "completado", label: "Entregados" },
-  { value: "todos", label: "Todos" },
-] as const;
-type Filter = (typeof FILTERS)[number]["value"];
+type Filter = "pendiente" | "por-confirmar" | "confirmado" | "completado" | "todos";
+
+// Shops that confirm orders start with the ones waiting for an answer.
+const FILTERS: readonly { value: Filter; label: string }[] = needsApproval
+  ? [
+      { value: "por-confirmar", label: "Por confirmar" },
+      { value: "confirmado", label: "Por entregar" },
+      { value: "completado", label: "Entregados" },
+      { value: "todos", label: "Todos" },
+    ]
+  : [
+      { value: "pendiente", label: "Por entregar" },
+      { value: "completado", label: "Entregados" },
+      { value: "todos", label: "Todos" },
+    ];
+
+// An order the shop proposed another time for is still waiting for an answer, from the customer.
+const inFilter = (o: Order, filter: Filter) =>
+  filter === "todos" || (filter === "por-confirmar" ? o.status === "por-confirmar" || o.status === "reprogramado" : o.status === filter);
+const isUpcoming = (filter: Filter) => filter === "pendiente" || filter === "por-confirmar" || filter === "confirmado";
 
 const MAX_DELIVERED = 40;
 
@@ -31,7 +46,7 @@ export function OrdersBoardFromUrl() {
 export function OrdersBoard({ highlight }: { highlight: string | null }) {
   const orders = useOrders();
   const now = useNow();
-  const [filter, setFilter] = useState<Filter>("pendiente");
+  const [filter, setFilter] = useState<Filter>(FILTERS[0].value);
   const [query, setQuery] = useState("");
   const search = useDeferredValue(query.trim().toLowerCase());
 
@@ -48,9 +63,9 @@ export function OrdersBoard({ highlight }: { highlight: string | null }) {
       o.items.some((i) => i.label.toLowerCase().includes(search));
 
     const list = orders
-      .filter((o) => o !== fresh && (filter === "todos" || o.status === filter) && matches(o))
-      .sort((a, b) => (filter === "pendiente" ? a.pickup - b.pickup : b.pickup - a.pickup))
-      .slice(0, filter === "pendiente" ? undefined : MAX_DELIVERED);
+      .filter((o) => o !== fresh && inFilter(o, filter) && matches(o))
+      .sort((a, b) => (isUpcoming(filter) ? a.pickup - b.pickup : b.pickup - a.pickup))
+      .slice(0, isUpcoming(filter) ? undefined : MAX_DELIVERED);
 
     const groups = new Map<number, Order[]>();
     for (const o of list) {
@@ -58,7 +73,7 @@ export function OrdersBoard({ highlight }: { highlight: string | null }) {
       groups.set(day, [...(groups.get(day) ?? []), o]);
     }
 
-    const pending = orders.filter((o) => o.status === "pendiente");
+    const pending = orders.filter((o) => o.status === (needsApproval ? "confirmado" : "pendiente"));
     return {
       fresh,
       groups: [...groups.entries()],
@@ -66,6 +81,7 @@ export function OrdersBoard({ highlight }: { highlight: string | null }) {
         today: pending.filter((o) => startOfArDay(o.pickup) === today).length,
         pending: pending.length,
         unpaid: pending.filter((o) => o.payment === "pendiente").length,
+        toConfirm: orders.filter((o) => o.status === "por-confirmar").length,
       },
     };
   }, [orders, now, filter, search, highlight]);
@@ -78,10 +94,11 @@ export function OrdersBoard({ highlight }: { highlight: string | null }) {
           <p className="text-sm text-muted">{shop.orders.title} para retirar en el local.</p>
         </div>
         <dl className="flex gap-2 text-sm">
+          {needsApproval ? <Stat label="Por confirmar" value={view?.stats.toConfirm} warn /> : null}
           <Stat label="Para hoy" value={view?.stats.today} />
           <Stat label="Por entregar" value={view?.stats.pending} />
           {/* Online payments that haven't cleared need attention; paying on pickup is the norm. */}
-          <Stat label={paysOnline ? "Pago pendiente" : "A cobrar"} value={view?.stats.unpaid} warn={paysOnline} />
+          {needsApproval ? null : <Stat label={paysOnline ? "Pago pendiente" : "A cobrar"} value={view?.stats.unpaid} warn={paysOnline} />}
         </dl>
       </div>
 
@@ -163,17 +180,82 @@ function Stat({ label, value, warn }: { label: string; value?: number; warn?: bo
   );
 }
 
+// What the shop says to the customer about their order (opens WhatsApp with the text ready).
+function whatsappText(order: Order, firstName: string) {
+  if (needsApproval) {
+    switch (order.status) {
+      case "confirmado":
+        return `¡Hola ${firstName}! Confirmamos tu pedido ${order.ref} para retirar el ${formatPickup(order.pickup)}. Pagás al retirar. ¡Gracias!`;
+      case "rechazado":
+        return `¡Hola ${firstName}! No pudimos tomar tu pedido ${order.ref}${order.reason ? `: ${order.reason.toLowerCase()}` : ""}. ¡Perdón y gracias por escribirnos!`;
+      case "reprogramado":
+        return `¡Hola ${firstName}! No llegamos al horario de tu pedido ${order.ref}. ¿Te sirve retirarlo el ${formatPickup(order.proposedPickup ?? order.pickup)}?`;
+    }
+  }
+  return `¡Hola ${firstName}! Te escribimos de ${shop.name} por tu pedido ${order.ref}.`;
+}
+
+const STATUS_CHIP: Partial<Record<Order["status"], { label: string; tone: string }>> = {
+  "por-confirmar": { label: "Por confirmar", tone: "bg-warn-bg text-warn-ink" },
+  confirmado: { label: "Confirmado", tone: "bg-emerald-100 text-emerald-700" },
+  reprogramado: { label: "Esperando al cliente", tone: "bg-blush text-brand-ink" },
+  rechazado: { label: "Rechazado", tone: "bg-line text-muted" },
+};
+
+const REJECT_REASONS = ["Sin stock", "No llegamos a ese horario", "Cerrado ese día"];
+
+/** Confirm, reject (with a reason) or propose another pickup time. The customer sees the answer on their order page. */
+function Decision({ order, now }: { order: Order; now: number }) {
+  const [mode, setMode] = useState<"reject" | "propose" | null>(null);
+  const choice =
+    "min-h-11 rounded-full px-4 text-sm font-semibold ring-1 ring-line transition-[background-color,transform] [touch-action:manipulation] active:scale-[0.97] motion-reduce:active:scale-100";
+  return (
+    <div className="mt-3 border-t border-line pt-3">
+      <div className="flex flex-wrap gap-2">
+        <button type="button" onClick={() => orderActions.confirm(order.ref)} className={`${choice} bg-emerald-600 text-white ring-emerald-600 hover:bg-emerald-700`}>
+          Confirmar
+        </button>
+        <button type="button" aria-expanded={mode === "propose"} onClick={() => setMode(mode === "propose" ? null : "propose")} className={`${choice} bg-paper hover:bg-cream aria-expanded:bg-blush`}>
+          Otro horario
+        </button>
+        <button type="button" aria-expanded={mode === "reject"} onClick={() => setMode(mode === "reject" ? null : "reject")} className={`${choice} bg-paper hover:bg-cream aria-expanded:bg-blush`}>
+          Rechazar
+        </button>
+      </div>
+      {mode === "reject" ? (
+        <div role="group" aria-label="Motivo del rechazo" className="mt-2 flex flex-wrap gap-2">
+          {REJECT_REASONS.map((reason) => (
+            <button key={reason} type="button" onClick={() => orderActions.reject(order.ref, reason)} className={`${choice} bg-paper text-warn-ink hover:bg-warn-bg`}>
+              {reason}
+            </button>
+          ))}
+        </div>
+      ) : null}
+      {mode === "propose" ? (
+        <div role="group" aria-label="Proponer otro horario" className="mt-2 flex flex-wrap gap-2">
+          {slotsAfter(order.pickup, 3).map((time) => (
+            <button key={time} type="button" onClick={() => orderActions.propose(order.ref, time)} className={`${choice} bg-paper hover:bg-blush`}>
+              {capitalize(dayLabel(startOfArDay(time), now))} {formatTime(time)} hs
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function OrderCard({ order, now }: { order: Order; now: number }) {
   const done = order.status === "completado";
   const isNew = !order.sample || now - order.createdAt < 24 * 60 * 60 * 1000;
   const firstName = order.name.split(" ")[0];
-  const whatsapp = `https://wa.me/549${order.phone.replace(/\D/g, "").replace(/^0/, "")}?text=${encodeURIComponent(
-    `¡Hola ${firstName}! Te escribimos de ${shop.name} por tu pedido ${order.ref}.`,
-  )}`;
+  const chip = needsApproval ? STATUS_CHIP[order.status] : undefined;
+  // Answered orders: the shop tells the customer, in one tap.
+  const answered = needsApproval && (order.status === "confirmado" || order.status === "rechazado" || order.status === "reprogramado");
+  const whatsapp = `https://wa.me/549${order.phone.replace(/\D/g, "").replace(/^0/, "")}?text=${encodeURIComponent(whatsappText(order, firstName))}`;
 
   return (
     <article
-      className={`rounded-3xl bg-paper p-4 ring-1 ring-line transition-opacity sm:p-5 ${done ? "opacity-60" : ""}`}
+      className={`rounded-3xl bg-paper p-4 ring-1 ring-line transition-opacity sm:p-5 ${done || order.status === "rechazado" ? "opacity-60" : ""}`}
       aria-label={`Pedido de ${order.name}, retiro ${formatTime(order.pickup)} hs`}
     >
       <div className="flex items-start gap-4">
@@ -185,7 +267,8 @@ function OrderCard({ order, now }: { order: Order; now: number }) {
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <h3 className="font-semibold">{order.name}</h3>
-            {isNew && !done ? (
+            {chip ? <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${chip.tone}`}>{chip.label}</span> : null}
+            {isNew && !done && !chip ? (
               <span className="rounded-full bg-blush px-2 py-0.5 text-[11px] font-semibold text-brand-ink">Nuevo</span>
             ) : null}
           </div>
@@ -203,6 +286,8 @@ function OrderCard({ order, now }: { order: Order; now: number }) {
             </p>
           ) : null}
           {order.notes ? <p className="mt-1 text-sm text-muted italic">“{order.notes}”</p> : null}
+          {order.status === "rechazado" && order.reason ? <p className="mt-1 text-sm text-muted">Motivo: {order.reason}</p> : null}
+          {order.status === "reprogramado" && order.proposedPickup ? <p className="mt-1 text-sm text-muted">Propusiste: {formatPickup(order.proposedPickup)}</p> : null}
         </div>
 
         <div className="shrink-0 text-right">
@@ -221,6 +306,8 @@ function OrderCard({ order, now }: { order: Order; now: number }) {
         </div>
       </div>
 
+      {needsApproval && order.status === "por-confirmar" ? <Decision order={order} now={now} /> : null}
+
       <div className="mt-3 flex items-center justify-between gap-3 border-t border-line pt-3">
         {order.phone ? (
           <a
@@ -229,16 +316,17 @@ function OrderCard({ order, now }: { order: Order; now: number }) {
             rel="noreferrer"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-muted hover:text-ink"
           >
-            <WhatsappIcon width={18} height={18} /> {order.phone}
+            <WhatsappIcon width={18} height={18} /> {answered ? `Avisar a ${firstName} por WhatsApp` : order.phone}
           </a>
         ) : (
           <span />
         )}
+        {needsApproval && order.status !== "confirmado" && !done ? null : (
         <label className="inline-flex cursor-pointer items-center gap-2 rounded-full py-1 pr-1 pl-3 text-sm font-semibold select-none">
           {done ? "Entregado" : "Marcar entregado"}
           <Checkbox.Root
             checked={done}
-            onCheckedChange={(checked) => orderActions.setStatus(order.ref, checked ? "completado" : "pendiente")}
+            onCheckedChange={(checked) => orderActions.setStatus(order.ref, checked ? "completado" : needsApproval ? "confirmado" : "pendiente")}
             className="grid size-7 place-items-center rounded-full bg-paper ring-2 ring-line transition-colors outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand data-checked:bg-emerald-600 data-checked:text-white data-checked:ring-emerald-600"
           >
             <Checkbox.Indicator>
@@ -246,6 +334,7 @@ function OrderCard({ order, now }: { order: Order; now: number }) {
             </Checkbox.Indicator>
           </Checkbox.Root>
         </label>
+        )}
       </div>
       <p className="sr-only">{capitalize(dayLabel(order.pickup, now))}</p>
     </article>

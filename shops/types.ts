@@ -112,8 +112,10 @@ export type ShopConfig = {
     /**
      * "whatsapp": the order arrives in the shop's WhatsApp, paid on pickup.
      * "mercadopago": paid online before pickup (simulated while MP_ACCESS_TOKEN is empty).
+     * "confirmacion": no payment online. The order is sent to the shop, which confirms it, rejects it or proposes
+     * another pickup time in /admin before anything is agreed; paid at pickup. See README, "Confirmation mode".
      */
-    payment: "whatsapp" | "mercadopago";
+    payment: "whatsapp" | "mercadopago" | "confirmacion";
     /** Prefix for order numbers, 2 to 10 capital letters: SASHA-1A2B3C4D. */
     referencePrefix: string;
     /** Home button, e.g. "Hacer un pedido". Defaults to "Encargar una torta" from `item`. */

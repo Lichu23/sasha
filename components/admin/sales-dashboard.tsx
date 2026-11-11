@@ -8,7 +8,7 @@ import { formatPrice } from "@/lib/menu";
 import { useOrders } from "@/lib/orders";
 import { toAr } from "@/lib/pickup";
 import { useNow } from "@/lib/use-now";
-import { closedLabel, noun, paysOnline, shortName, weekSchedule } from "@/lib/shop";
+import { closedLabel, needsApproval, noun, paysOnline, shortName, weekSchedule } from "@/lib/shop";
 
 const PERIODS = [
   { value: 7, label: "Últimos 7 días" },
@@ -34,7 +34,12 @@ export function SalesDashboard() {
 
     // Sales are counted on the day the order was placed. Online payments only count once paid;
     // shops paid on pickup count every order, or the last days (not picked up yet) would look empty.
-    const paid = paysOnline ? orders.filter((o) => o.payment === "pagado") : orders;
+    // Shops that confirm orders only count the ones they accepted (not the waiting, rejected or rescheduled).
+    const paid = paysOnline
+      ? orders.filter((o) => o.payment === "pagado")
+      : needsApproval
+        ? orders.filter((o) => o.status === "confirmado" || o.status === "completado")
+        : orders;
     const inPeriod = paid.filter((o) => o.createdAt >= from);
     const inPrev = paid.filter((o) => o.createdAt >= prevFrom && o.createdAt < from);
     const revenue = inPeriod.reduce((s, o) => s + o.total, 0);

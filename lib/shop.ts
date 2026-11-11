@@ -109,6 +109,9 @@ export const leadTimeLabel =
 
 export const paysOnline = shop.orders.payment === "mercadopago";
 
+/** The shop checks every order before agreeing to it (payment "confirmacion"): no payment online, paid at pickup. */
+export const needsApproval = shop.orders.payment === "confirmacion";
+
 /** Order numbers: PREFIX-1A2B3C4D. */
 export const REFERENCE = new RegExp(`^${shop.orders.referencePrefix}-[0-9A-F]{8}$`);
 

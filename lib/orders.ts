@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { takeawayMenu } from "@/lib/menu";
 import { fromAr, pickupHours, toAr } from "@/lib/pickup";
-import { hasBranches, lineLabel, locations, shop } from "@/lib/shop";
+import { hasBranches, lineLabel, locations, needsApproval, shop } from "@/lib/shop";
 import { slug } from "@/shops/current";
 
 export type OrderItem = { productId: number; sizeId: string; label: string; quantity: number; unitPrice: number };
@@ -19,15 +19,24 @@ export type Order = {
   location?: string;
   items: OrderItem[];
   total: number;
+  /** "pendiente": still to be paid (online or at pickup). */
   payment: "pagado" | "pendiente";
-  status: "pendiente" | "completado";
+  /**
+   * Shops that confirm orders (needsApproval): por-confirmar → confirmado | rechazado | reprogramado (the shop
+   * proposed another time, waiting for the customer) → completado. The others: pendiente → completado.
+   */
+  status: "pendiente" | "completado" | "por-confirmar" | "confirmado" | "reprogramado" | "rechazado";
+  /** Why the shop rejected the order. */
+  reason?: string;
+  /** The pickup time the shop proposed instead (status reprogramado). */
+  proposedPickup?: number;
   /** Sample data generated for the demo, as opposed to an order placed in the store. */
   sample: boolean;
 };
 
 // Demo only: orders live in this browser's localStorage. A real deployment would
 // keep them in a database behind an authenticated admin.
-const KEY = `${slug}-orders:v2`;
+const KEY = `${slug}-orders:v3`;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 let cached: Order[] | null = null;
@@ -86,6 +95,22 @@ export const orderActions = {
   },
   setStatus(ref: string, status: Order["status"]) {
     store.update((orders) => orders.map((o) => (o.ref === ref ? { ...o, status } : o)));
+  },
+  // The shop's answer to an order it has to confirm (needsApproval).
+  confirm(ref: string) {
+    store.update((orders) => orders.map((o) => (o.ref === ref ? { ...o, status: "confirmado", reason: undefined, proposedPickup: undefined } : o)));
+  },
+  reject(ref: string, reason: string) {
+    store.update((orders) => orders.map((o) => (o.ref === ref ? { ...o, status: "rechazado", reason } : o)));
+  },
+  propose(ref: string, proposedPickup: number) {
+    store.update((orders) => orders.map((o) => (o.ref === ref ? { ...o, status: "reprogramado", proposedPickup } : o)));
+  },
+  /** The customer accepts the time the shop proposed. */
+  acceptProposal(ref: string) {
+    store.update((orders) =>
+      orders.map((o) => (o.ref === ref && o.proposedPickup ? { ...o, status: "confirmado", pickup: o.proposedPickup, proposedPickup: undefined } : o)),
+    );
   },
 };
 
@@ -164,9 +189,9 @@ function sampleOrders(now: number): Order[] {
         location: hasBranches ? pick(locations).name : undefined,
         items,
         total: items.reduce((sum, it) => sum + it.unitPrice * it.quantity, 0),
-        // WhatsApp orders are paid on pickup, so only past ones count as paid.
-        payment: shop.orders.payment === "whatsapp" ? (isPast ? "pagado" : "pendiente") : !isPast && rand() < 0.12 ? "pendiente" : "pagado",
-        status: isPast ? "completado" : "pendiente",
+        // WhatsApp orders and orders the shop confirms are paid on pickup, so only past ones count as paid.
+        payment: shop.orders.payment !== "mercadopago" ? (isPast ? "pagado" : "pendiente") : !isPast && rand() < 0.12 ? "pendiente" : "pagado",
+        status: isPast ? "completado" : needsApproval ? (rand() < 0.3 ? "por-confirmar" : "confirmado") : "pendiente",
         sample: true,
       });
     }

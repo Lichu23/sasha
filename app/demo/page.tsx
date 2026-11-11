@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ShopBrand } from "@/components/shop-logo";
 import { ArrowIcon } from "@/components/icons";
-import { paysOnline, shop } from "@/lib/shop";
+import { needsApproval, paysOnline, shop } from "@/lib/shop";
 
 // The one link sent to a shop in a pitch: the video, the storefront and the panel together,
 // instead of three separate links. Not linked from the site itself.
@@ -15,14 +15,16 @@ export const metadata: Metadata = {
 const youtubeId = shop.demo?.youtubeId;
 
 // A test order only makes sense with simulated payment: a WhatsApp order would message the shop's real number.
-const guided = paysOnline && shop.admin;
+const guided = (paysOnline || needsApproval) && shop.admin;
 
 const steps = [
   {
     href: "/",
     title: "Probar la tienda",
     text: guided
-      ? "Hagan un pedido de prueba, como si fueran un cliente."
+      ? needsApproval
+        ? "Hagan un pedido de prueba: no se cobra nada y ustedes lo confirman."
+        : "Hagan un pedido de prueba, como si fueran un cliente."
       : "Recorran el menú como si fueran un cliente.",
     action: "Probar",
   },
@@ -30,8 +32,10 @@ const steps = [
     ? [
         {
           href: "/admin",
-          title: guided ? "Ver el pedido en el panel" : "Ver el panel",
-          text: guided
+          title: needsApproval ? "Confirmar el pedido en el panel" : guided ? "Ver el pedido en el panel" : "Ver el panel",
+          text: needsApproval
+            ? "Ábranlo en el mismo celular o computadora: ahí les llega el pedido para confirmarlo, rechazarlo o proponer otro horario."
+            : guided
             ? "Ábranlo en el mismo celular o computadora: ahí aparecen su pedido y las ventas."
             : "Lo que ven ustedes: los pedidos por día y las ventas.",
           action: "Abrir",
@@ -76,7 +80,7 @@ export default function DemoPage() {
           Pruébenla ustedes
         </h2>
         <p className="mt-1 text-center text-muted text-pretty">
-          {paysOnline ? "Es una demo: pueden tocar todo, el pago está simulado y no se cobra nada." : "Es una demo: pueden tocar todo."}
+          {paysOnline ? "Es una demo: pueden tocar todo, el pago está simulado y no se cobra nada." : needsApproval ? "Es una demo: pueden tocar todo, y no se cobra nada." : "Es una demo: pueden tocar todo."}
         </p>
         <ol className="mt-5 grid gap-3">
           {steps.map(({ href, title, text, action }, i) => (

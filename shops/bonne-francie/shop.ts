@@ -60,7 +60,8 @@ export default defineShop({
     title: "Boulangerie para llevar",
     cta: "Hacer un pedido",
     leadTimeHours: 24,
-    payment: "mercadopago",
+    // They want to check every order before agreeing to it (no online payment): see README, "Confirmation mode".
+    payment: "confirmacion",
     referencePrefix: "BONNE",
     sizeLegend: "Cantidad",
     notesPlaceholder: "Ej: croissants sin semillas, o los gustos de las cookies…",

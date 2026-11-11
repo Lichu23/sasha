@@ -22,13 +22,13 @@ export function Segmented<T extends string | number>({
       aria-label={label}
       value={value}
       onValueChange={(next: T) => onChange(next)}
-      className={`flex w-fit gap-1 rounded-full bg-paper p-1 ring-1 ring-line ${className}`}
+      className={`flex w-fit max-w-full gap-1 overflow-x-auto rounded-full bg-paper p-1 ring-1 ring-line [scrollbar-width:none] ${className}`}
     >
       {options.map((option) => (
         <Radio.Root
           key={option.value}
           value={option.value}
-          className="cursor-pointer rounded-full px-3.5 py-1.5 text-sm font-medium text-muted transition-colors outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-brand data-checked:bg-ink data-checked:text-cream"
+          className="shrink-0 cursor-pointer rounded-full px-3.5 py-1.5 whitespace-nowrap text-sm font-medium text-muted transition-colors outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-brand data-checked:bg-ink data-checked:text-cream"
         >
           {option.label}
         </Radio.Root>

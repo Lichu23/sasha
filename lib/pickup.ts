@@ -107,6 +107,20 @@ export function pickupDays(now: number): PickupDay[] {
   return days;
 }
 
+/** The next `count` open pickup slots after a given time (to propose another time for an order). */
+export function slotsAfter(time: number, count: number): number[] {
+  const slots: number[] = [];
+  const start = toAr(time);
+  for (let offset = 0; offset < BOOKING_WINDOW_DAYS && slots.length < count; offset++) {
+    const p = toAr(fromAr(start.year, start.month, start.date + offset, 12));
+    for (const hour of pickupHours(p.weekday)) {
+      const t = fromAr(p.year, p.month, p.date, hour);
+      if (t > time && slots.length < count) slots.push(t);
+    }
+  }
+  return slots;
+}
+
 /** Server-side check: is this ISO string one of the slots we would offer right now? */
 export function isValidPickup(iso: string, now: number): boolean {
   const t = Date.parse(iso);

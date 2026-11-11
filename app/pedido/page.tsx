@@ -8,6 +8,7 @@ export const metadata: Metadata = { title: "Tu pedido" };
 const STATUS: Record<string, OrderStatus> = {
   aprobado: "approved",
   demo: "demo",
+  enviado: "sent",
   pendiente: "pending",
   rechazado: "rejected",
   whatsapp: "whatsapp",
