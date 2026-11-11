@@ -47,3 +47,6 @@ next-env.d.ts
 
 # demo videos (kept locally, too large for the repo)
 /demo/
+
+# private plans and notes (only README.md is published)
+/plans/
