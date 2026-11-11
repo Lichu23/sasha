@@ -1,0 +1,8 @@
+seccion,categoria,producto,descripcion,tamaño,precio,foto
+salon,Café,Café con leche,Con medialuna de manteca.,,4500,
+salon,Café,Chocolate caliente,Con crema batida.,,5200,/menu-stock/chocolate-caliente-grande.jpg
+salon,Desayunos,Tostado de jamón y queso,"En pan de campo, con jugo exprimido.",,9800,
+encargo,Tortas,Torta de chocolate,"Bizcochuelo de chocolate, ganache y salsa de chocolate.",18 cm,28000,/menu-stock/porcion-torta.jpg
+encargo,Tortas,Torta de chocolate,,24 cm,39000,
+encargo,Tortas,Lemon pie,Masa sablée y merengue italiano.,18 cm,26000,
+encargo,Tortas,Lemon pie,,24 cm,36000,

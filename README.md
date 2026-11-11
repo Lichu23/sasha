@@ -110,6 +110,19 @@ only the chat up to the reminder, without titles (about 1 minute). The recorders
 `scripts/lib/virtual-clock.mjs`, and the two with titles (this one and the one below) the frame pump and the
 assembly in `scripts/lib/phone-demo.mjs`.
 
+### Order demo with titled steps (shops that charge with Mercado Pago)
+
+For shops with `orders.payment: "mercadopago"` and `admin: true`. Same style as the other titled demos (title beside the phone,
+list of steps on the right, intro and closing cards): the customer picks products from the take-away menu, completes the order,
+pays with the simulated Mercado Pago and sees the confirmation; then the panel shows the order, the shop marks it delivered and
+looks at the sales. The steps are the `STEPS` list at the top of `scripts/record-order-demo.mjs`. `NOTES` is the order comment:
+make it match what gets ordered. `TEST=1` records only the customer part, without titles.
+
+```bash
+SHOP=santa-marta npm run dev -- -p 3100      # in another terminal
+NOTES="Las empanadas bien calentitas, gracias 🙏" MSYS_NO_PATHCONV=1 npm run record-order-demo -- demo/santa-marta-pedidos.mp4
+```
+
 ### WhatsApp consulta demo (shops that agree every order on WhatsApp)
 
 For shops with `orders.payment: "whatsapp"`, `orders.simulatedWhatsapp: true` and `admin: true` (see "WhatsApp
