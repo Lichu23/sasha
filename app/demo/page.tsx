@@ -2,14 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ShopBrand } from "@/components/shop-logo";
 import { ArrowIcon } from "@/components/icons";
-import { isConsulta, paysOnline, reservations, shop } from "@/lib/shop";
+import { isConsulta, management, paysOnline, reservations, shop } from "@/lib/shop";
 
 // The one link sent to a shop in a pitch: the video, the storefront and the panel together,
 // instead of three separate links. Not linked from the site itself.
 
 export const metadata: Metadata = {
   title: "Demo",
-  description: `Una demo de página web para ${shop.name}: la tienda, el panel de pedidos y un video de cómo funciona.`,
+  description: management
+    ? `Una demo de la herramienta de gestión para ${shop.name}: la caja, las ventas del día y el resumen, y un video de cómo funciona.`
+    : `Una demo de página web para ${shop.name}: la tienda, el panel de pedidos y un video de cómo funciona.`,
 };
 
 const youtubeId = shop.demo?.youtubeId;
@@ -18,7 +20,14 @@ const youtubeId = shop.demo?.youtubeId;
 // a consulta, nothing is sent: WhatsApp opens with the message but the visitor doesn't have to send it).
 const guided = shop.admin;
 
-const steps = [
+// A shop in management mode has no store: the demo is the staff's tool.
+const managementSteps = [
+  { href: "/admin/caja", title: "Probar la caja", text: "Sumen lo que pide un cliente: el total se suma solo. Cobren y queda registrada la venta.", action: "Probar" },
+  { href: "/admin/dia", title: "Ver las ventas del día", text: "Lo vendido, cómo se pagó, cada venta y el cierre de caja. Con calendario para ver otros días.", action: "Abrir" },
+  { href: "/admin/ventas", title: "Ver el resumen", text: "Las ventas por día, lo más vendido y las horas con más movimiento.", action: "Abrir" },
+];
+
+const steps = management ? managementSteps : [
   {
     href: "/",
     title: "Probar la tienda",
@@ -65,7 +74,7 @@ export default function DemoPage() {
           <ShopBrand size={56} name={<span>{shop.name}</span>} />
         </div>
         <h1 className="mt-6 font-display text-3xl leading-tight font-semibold tracking-tight text-balance sm:text-4xl">
-          Así podría ser la página de {shop.shortName}
+          {management ? `Así podría ser la gestión de ${shop.shortName}` : `Así podría ser la página de ${shop.shortName}`}
         </h1>
       </header>
 

@@ -3,14 +3,20 @@
 import Link from "next/link";
 import { m } from "motion/react";
 import { ShopBrand } from "@/components/shop-logo";
-import { reservations, shop } from "@/lib/shop";
+import { management, reservations, shop } from "@/lib/shop";
 import { useTappedNav } from "@/lib/use-tapped-nav";
 
-const tabs = [
-  { href: "/admin", label: "Pedidos" },
-  ...(reservations ? [{ href: "/admin/reservas", label: "Reservas" }] : []),
-  { href: "/admin/ventas", label: "Ventas" },
-];
+const tabs = management
+  ? [
+      { href: "/admin/caja", label: "Caja" },
+      { href: "/admin/dia", label: "Ventas" },
+      { href: "/admin/ventas", label: "Resumen" },
+    ]
+  : [
+      { href: "/admin", label: "Pedidos" },
+      ...(reservations ? [{ href: "/admin/reservas", label: "Reservas" }] : []),
+      { href: "/admin/ventas", label: "Ventas" },
+    ];
 
 export function AdminHeader() {
   const { pathname, tappedHref, onTap } = useTappedNav();
@@ -21,7 +27,7 @@ export function AdminHeader() {
     // Named so it stays fixed while page content slides (see globals.css).
     <header style={{ viewTransitionName: "admin-header" }} className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-5xl items-center gap-1.5 px-3 sm:gap-3 sm:px-6">
-        <Link href="/admin" className="flex items-center gap-2" aria-label={`Panel de ${shop.shortName}, pedidos`}>
+        <Link href={management ? "/admin/caja" : "/admin"} className="flex items-center gap-2" aria-label={`Panel de ${shop.shortName}`}>
           <ShopBrand size={30} name={null} />
           <span className="hidden font-display font-semibold sm:inline">Panel</span>
         </Link>
@@ -48,10 +54,13 @@ export function AdminHeader() {
           })}
         </nav>
 
-        <Link href="/" className="ml-auto flex min-h-11 shrink-0 items-center whitespace-nowrap px-1 text-sm font-semibold text-brand-ink [touch-action:manipulation] active:opacity-70 [@media(hover:hover)]:hover:underline">
-          <span className="sm:hidden">Tienda</span>
-          <span className="hidden sm:inline">Ver tienda</span>
-        </Link>
+        {/* A management shop has no public store to go back to. */}
+        {management ? null : (
+          <Link href="/" className="ml-auto flex min-h-11 shrink-0 items-center whitespace-nowrap px-1 text-sm font-semibold text-brand-ink [touch-action:manipulation] active:opacity-70 [@media(hover:hover)]:hover:underline">
+            <span className="sm:hidden">Tienda</span>
+            <span className="hidden sm:inline">Ver tienda</span>
+          </Link>
+        )}
       </div>
     </header>
   );

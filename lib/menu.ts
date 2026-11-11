@@ -44,6 +44,8 @@ const file = data as MenuFile;
 
 export const salonMenu: Category[] = withStockImages(file.salon);
 export const takeawayMenu: Category[] = withStockImages(file.takeaway);
+/** Everything the shop sells, for the staff's Caja (ids are unique across both menus). */
+export const posMenu: Category[] = [...salonMenu, ...takeawayMenu];
 export const rating: number | null = shop.googleRating ?? file.rating;
 export const reviews: Review[] = file.reviews;
 

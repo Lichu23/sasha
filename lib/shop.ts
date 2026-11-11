@@ -112,6 +112,9 @@ export const paysOnline = shop.orders.payment === "mercadopago";
 /** Orders are consultas agreed on WhatsApp (payment "whatsapp"): the shop edits and confirms them in /admin. */
 export const isConsulta = !paysOnline;
 
+/** Management mode: the staff app (Caja, the day's sales, the summary) instead of a public store. */
+export const management = shop.management ? { paymentMethods: shop.management.paymentMethods } : null;
+
 /** Table reservations: the shop has a salón and set `reservations`. */
 export const reservations = shop.salon && shop.reservations ? { stayMinutes: 90, minNoticeHours: 2, ...shop.reservations } : null;
 

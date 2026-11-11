@@ -1,7 +1,12 @@
+import { redirect } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { management } from "@/lib/shop";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
+  // A shop in management mode has no public store: its URL opens the staff's Caja.
+  if (management) redirect("/admin/caja");
+
   return (
     <>
       <a

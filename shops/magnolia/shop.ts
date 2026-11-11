@@ -66,5 +66,8 @@ export default defineShop({
     salonUpsell: "¿Querés la torta entera?",
   },
 
+  // Quieren la herramienta de gestión, no la tienda online: las chicas cargan las ventas y los pedidos en la caja.
+  management: { paymentMethods: ["Efectivo", "Tarjeta", "Mercado Pago", "Transferencia"] },
+
   admin: true,
 });

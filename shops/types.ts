@@ -103,6 +103,17 @@ export type ShopConfig = {
   };
 
   /**
+   * Management mode: the shop uses the site as its staff app, not as a public store. The staff load every sale on the
+   * "Caja" screen (they tap what the customer asks for and the total adds itself), see the day's sales and close the
+   * cash drawer, and get a summary. The public pages (home, menu, cart) redirect to the Caja. Meant for shops that
+   * don't sell online. See README, "Management mode".
+   */
+  management?: {
+    /** How a sale was paid, in the order they are offered: ["Efectivo", "Tarjeta", "Mercado Pago", "Transferencia"]. */
+    paymentMethods: string[];
+  };
+
+  /**
    * Table reservations (needs `salon`): a "Reservas" page for customers, who pick the day, the time and how many
    * people, and a "Reservas" tab in /admin where the shop confirms, modifies or cancels each one. Like a consulta,
    * a reservation is agreed on WhatsApp (see `orders.simulatedWhatsapp`). Leave out for shops that don't take them.
