@@ -255,8 +255,8 @@ await tap("[role=dialog] button[aria-label^='Sumar']"); await hold(900);
 // 5. Cart: branch, pickup slot and contact details
 await tap(await find("main button", "Ver pedido")); await hold(1500);
 if (BRANCH) { await tap(await find("[role=dialog] [role=radio]", BRANCH)); await hold(800); }
-await find("[role=dialog] [aria-label='Día de retiro'] [role=radio]");
-await tap((await page.$$("[role=dialog] [aria-label='Día de retiro'] [role=radio]"))[1], true); await hold(700);
+await find("[role=dialog] [aria-label='Calendario'] button:not(:disabled)"); await hold(1500); // the day, in the calendar
+await tap((await page.$$("[role=dialog] [aria-label='Calendario'] button:not(:disabled)"))[1]); await hold(900);
 const slots = await page.$$("[role=dialog] [aria-label='Horario de retiro'] [role=radio]");
 const labels = await Promise.all(slots.map((s) => s.evaluate((e) => e.textContent.trim())));
 await tap(slots[labels.indexOf("17:00") >= 0 ? labels.indexOf("17:00") : Math.floor(slots.length / 2)], true); await hold(700);

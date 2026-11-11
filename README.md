@@ -110,20 +110,38 @@ only the chat up to the reminder, without titles (about 1 minute). The recorders
 `scripts/lib/virtual-clock.mjs`, and the two with titles (this one and the one below) the frame pump and the
 assembly in `scripts/lib/phone-demo.mjs`.
 
-### Confirmation demo (shops that approve every order)
+### WhatsApp consulta demo (shops that agree every order on WhatsApp)
 
-For shops that want to check an order before agreeing to it, with `orders.payment: "confirmacion"` (see
-"Confirmation mode"): the customer sends the order without paying, the shop confirms it in `/admin` (or
-proposes another time, or rejects it) and the customer sees the answer. Start the dev server with such a shop
-(`SHOP=bonne-francie npm run dev -- -p 3100`), then:
+For shops with `orders.payment: "whatsapp"`, `orders.simulatedWhatsapp: true` and `admin: true` (see "WhatsApp
+consultas"). The video follows the whole flow on one phone: the customer opens a product in the take-away menu,
+adjusts the amount and adds it; opens the cart, completes it and taps "Consultar" (the simulated WhatsApp opens with
+the order); the order shows up in the panel; the shop adjusts it with the customer in the chat; modifies the order
+and confirms it; taps "Avisar por WhatsApp" (the chat opens with the message for the order's last state) and sends it.
+Start the dev server with such a shop (`SHOP=bonne-francie npm run dev -- -p 3100`), then:
 
 ```bash
-MSYS_NO_PATHCONV=1 npm run record-approval-demo -- demo/bonne-francie-confirmacion.mp4
+MSYS_NO_PATHCONV=1 npm run record-consulta-demo -- demo/bonne-francie-consulta.mp4
 ```
 
 Same rules (frame by frame, 30 fps, one phone on 1920x1080, `-email.mp4` copy), with a title for every step
-(the `STEPS` list at the top of `scripts/record-approval-demo.mjs`), an intro card and a closing card. `NOTES` is the
-order comment; `TEST=1` records only the customer's part (about 1 minute).
+(the `STEPS` list at the top of `scripts/record-consulta-demo.mjs`), an intro card and a closing card. `NOTES` is the
+customer's comment; `TEST=1` records only the customer's part (about 1 minute).
+
+### Table reservations demo
+
+For shops with `reservations`, `orders.simulatedWhatsapp: true` and `admin: true` (see "Table reservations"): the
+customer picks the day, how many people and a time with room, and taps "Reservar" (the simulated WhatsApp opens with
+the request); the reservation shows up in the panel with the seats left that day; the shop adjusts it with the
+customer in the chat, modifies and confirms it, taps "Avisar por WhatsApp" and sends the confirmation.
+
+```bash
+SHOP=bonne-francie npm run dev -- -p 3100                      # in another terminal
+MSYS_NO_PATHCONV=1 npm run record-reservas-demo -- demo/bonne-francie-reservas.mp4
+```
+
+Same rules as the others (frame by frame, 30 fps, one phone on 1920x1080, `-email.mp4` copy, a title per step: the
+`STEPS` list at the top of `scripts/record-reservas-demo.mjs`). `NOTES` is the customer's comment; `TEST=1` records
+only the customer's part (about 40 seconds).
 
 ## Send one link
 
@@ -138,12 +156,13 @@ Two settings in `shop.ts` decide what the shop gets:
 
 | | Basic | Pro |
 |---|---|---|
-| `orders.payment` | `"whatsapp"`: the order arrives in the shop's WhatsApp, paid on pickup | `"mercadopago"`: paid online before pickup |
+| `orders.payment` | `"whatsapp"`: "Consultar": the order opens in the shop's WhatsApp, paid on pickup | `"mercadopago"`: paid online before pickup |
 | `admin` | `false` | `true`: orders panel and sales dashboard at `/admin` |
 
 With `"mercadopago"`, payments are simulated until `MP_ACCESS_TOKEN` is set (see `.env.example`).
 
-`"confirmacion"` is a third mode: see "Confirmation mode" below.
+With `"whatsapp"` and `admin: true` the consulta is also saved in `/admin`, where the shop edits and confirms it: see
+"WhatsApp consultas" below.
 
 Other options: leave out `salon` for shops without tables (the Salón page disappears), and set
 `orders.leadTimeHours` to `0` for same-day orders (the notice disappears).
@@ -151,28 +170,72 @@ Other options: leave out `salon` for shops without tables (the Salón page disap
 Optional links appear only when set; leave them out and nothing shows. `pedidosYa` adds a delivery
 button under "Visitanos" and a footer link; `jobsForm` adds "Trabajá con nosotros" to the footer.
 
-## Confirmation mode
+## WhatsApp consultas
 
-Some shops want to check every order before agreeing to it (stock, capacity, the pickup time) instead of
-taking payment up front. With `orders.payment: "confirmacion"` in `shop.ts`:
+For shops that want to agree every order with the customer on WhatsApp before confirming it (stock, the pickup
+time, changes), instead of taking payment up front. It is `orders.payment: "whatsapp"` in `shop.ts`; shops on
+`"mercadopago"` are unchanged.
 
-- **Customer:** the cart button says "Enviar pedido" and nothing is charged. The order page says "Pedido
-  enviado" and follows the shop's answer: confirmed, rejected (with the reason) or "te proponemos otro
-  horario" (with an "Aceptar el nuevo horario" button). Paid at pickup.
-- **Shop (`/admin`):** the first tab is "Por confirmar", with a counter. Each order has **Confirmar**,
-  **Otro horario** (three next open slots) and **Rechazar** (with a reason). After answering, "Avisar por WhatsApp"
-  opens the chat with the message ready (`wa.me`, nothing is sent automatically). Only confirmed and
-  delivered orders count as sales.
-- **Statuses** (`Order["status"]` in `lib/orders.ts`): `por-confirmar` → `confirmado` | `rechazado` |
-  `reprogramado` (waiting for the customer) → `completado`.
+- **Customer:** the cart button says **Consultar** and nothing is charged. The order is saved and WhatsApp opens by
+  itself with the message ready (items, total, pickup time, name and order number), a moment after "¡Consulta
+  guardada!" (the button is there if it doesn't open). Coming back, the order page follows the shop's answer:
+  confirmed (with the changes the shop made) or cancelled. Paid at pickup.
+- **Simulated WhatsApp (demo):** with `orders.simulatedWhatsapp: true` the consulta opens an in-site chat at
+  `/whatsapp` instead of the real WhatsApp, so a visitor trying the demo sends nothing to the shop's number. The chat
+  is kept with the order (`messages`): the customer sees it right after "Consultar", the shop opens it from
+  `/admin` ("Abrir chat con…"), and the other side answers by itself so the demo keeps moving. Take the flag out, and
+  put the real number in `whatsapp`, when the shop goes live: the consulta then opens `wa.me`.
+- **Shop (`/admin`):** the first tab is **Consultas**, with a counter. Each consulta can be **confirmed as it is**,
+  **modified** (quantities, where 0 removes a product; the pickup time; a note for the customer; the total
+  follows and what the customer asked for is kept) or **cancelled**. "Abrir chat con…" and, after answering,
+  "Avisar por WhatsApp" open the chat with the message for that moment written (the confirmation carries the
+  order's last state); nothing is sent automatically. Only confirmed and delivered orders count as sales. Each order
+  is one card, built for the phone: pickup time and status on top, the name, the products, the total, and full-width
+  buttons.
+- **Statuses** (`Order["status"]` in `lib/orders.ts`): `consulta` → `confirmado` → `completado`, or `cancelado`.
+  `modified`, `requested` and `shopNote` record the edits.
 
 This is the demo version: orders live in the browser's localStorage, so the customer's page and `/admin` only
-see each other in the same browser (the page updates live between tabs). Shops on `"mercadopago"` or
-`"whatsapp"` are unchanged.
+see each other in the same browser (the page updates live between tabs).
+
+## Table reservations
+
+Shops with a `salon` can take table reservations: set `reservations: { seats, maxPartySize }` in `shop.ts` (optional
+`stayMinutes`, default 90, and `minNoticeHours`, default 2). A reservation is agreed on WhatsApp, like a consulta.
+
+- **Customer (`/reservas`):** a "Reservas" link in the header and a "Reservar mesa" button on the home page. They pick
+  the day in a calendar, how many people and a time; times without room for their party are struck through. Name,
+  phone and a comment, then **Reservar**: it is saved and the (simulated) WhatsApp opens with the request ready.
+- **Shop (`/admin/reservas`):** a "Reservas" tab: a day bar (arrows, and a calendar that opens over the page with how
+  many reservations each day has), the busiest moment of the day against the seats, and one card per reservation. A
+  reservation can be **confirmed as it is**, **modified** (the day and time, in the calendar sheet, with the seats
+  left at each time; the party size; a note) or **cancelled**; a confirmed one is marked "Llegó" or "No vino".
+  "Abrir chat con…" and "Avisar por WhatsApp" work as in the consultas.
+- **Capacity:** each reservation holds its seats for `stayMinutes`. A time is offered while the parties that overlap
+  it (everyone who starts within a stay of it, a conservative count) leave room for the new one. It is the same idea as
+  the clinic demo's calendar: the customer's page and the panel read the same reservations.
+- **Statuses** (`Reservation["status"]` in `lib/reservations.ts`): `consulta` → `confirmada` → `asistio` |
+  `noshow`, or `cancelada`.
+
+Demo only: reservations live in the browser's localStorage, like the orders. A real shop also needs a database (with
+the seat check done on the server, so two customers can't take the last table), the panel's login, a reminder to the
+customer the day before to cut no-shows, and the "From demo to real" list below.
+
+### Calendars and the navigation bars
+
+Wherever a date is picked or filtered the template uses one calendar, `components/ui/calendar.tsx` (a month, Monday
+first, in Argentina time; the caller decides which days can't be picked and what each day shows). It is drawn inline on
+the reservation form and in the cart (the pickup day: only days with a pickup time can be picked, the times are below it),
+and in the panel it opens over the page in a bottom sheet (`components/ui/date-sheet.tsx`, built
+on the cart's drawer) instead of inside the card being edited: the orders' pickup date filter, the reservations' day
+bar, and the day and time of an order or a reservation being modified (a native list wouldn't show up in the videos
+either). The navigation bars (`site-header.tsx`, `admin-header.tsx`) have 44 px targets, press feedback, hover only
+where there is a mouse, and show the tapped item as current at once (`lib/use-tapped-nav.ts`) instead of when the next
+page has loaded. The clinic demo still has its own pickers.
 
 ### From demo to real (not built yet)
 
-What a shop that really takes orders this way needs; the demo's screens and statuses stay as they are:
+What a shop that really takes consultas needs; the demo's screens and statuses stay as they are:
 
 1. **A database** (Postgres, e.g. Supabase) for orders instead of localStorage, written by the `startCheckout`
    server action (today it saves nothing: the order page adds it in the browser). Server-side validation of
@@ -180,12 +243,12 @@ What a shop that really takes orders this way needs; the demo's screens and stat
 2. **A login for `/admin`** (staff only), one account per shop.
 3. **A status page** `/pedido/<ref>` that reads the order from the database, so the customer sees the answer
    on any device.
-4. **Alerts for the kitchen:** a sound and a badge in `/admin` for each new order, and a response deadline (the
-   order expires and the customer is told if nobody answers in N minutes).
-5. **Automatic WhatsApp messages** with the Cloud API instead of the `wa.me` buttons: a template to the owner
-   with Confirmar / Rechazar buttons (so they can answer without opening `/admin`), and templates to the customer
-   for confirmed, rejected, new time and ready. Needs Meta business verification, an approved display name and
-   template approval (days to weeks), and per-message costs.
+4. **Alerts for the kitchen:** a sound and a badge in `/admin` for each new consulta. The consulta is saved before
+   WhatsApp opens, so the shop has it even if the customer never presses send: mark those in the list.
+5. **Automatic WhatsApp messages** with the Cloud API, only if a client wants them instead of the `wa.me` buttons
+   (which cost nothing and need no Meta approval): a template to the owner with Confirmar / Modificar buttons, and
+   templates to the customer for confirmed and ready. Needs Meta business verification, an approved display name
+   and template approval (days to weeks), and per-message costs.
 6. **Settings the owner edits:** lead time (today `orders.leadTimeHours` in `shop.ts`), pause orders, daily
    capacity.
 7. **Optional payment after confirmation:** a Mercado Pago link sent only once the shop confirms.

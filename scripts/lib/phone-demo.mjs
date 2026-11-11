@@ -66,6 +66,9 @@ export async function createPhoneDemo({ out, steps, introMs = 3200, outroMs = 50
   await cdp.send("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 5 });
   await page.evaluateOnNewDocument(installClock);
   await page.evaluateOnNewDocument(marker);
+  // A WhatsApp consulta opens wa.me by itself: the recording never leaves for WhatsApp, that navigation is cancelled.
+  await cdp.send("Fetch.enable", { patterns: [{ urlPattern: "*://wa.me/*" }, { urlPattern: "*://api.whatsapp.com/*" }, { urlPattern: "*://*.whatsapp.com/*" }] });
+  cdp.on("Fetch.requestPaused", ({ requestId }) => { cdp.send("Fetch.failRequest", { requestId, errorReason: "Aborted" }).catch(() => {}); });
 
   let rec = null;
   const parts = []; // finished part files, in order
@@ -103,7 +106,10 @@ export async function createPhoneDemo({ out, steps, introMs = 3200, outroMs = 50
       try { const ok = await page.evaluate(pred, ...args); if (ok) return ok; } catch {}
       await tick();
     }
-    throw new Error(`timed out waiting at ${page.url()}: ${pred}`);
+    // What the page looked like, to see why it never got there.
+    const shot = join(work, "timeout.png");
+    await page.screenshot({ path: shot }).catch(() => {});
+    throw new Error(`timed out waiting at ${page.url()} (screenshot: ${shot}): ${pred}`);
   }
   /** A visible element matching the selector (and text, if given). */
   async function find(selector, text, maxMs = 20000) {
