@@ -143,6 +143,19 @@ Same rules as the others (frame by frame, 30 fps, one phone on 1920x1080, `-emai
 `STEPS` list at the top of `scripts/record-reservas-demo.mjs`). `NOTES` is the customer's comment; `TEST=1` records
 only the customer's part (about 40 seconds).
 
+### Management demo (shops in management mode)
+
+For shops with `management` and `admin: true` (see "Management mode"): the staff's Caja (tap what the customer asks for,
+the total adds itself, charge), the day's sales with a calendar and the cash closing, and the summary.
+
+```bash
+SHOP=magnolia npm run dev -- -p 3100                      # in another terminal
+MSYS_NO_PATHCONV=1 npm run record-gestion-demo -- demo/magnolia-gestion.mp4
+```
+
+Same rules as the others (frame by frame, 30 fps, one phone on 1920x1080, `-email.mp4` copy, a title per step: the
+`STEPS` list at the top of `scripts/record-gestion-demo.mjs`). `TEST=1` records only the Caja (about 35 seconds).
+
 ## Send one link
 
 Every shop has a pitch page at `/demo` (e.g. [delfis-pasteleria.vercel.app/demo](https://delfis-pasteleria.vercel.app/demo)):
@@ -197,6 +210,32 @@ time, changes), instead of taking payment up front. It is `orders.payment: "what
 
 This is the demo version: orders live in the browser's localStorage, so the customer's page and `/admin` only
 see each other in the same browser (the page updates live between tabs).
+
+## Management mode
+
+For shops that don't sell online and want the site as their staff's tool: set `management: { paymentMethods: [...] }`
+in `shop.ts` (and `admin: true`). The public store disappears (the shop's address, and `/admin`, open the Caja) and
+the panel has three tabs:
+
+- **Caja (`/admin/caja`):** the whole menu (both menus, with photos and prices), by category or searched. Each product
+  has its amount on it: "Agregar" adds the first one, then − and + set the quantity (the order has the same controls),
+  and the bar at the bottom always shows the total. "Ver pedido" opens
+  the order: amounts, mostrador / mesa / para llevar, the table or a name, how the customer pays, and **Cobrar**, which
+  records the sale (the ticket number counts up).
+- **Ventas (`/admin/dia`):** one day (arrows, or the calendar sheet with what was sold each day): the total, the
+  tickets, the average, money by payment method, the best sellers and every ticket, each of which can be annulled (and
+  restored). The **cash closing** compares the cash that should be in the drawer with what was counted ("sobran" /
+  "faltan") and closes the day.
+- **Resumen (`/admin/ventas`):** the last 7 or 30 days against the ones before: sales per day, best sellers, how
+  they pay and the hours with more sales.
+
+Magnolia uses it (`shops/magnolia/shop.ts`). Demo only: the sales (`lib/sales.ts`) live in the browser's localStorage,
+seeded with 60 days of believable sales from the real menu and prices. This tool is the daily record of the money, so a
+real version needs more than the storefront demos did: **a database** (so every phone and tablet of the shop sees the
+same sales), **a login with roles** (staff load sales, only the owner annuls, closes or sees the summary), an **editor
+for products and prices** (today the menu comes from `menu.json`), and, if their Wi-Fi drops, loading sales offline
+and syncing later. Possible next steps: open tables (a bill that grows through the meal), stock, expenses, printed
+tickets, and several shifts or locations.
 
 ## Table reservations
 

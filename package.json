@@ -17,7 +17,8 @@
     "record-demo": "node scripts/record-demo.mjs",
     "record-whatsapp-demo": "node scripts/record-whatsapp-demo.mjs",
     "record-consulta-demo": "node scripts/record-consulta-demo.mjs",
-    "record-reservas-demo": "node scripts/record-reservas-demo.mjs"
+    "record-reservas-demo": "node scripts/record-reservas-demo.mjs",
+    "record-gestion-demo": "node scripts/record-gestion-demo.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
