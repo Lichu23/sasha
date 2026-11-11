@@ -70,4 +70,5 @@ export default defineShop({
   management: { paymentMethods: ["Efectivo", "Tarjeta", "Mercado Pago", "Transferencia"] },
 
   admin: true,
+  demo: { youtubeId: "5wY7GjBDMUY" },
 });
