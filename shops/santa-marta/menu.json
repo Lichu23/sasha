@@ -1,0 +1,1970 @@
+{
+  "salon": [
+    {
+      "id": "cafeteria",
+      "name": "Cafetería",
+      "products": [
+        {
+          "id": 1001,
+          "name": "Café",
+          "description": "Café de la casa.",
+          "price": 4200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1002,
+          "name": "Café con crema",
+          "description": "",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1003,
+          "name": "Café con leche",
+          "description": "",
+          "price": 5300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1004,
+          "name": "Americano",
+          "description": "",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1005,
+          "name": "Americano macchiato",
+          "description": "",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1006,
+          "name": "Americano con crema",
+          "description": "",
+          "price": 4800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1007,
+          "name": "Café doble",
+          "description": "",
+          "price": 6000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1008,
+          "name": "Café doble con crema",
+          "description": "",
+          "price": 6300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1009,
+          "name": "Tazón de café con leche",
+          "description": "",
+          "price": 6600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6600
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1010,
+          "name": "Capuchino con chocolate",
+          "description": "",
+          "price": 6300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1011,
+          "name": "Capuchino a la italiana",
+          "description": "",
+          "price": 7000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1012,
+          "name": "Submarino / Chocolatada",
+          "description": "",
+          "price": 6200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1013,
+          "name": "Té",
+          "description": "Digestivo, saborizado o mate cocido.",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1014,
+          "name": "Tostadas de pan de campo",
+          "description": "Con queso crema o dulce.",
+          "price": 5500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1015,
+          "name": "Factura",
+          "description": "",
+          "price": 2100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 2100
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1016,
+          "name": "Adicional leche de almendras",
+          "description": "",
+          "price": 2100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 2100
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "te-en-hebras",
+      "name": "Té en hebras",
+      "products": [
+        {
+          "id": 1017,
+          "name": "Té Sufí",
+          "description": "Mezcla de té verde en hebras con flores de jazmín, tilo y melisa.",
+          "price": 7000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1018,
+          "name": "Té Americano",
+          "description": "Mezcla de té negro en hebras con arándanos, hibisco y flores.",
+          "price": 7000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1019,
+          "name": "Té English Breakfast",
+          "description": "Té negro que combina hebras de Assam, Ceylán y Darjeeling.",
+          "price": 7000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "cafes-especiales",
+      "name": "Cafés especiales",
+      "products": [
+        {
+          "id": 1020,
+          "name": "Madrileño",
+          "description": "Café especial de la casa.",
+          "price": 9100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9100
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1021,
+          "name": "Irlandés",
+          "description": "Café especial de la casa.",
+          "price": 9100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9100
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1022,
+          "name": "Calipso",
+          "description": "Café especial de la casa.",
+          "price": 9100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9100
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1023,
+          "name": "Suizo",
+          "description": "Café especial de la casa.",
+          "price": 9100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9100
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1024,
+          "name": "A la reina",
+          "description": "Café especial de la casa.",
+          "price": 9100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9100
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1025,
+          "name": "Gelato",
+          "description": "Café especial de la casa.",
+          "price": 9100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9100
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1026,
+          "name": "Santa Marta",
+          "description": "El café especial de la casa.",
+          "price": 9100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9100
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1027,
+          "name": "Café fresh",
+          "description": "Café frío.",
+          "price": 9100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9100
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "desayunos-y-meriendas",
+      "name": "Desayunos y meriendas",
+      "products": [
+        {
+          "id": 1028,
+          "name": "Café americano + 1 medialuna",
+          "description": "",
+          "price": 5900,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5900
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1029,
+          "name": "Café con leche + 2 medialunas",
+          "description": "",
+          "price": 7400,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1030,
+          "name": "Café con leche + 2 facturas",
+          "description": "",
+          "price": 8300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1031,
+          "name": "Capuchino + 2 medialunas",
+          "description": "",
+          "price": 9800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1032,
+          "name": "Capuchino + porción de torta",
+          "description": "",
+          "price": 18200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 18200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1033,
+          "name": "Café con leche + 2 medialunas de jamón y queso",
+          "description": "",
+          "price": 13700,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 13700
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1034,
+          "name": "Café con leche + árabe o tostado mixto",
+          "description": "",
+          "price": 13900,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 13900
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1035,
+          "name": "Café con leche + 2 medialunas + copa de jugo",
+          "description": "",
+          "price": 11900,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 11900
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1036,
+          "name": "Café con leche + tostado mixto + copa de jugo",
+          "description": "",
+          "price": 18200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 18200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1037,
+          "name": "2 submarinos o 2 cafés con leche + porción de torta",
+          "description": "",
+          "price": 23500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 23500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1038,
+          "name": "Café con leche gigante + tostado",
+          "description": "",
+          "price": 15300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 15300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1039,
+          "name": "Café con leche gigante + 2 medialunas",
+          "description": "",
+          "price": 10500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 10500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1040,
+          "name": "Desayuno de campo",
+          "description": "Café con leche o té, tostadas en pan de campo, queso crema, mermelada y copa de jugo.",
+          "price": 14700,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14700
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1041,
+          "name": "Desayuno light",
+          "description": "2 huevos revueltos, 2 tostadas, queso crema, palta, copa de jugo e infusión.",
+          "price": 18900,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 18900
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1042,
+          "name": "Desayuno de yogur",
+          "description": "Yogur con granola y miel, fruta de estación, copa de jugo y té o café con leche.",
+          "price": 19500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 19500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1043,
+          "name": "Yogur con granola y miel",
+          "description": "Con fruta de estación.",
+          "price": 10500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 10500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1044,
+          "name": "Merienda Santa Marta",
+          "description": "2 cafés con leche o té, tostadas, mermelada, queso crema, pan ½ tostado, 1 triple de jamón y queso, 2 medialunas, ½ porción de torta (según disponibilidad), 2 copas de jugo y 2 rollitos de jamón y queso.",
+          "price": 37800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 37800
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "licuados-y-jugos",
+      "name": "Licuados y jugos",
+      "products": [
+        {
+          "id": 1045,
+          "name": "Licuado de durazno",
+          "description": "Con leche.",
+          "price": 8400,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1046,
+          "name": "Licuado de frutilla",
+          "description": "Con leche.",
+          "price": 8400,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1047,
+          "name": "Licuado de banana",
+          "description": "Con leche.",
+          "price": 8400,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1048,
+          "name": "Licuado de 2 gustos",
+          "description": "Con leche.",
+          "price": 9100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9100
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1049,
+          "name": "Milkshake",
+          "description": "",
+          "price": 9800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1050,
+          "name": "Exprimido",
+          "description": "Jugo de naranja exprimido.",
+          "price": 9100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9100
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1051,
+          "name": "Copa de jugo",
+          "description": "",
+          "price": 5300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1052,
+          "name": "Porción de torta",
+          "description": "",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "sandwiches-clasicos",
+      "name": "Sándwiches clásicos",
+      "products": [
+        {
+          "id": 1053,
+          "name": "½ tostado",
+          "description": "",
+          "price": 5300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1054,
+          "name": "Tostado mixto o árabe",
+          "description": "",
+          "price": 9800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1055,
+          "name": "Medialuna de jamón y queso tostada",
+          "description": "",
+          "price": 4600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4600
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1056,
+          "name": "Pan francés de jamón y queso",
+          "description": "Para compartir.",
+          "price": 11100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 11100
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1057,
+          "name": "Pan francés de jamón crudo y queso",
+          "description": "",
+          "price": 13300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 13300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1058,
+          "name": "Árabe con jamón y queso",
+          "description": "",
+          "price": 9400,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1059,
+          "name": "Árabe con crudo y queso",
+          "description": "",
+          "price": 12600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 12600
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1060,
+          "name": "Sándwich proteico",
+          "description": "Árabe con jamón, queso, tomate y huevo.",
+          "price": 13300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 13300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1061,
+          "name": "Adicional tostado",
+          "description": "",
+          "price": 1800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 1800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1062,
+          "name": "Adicional tomate, lechuga o huevo",
+          "description": "",
+          "price": 1800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 1800
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "sandwiches-de-miga",
+      "name": "Sándwiches de miga",
+      "products": [
+        {
+          "id": 1063,
+          "name": "Triples comunes",
+          "description": "Jamón y queso, huevo, tomate y lechuga. Precio por triple.",
+          "price": 3400,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1064,
+          "name": "Triples especiales",
+          "description": "Variedades especiales de la casa. Precio por triple.",
+          "price": 3600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3600
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1065,
+          "name": "Triples súper especiales",
+          "description": "Roquefort, crudo y ananá, entre otros. Precio por triple.",
+          "price": 3900,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3900
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1066,
+          "name": "Triples distinguidos",
+          "description": "Crudo, rúcula, parmesano y palmito, entre otros. Precio por triple.",
+          "price": 4200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1067,
+          "name": "Adicional tostado (miga)",
+          "description": "",
+          "price": 1800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 1800
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "sandwiches-calientes",
+      "name": "Sándwiches calientes",
+      "products": [
+        {
+          "id": 1068,
+          "name": "Lomito o bondiola en pan francés",
+          "description": "Para compartir.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1069,
+          "name": "Lomito o bondiola con tomate y lechuga o jamón y queso",
+          "description": "Para compartir.",
+          "price": 16800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 16800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1070,
+          "name": "Lomito o bondiola completo",
+          "description": "Con jamón, queso, lechuga y tomate. Para compartir.",
+          "price": 19600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 19600
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1071,
+          "name": "Hamburguesa con fritas",
+          "description": "",
+          "price": 12600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 12600
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1072,
+          "name": "Hamburguesa con lechuga y tomate o jamón y queso",
+          "description": "Con fritas.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1073,
+          "name": "Hamburguesa completa con fritas",
+          "description": "Con jamón, queso, lechuga y tomate.",
+          "price": 19600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 19600
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "sandwiches-combinados",
+      "name": "Sándwiches combinados",
+      "products": [
+        {
+          "id": 1074,
+          "name": "Hawaiano",
+          "description": "Blanco de ave, jamón crudo, queso, lechuga y tomate. Para compartir.",
+          "price": 13300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 13300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1075,
+          "name": "City",
+          "description": "Blanco de ave, jamón crudo y huevo duro. Para compartir.",
+          "price": 13300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 13300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1076,
+          "name": "Santa Marta (combinado)",
+          "description": "Jamón crudo, tomate, pollo, huevo duro y aceitunas. Para compartir.",
+          "price": 13300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 13300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1077,
+          "name": "Mediterráneo",
+          "description": "Queso, aceitunas, albahaca y tomate. Para compartir.",
+          "price": 13300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 13300
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "milanesas",
+      "name": "Sándwiches de milanesa",
+      "products": [
+        {
+          "id": 1078,
+          "name": "Milanesa de ternera",
+          "description": "Para compartir.",
+          "price": 12600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 12600
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1079,
+          "name": "Milanesa de ternera con tomate y lechuga",
+          "description": "Para compartir.",
+          "price": 13300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 13300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1080,
+          "name": "Milanesa completa",
+          "description": "Jamón, lechuga, queso y tomate. Para compartir.",
+          "price": 16800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 16800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1081,
+          "name": "Sándwich criollo con papas fritas",
+          "description": "Pimiento, cebolla, tomate y mayonesa de la casa.",
+          "price": 21000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 21000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1082,
+          "name": "Sándwich caprese con papas fritas",
+          "description": "Queso, tomate y pesto casero.",
+          "price": 21000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 21000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1083,
+          "name": "Sándwich napolitano con papas fritas",
+          "description": "Jamón, queso, tomate y mayonesa de la casa.",
+          "price": 21000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 21000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1084,
+          "name": "Sándwich cheddar y bacon con papas fritas",
+          "description": "Cheddar, panceta, lechuga, tomate y mayonesa de la casa.",
+          "price": 21000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 21000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1085,
+          "name": "Sándwich aguada con papas fritas",
+          "description": "Cebolla caramelizada, mozzarella, panceta, huevo frito y verdes.",
+          "price": 21000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 21000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "ensaladas",
+      "name": "Ensaladas",
+      "products": [
+        {
+          "id": 1086,
+          "name": "Ensalada Apiollo",
+          "description": "Pollo, arroz, queso, jamón y cebolla. Para compartir.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1087,
+          "name": "Ensalada 5 gustos a elección",
+          "description": "Lechuga, tomate, cebolla, arroz, zanahoria, choclo, cherry, huevo, rúcula y atún. Para compartir.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1088,
+          "name": "Ensalada Celeste",
+          "description": "Choclo, arroz, queso, aceitunas y remolacha. Para compartir.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1089,
+          "name": "Ensalada Primavera",
+          "description": "Lechuga, tomate, huevo, zanahoria y aceitunas. Para compartir.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1090,
+          "name": "Ensalada Italiana",
+          "description": "Mozzarella, tomate, albahaca, oliva y cebolla. Para compartir.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1091,
+          "name": "Ensalada Frango",
+          "description": "Pollo, tomate y verdes. Para compartir.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1092,
+          "name": "Ensalada César con pollo",
+          "description": "Lechuga, pollo, crutones y aderezo César. Para compartir.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1093,
+          "name": "Ensalada Tunita",
+          "description": "Tomate, cebolla, huevo, aceitunas y atún. Para compartir.",
+          "price": 14700,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14700
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1094,
+          "name": "Ensalada Kity",
+          "description": "Queso en fetas, zanahoria y rúcula. Para compartir.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1095,
+          "name": "Ensalada Meiga",
+          "description": "Zanahoria, huevo, queso, tomate y choclo. Para compartir.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1096,
+          "name": "Ensalada Santa Marta",
+          "description": "Palmitos, tomate cherry, pepino, choclo, rúcula y aceitunas. Para compartir.",
+          "price": 17500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 17500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1097,
+          "name": "Adicional para ensalada",
+          "description": "",
+          "price": 1800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 1800
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "pizzas-y-empanadas",
+      "name": "Pizzas, empanadas y tartas",
+      "products": [
+        {
+          "id": 1098,
+          "name": "Pizza mozzarella",
+          "description": "Mozzarella, salsa de tomate, aceitunas y orégano.",
+          "price": 11200,
+          "sizes": [
+            {
+              "id": "media",
+              "label": "Media",
+              "price": 11200
+            },
+            {
+              "id": "grande",
+              "label": "Grande",
+              "price": 22400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1099,
+          "name": "Pizza jamón y mozzarella",
+          "description": "Mozzarella, salsa de tomate y aceitunas.",
+          "price": 12600,
+          "sizes": [
+            {
+              "id": "media",
+              "label": "Media",
+              "price": 12600
+            },
+            {
+              "id": "grande",
+              "label": "Grande",
+              "price": 23800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1100,
+          "name": "Pizza napolitana",
+          "description": "Mozzarella, salsa de tomate y rodajas de tomate.",
+          "price": 12600,
+          "sizes": [
+            {
+              "id": "media",
+              "label": "Media",
+              "price": 12600
+            },
+            {
+              "id": "grande",
+              "label": "Grande",
+              "price": 23800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1101,
+          "name": "Pizza Santa Marta",
+          "description": "Mozzarella, salsa de tomate, jamón, huevo duro y aceitunas.",
+          "price": 13300,
+          "sizes": [
+            {
+              "id": "media",
+              "label": "Media",
+              "price": 13300
+            },
+            {
+              "id": "grande",
+              "label": "Grande",
+              "price": 26600
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1102,
+          "name": "Empanada de carne",
+          "description": "",
+          "price": 3200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1103,
+          "name": "Empanada de pollo",
+          "description": "",
+          "price": 3200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1104,
+          "name": "Empanada de jamón y queso",
+          "description": "",
+          "price": 3200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1105,
+          "name": "Tarta individual",
+          "description": "Consultá los gustos del día.",
+          "price": 12600,
+          "sizes": [
+            {
+              "id": "chica",
+              "label": "Chica",
+              "price": 12600
+            },
+            {
+              "id": "mediana",
+              "label": "Mediana",
+              "price": 16800
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "promos",
+      "name": "Promos",
+      "products": [
+        {
+          "id": 1106,
+          "name": "Promo hamburguesa completa",
+          "description": "Hamburguesa con jamón, queso, lechuga y tomate, con fritas y agua saborizada.",
+          "price": 18200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 18200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1107,
+          "name": "Promo pizza de mozzarella",
+          "description": "Pizza de mozzarella con 1 Brahma (1 L) o 2 aguas saborizadas.",
+          "price": 25200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 25200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1108,
+          "name": "Promo tarta chica",
+          "description": "Tarta individual chica con 1 agua saborizada.",
+          "price": 16100,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 16100
+            }
+          ],
+          "image": null
+        }
+      ]
+    }
+  ],
+  "takeaway": [
+    {
+      "id": "miga",
+      "name": "Sándwiches de miga",
+      "products": [
+        {
+          "id": 1109,
+          "name": "Triples comunes",
+          "description": "Jamón y queso, huevo, tomate y lechuga.",
+          "price": 20400,
+          "sizes": [
+            {
+              "id": "mediadocena",
+              "label": "Media docena",
+              "price": 20400
+            },
+            {
+              "id": "docena",
+              "label": "Docena",
+              "price": 40800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1110,
+          "name": "Triples especiales",
+          "description": "Variedades especiales de la casa.",
+          "price": 21600,
+          "sizes": [
+            {
+              "id": "mediadocena",
+              "label": "Media docena",
+              "price": 21600
+            },
+            {
+              "id": "docena",
+              "label": "Docena",
+              "price": 43200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1111,
+          "name": "Triples súper especiales",
+          "description": "Roquefort, crudo y ananá, entre otros.",
+          "price": 23400,
+          "sizes": [
+            {
+              "id": "mediadocena",
+              "label": "Media docena",
+              "price": 23400
+            },
+            {
+              "id": "docena",
+              "label": "Docena",
+              "price": 46800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1112,
+          "name": "Triples distinguidos",
+          "description": "Crudo, rúcula, parmesano y palmito, entre otros.",
+          "price": 25200,
+          "sizes": [
+            {
+              "id": "mediadocena",
+              "label": "Media docena",
+              "price": 25200
+            },
+            {
+              "id": "docena",
+              "label": "Docena",
+              "price": 50400
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "empanadas-tartas",
+      "name": "Empanadas y tartas",
+      "products": [
+        {
+          "id": 1113,
+          "name": "Empanadas de carne",
+          "description": "",
+          "price": 19200,
+          "sizes": [
+            {
+              "id": "mediadocena",
+              "label": "Media docena",
+              "price": 19200
+            },
+            {
+              "id": "docena",
+              "label": "Docena",
+              "price": 38400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1114,
+          "name": "Empanadas de pollo",
+          "description": "",
+          "price": 19200,
+          "sizes": [
+            {
+              "id": "mediadocena",
+              "label": "Media docena",
+              "price": 19200
+            },
+            {
+              "id": "docena",
+              "label": "Docena",
+              "price": 38400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1115,
+          "name": "Empanadas de jamón y queso",
+          "description": "",
+          "price": 19200,
+          "sizes": [
+            {
+              "id": "mediadocena",
+              "label": "Media docena",
+              "price": 19200
+            },
+            {
+              "id": "docena",
+              "label": "Docena",
+              "price": 38400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1116,
+          "name": "Tarta individual",
+          "description": "Contanos el gusto en las notas del pedido.",
+          "price": 12600,
+          "sizes": [
+            {
+              "id": "chica",
+              "label": "Chica",
+              "price": 12600
+            },
+            {
+              "id": "mediana",
+              "label": "Mediana",
+              "price": 16800
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "pizzas",
+      "name": "Pizzas",
+      "products": [
+        {
+          "id": 1117,
+          "name": "Pizza mozzarella",
+          "description": "Mozzarella, salsa de tomate, aceitunas y orégano.",
+          "price": 11200,
+          "sizes": [
+            {
+              "id": "media",
+              "label": "Media",
+              "price": 11200
+            },
+            {
+              "id": "grande",
+              "label": "Grande",
+              "price": 22400
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1118,
+          "name": "Pizza jamón y mozzarella",
+          "description": "Mozzarella, salsa de tomate y aceitunas.",
+          "price": 12600,
+          "sizes": [
+            {
+              "id": "media",
+              "label": "Media",
+              "price": 12600
+            },
+            {
+              "id": "grande",
+              "label": "Grande",
+              "price": 23800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1119,
+          "name": "Pizza napolitana",
+          "description": "Mozzarella, salsa de tomate y rodajas de tomate.",
+          "price": 12600,
+          "sizes": [
+            {
+              "id": "media",
+              "label": "Media",
+              "price": 12600
+            },
+            {
+              "id": "grande",
+              "label": "Grande",
+              "price": 23800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1120,
+          "name": "Pizza Santa Marta",
+          "description": "Mozzarella, salsa de tomate, jamón, huevo duro y aceitunas.",
+          "price": 13300,
+          "sizes": [
+            {
+              "id": "media",
+              "label": "Media",
+              "price": 13300
+            },
+            {
+              "id": "grande",
+              "label": "Grande",
+              "price": 26600
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "para-compartir",
+      "name": "Sándwiches para compartir",
+      "products": [
+        {
+          "id": 1121,
+          "name": "Milanesa de ternera",
+          "description": "Para compartir.",
+          "price": 12600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 12600
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1122,
+          "name": "Milanesa completa",
+          "description": "Jamón, lechuga, queso y tomate. Para compartir.",
+          "price": 16800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 16800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1123,
+          "name": "Lomito o bondiola",
+          "description": "Con tomate y lechuga o jamón y queso. Para compartir.",
+          "price": 16800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 16800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1124,
+          "name": "Sándwich combinado",
+          "description": "Hawaiano, City, Santa Marta o Mediterráneo. Para compartir.",
+          "price": 13300,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 13300
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1125,
+          "name": "Hamburguesa completa con fritas",
+          "description": "Con jamón, queso, lechuga y tomate.",
+          "price": 19600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 19600
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "facturas",
+      "name": "Facturas",
+      "products": [
+        {
+          "id": 1126,
+          "name": "Facturas surtidas",
+          "description": "Elegí el surtido en las notas del pedido.",
+          "price": 12600,
+          "sizes": [
+            {
+              "id": "mediadocena",
+              "label": "Media docena",
+              "price": 12600
+            },
+            {
+              "id": "docena",
+              "label": "Docena",
+              "price": 25200
+            }
+          ],
+          "image": null
+        }
+      ]
+    }
+  ],
+  "rating": null,
+  "reviews": []
+}
