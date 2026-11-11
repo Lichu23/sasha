@@ -63,7 +63,13 @@ export function earliestPickup(now: number): number {
   throw new Error("The shop has no pickup slots on any day of the week.");
 }
 
-export type PickupDay = { key: string; label: string; slots: { value: string; label: string }[] };
+export type PickupDay = {
+  key: string;
+  label: string;
+  /** Midnight (Argentina) of the day: what the shared calendar works with. */
+  start: number;
+  slots: { value: string; label: string }[];
+};
 
 const dayLabel = new Intl.DateTimeFormat("es-AR", {
   weekday: "long",
@@ -101,24 +107,10 @@ export function pickupDays(now: number): PickupDay[] {
       if (t >= first) slots.push({ value: new Date(t).toISOString(), label: `${hour}:00` });
     }
     if (slots.length) {
-      days.push({ key: `${p.year}-${p.month + 1}-${p.date}`, label: dayLabel.format(dayStart + 12 * HOUR_MS), slots });
+      days.push({ key: `${p.year}-${p.month + 1}-${p.date}`, label: dayLabel.format(dayStart + 12 * HOUR_MS), start: dayStart, slots });
     }
   }
   return days;
-}
-
-/** The next `count` open pickup slots after a given time (to propose another time for an order). */
-export function slotsAfter(time: number, count: number): number[] {
-  const slots: number[] = [];
-  const start = toAr(time);
-  for (let offset = 0; offset < BOOKING_WINDOW_DAYS && slots.length < count; offset++) {
-    const p = toAr(fromAr(start.year, start.month, start.date + offset, 12));
-    for (const hour of pickupHours(p.weekday)) {
-      const t = fromAr(p.year, p.month, p.date, hour);
-      if (t > time && slots.length < count) slots.push(t);
-    }
-  }
-  return slots;
 }
 
 /** Server-side check: is this ISO string one of the slots we would offer right now? */

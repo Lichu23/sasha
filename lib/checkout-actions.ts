@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { MercadoPagoConfig, Preference } from "mercadopago";
 import { findTakeawayProduct } from "@/lib/menu";
 import { isValidPickup } from "@/lib/pickup";
-import { hasBranches, leadTimeLabel, lineLabel, locations, needsApproval, paysOnline, shop } from "@/lib/shop";
+import { hasBranches, leadTimeLabel, lineLabel, locations, paysOnline, shop } from "@/lib/shop";
 
 export type CheckoutState = {
   error?: string;
@@ -83,13 +83,8 @@ export async function startCheckout(_prev: CheckoutState, formData: FormData): P
   const resultUrl = (status: string) =>
     `${siteUrl}/pedido?estado=${status}&ref=${reference}&retiro=${encodeURIComponent(pickup)}`;
 
-  if (needsApproval) {
-    // Nothing is paid: the order goes to the shop, which confirms it (or not) from /admin.
-    redirect(`/pedido?estado=enviado&ref=${reference}&retiro=${encodeURIComponent(pickup)}`);
-  }
-
   if (!paysOnline) {
-    // WhatsApp orders: the result page builds the message for the customer to send.
+    // WhatsApp consultas: the result page saves the order, builds the message and opens WhatsApp with it.
     redirect(`/pedido?estado=whatsapp&ref=${reference}&retiro=${encodeURIComponent(pickup)}`);
   }
 

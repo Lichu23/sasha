@@ -109,8 +109,14 @@ export const leadTimeLabel =
 
 export const paysOnline = shop.orders.payment === "mercadopago";
 
-/** The shop checks every order before agreeing to it (payment "confirmacion"): no payment online, paid at pickup. */
-export const needsApproval = shop.orders.payment === "confirmacion";
+/** Orders are consultas agreed on WhatsApp (payment "whatsapp"): the shop edits and confirms them in /admin. */
+export const isConsulta = !paysOnline;
+
+/** Table reservations: the shop has a salón and set `reservations`. */
+export const reservations = shop.salon && shop.reservations ? { stayMinutes: 90, minNoticeHours: 2, ...shop.reservations } : null;
+
+/** Demo: consultas open the simulated chat at /whatsapp instead of the real WhatsApp. */
+export const simulatedWhatsapp = isConsulta && Boolean(shop.orders.simulatedWhatsapp);
 
 /** Order numbers: PREFIX-1A2B3C4D. */
 export const REFERENCE = new RegExp(`^${shop.orders.referencePrefix}-[0-9A-F]{8}$`);

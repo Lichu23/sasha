@@ -1,25 +1,27 @@
 "use client";
 
 import { useDeferredValue, useMemo, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, m } from "motion/react";
 import { Checkbox } from "@base-ui/react/checkbox";
 import { Input } from "@base-ui/react/input";
-import { AlertIcon, CheckIcon, PinIcon, WhatsappIcon } from "@/components/icons";
+import { AlertIcon, CalendarIcon, CheckIcon, PinIcon, WhatsappIcon } from "@/components/icons";
+import { DateTimeSheet } from "@/components/ui/date-sheet";
 import { Segmented } from "@/components/ui/segmented";
 import { capitalize, dayLabel, formatTime, startOfArDay } from "@/lib/admin-dates";
 import { formatPrice } from "@/lib/menu";
 import { orderActions, useOrders, type Order } from "@/lib/orders";
 import { useNow } from "@/lib/use-now";
-import { formatPickup, slotsAfter } from "@/lib/pickup";
-import { REFERENCE, needsApproval, noun, paysOnline, shop } from "@/lib/shop";
+import { formatPickup, fromAr, pickupHours, toAr } from "@/lib/pickup";
+import { REFERENCE, isConsulta, noun, paysOnline, shop, simulatedWhatsapp } from "@/lib/shop";
 
-type Filter = "pendiente" | "por-confirmar" | "confirmado" | "completado" | "todos";
+type Filter = "pendiente" | "consulta" | "confirmado" | "completado" | "todos";
 
-// Shops that confirm orders start with the ones waiting for an answer.
-const FILTERS: readonly { value: Filter; label: string }[] = needsApproval
+// Shops that take consultas start with the ones waiting for an answer.
+const FILTERS: readonly { value: Filter; label: string }[] = isConsulta
   ? [
-      { value: "por-confirmar", label: "Por confirmar" },
+      { value: "consulta", label: "Consultas" },
       { value: "confirmado", label: "Por entregar" },
       { value: "completado", label: "Entregados" },
       { value: "todos", label: "Todos" },
@@ -30,10 +32,8 @@ const FILTERS: readonly { value: Filter; label: string }[] = needsApproval
       { value: "todos", label: "Todos" },
     ];
 
-// An order the shop proposed another time for is still waiting for an answer, from the customer.
-const inFilter = (o: Order, filter: Filter) =>
-  filter === "todos" || (filter === "por-confirmar" ? o.status === "por-confirmar" || o.status === "reprogramado" : o.status === filter);
-const isUpcoming = (filter: Filter) => filter === "pendiente" || filter === "por-confirmar" || filter === "confirmado";
+const inFilter = (o: Order, filter: Filter) => filter === "todos" || o.status === filter;
+const isUpcoming = (filter: Filter) => filter === "pendiente" || filter === "consulta" || filter === "confirmado";
 
 const MAX_DELIVERED = 40;
 
@@ -48,6 +48,8 @@ export function OrdersBoard({ highlight }: { highlight: string | null }) {
   const now = useNow();
   const [filter, setFilter] = useState<Filter>(FILTERS[0].value);
   const [query, setQuery] = useState("");
+  const [dateFilter, setDateFilter] = useState<number | null>(null);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const search = useDeferredValue(query.trim().toLowerCase());
 
   const view = useMemo(() => {
@@ -63,7 +65,7 @@ export function OrdersBoard({ highlight }: { highlight: string | null }) {
       o.items.some((i) => i.label.toLowerCase().includes(search));
 
     const list = orders
-      .filter((o) => o !== fresh && inFilter(o, filter) && matches(o))
+      .filter((o) => o !== fresh && inFilter(o, filter) && matches(o) && (dateFilter === null || startOfArDay(o.pickup) === dateFilter))
       .sort((a, b) => (isUpcoming(filter) ? a.pickup - b.pickup : b.pickup - a.pickup))
       .slice(0, isUpcoming(filter) ? undefined : MAX_DELIVERED);
 
@@ -73,18 +75,24 @@ export function OrdersBoard({ highlight }: { highlight: string | null }) {
       groups.set(day, [...(groups.get(day) ?? []), o]);
     }
 
-    const pending = orders.filter((o) => o.status === (needsApproval ? "confirmado" : "pendiente"));
+    // What the calendar shows on each pickup day: how many orders are still on.
+    const perDay = new Map<number, number>();
+    for (const o of orders) if (o.status !== "cancelado") perDay.set(startOfArDay(o.pickup), (perDay.get(startOfArDay(o.pickup)) ?? 0) + 1);
+
+    const pending = orders.filter((o) => o.status === (isConsulta ? "confirmado" : "pendiente"));
     return {
+      today,
+      perDay,
       fresh,
       groups: [...groups.entries()],
       stats: {
         today: pending.filter((o) => startOfArDay(o.pickup) === today).length,
         pending: pending.length,
         unpaid: pending.filter((o) => o.payment === "pendiente").length,
-        toConfirm: orders.filter((o) => o.status === "por-confirmar").length,
+        consultas: orders.filter((o) => o.status === "consulta").length,
       },
     };
-  }, [orders, now, filter, search, highlight]);
+  }, [orders, now, filter, search, highlight, dateFilter]);
 
   return (
     <>
@@ -94,11 +102,11 @@ export function OrdersBoard({ highlight }: { highlight: string | null }) {
           <p className="text-sm text-muted">{shop.orders.title} para retirar en el local.</p>
         </div>
         <dl className="flex gap-2 text-sm">
-          {needsApproval ? <Stat label="Por confirmar" value={view?.stats.toConfirm} warn /> : null}
+          {isConsulta ? <Stat label="Consultas" value={view?.stats.consultas} warn /> : null}
           <Stat label="Para hoy" value={view?.stats.today} />
           <Stat label="Por entregar" value={view?.stats.pending} />
           {/* Online payments that haven't cleared need attention; paying on pickup is the norm. */}
-          {needsApproval ? null : <Stat label={paysOnline ? "Pago pendiente" : "A cobrar"} value={view?.stats.unpaid} warn={paysOnline} />}
+          {isConsulta ? null : <Stat label={paysOnline ? "Pago pendiente" : "A cobrar"} value={view?.stats.unpaid} warn={paysOnline} />}
         </dl>
       </div>
 
@@ -119,6 +127,19 @@ export function OrdersBoard({ highlight }: { highlight: string | null }) {
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <Segmented label="Mostrar" value={filter} onChange={setFilter} options={FILTERS} />
+        {/* The pickup date: the calendar opens over the page, with how many orders each day has. */}
+        <button
+          type="button"
+          data-calendar
+          aria-haspopup="dialog"
+          onClick={() => setCalendarOpen(true)}
+          className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold ring-1 transition-transform [touch-action:manipulation] active:scale-[0.97] motion-reduce:active:scale-100 ${
+            dateFilter === null ? "bg-paper ring-line" : "bg-ink text-cream ring-ink"
+          }`}
+        >
+          <CalendarIcon width={18} height={18} />
+          {dateFilter === null || now === null ? "Todas las fechas" : capitalize(dayLabel(dateFilter, now))}
+        </button>
         <label className="min-w-48 flex-1 sm:max-w-xs">
           <span className="sr-only">Buscar pedidos</span>
           <Input
@@ -167,6 +188,23 @@ export function OrdersBoard({ highlight }: { highlight: string | null }) {
           ))}
         </div>
       )}
+
+      {view ? (
+        <DateTimeSheet
+          open={calendarOpen}
+          onOpenChange={setCalendarOpen}
+          title="Fecha de retiro"
+          today={view.today}
+          value={dateFilter}
+          onConfirm={setDateFilter}
+          onClear={() => setDateFilter(null)}
+          confirmLabel="Ver esta fecha"
+          marks={(d) => {
+            const n = view.perDay.get(d);
+            return n ? { label: String(n) } : undefined;
+          }}
+        />
+      ) : null}
     </>
   );
 }
@@ -180,67 +218,153 @@ function Stat({ label, value, warn }: { label: string; value?: number; warn?: bo
   );
 }
 
-// What the shop says to the customer about their order (opens WhatsApp with the text ready).
+// What the shop tells the customer on WhatsApp about their order (it opens the chat with the text ready).
 function whatsappText(order: Order, firstName: string) {
-  if (needsApproval) {
+  if (isConsulta) {
+    const summary = [
+      ...order.items.map((i) => `• ${i.quantity} × ${i.label}`),
+      `Total: ${formatPrice(order.total)}`,
+      `Retiro: ${formatPickup(order.pickup)}`,
+      order.shopNote ?? "",
+    ];
     switch (order.status) {
+      case "consulta":
+        return [`¡Hola ${firstName}! Sobre tu consulta ${order.ref}${order.modified ? ", te propongo esto" : ""}:`, ...summary, "¿Te sirve?"].filter(Boolean).join("\n");
       case "confirmado":
-        return `¡Hola ${firstName}! Confirmamos tu pedido ${order.ref} para retirar el ${formatPickup(order.pickup)}. Pagás al retirar. ¡Gracias!`;
-      case "rechazado":
-        return `¡Hola ${firstName}! No pudimos tomar tu pedido ${order.ref}${order.reason ? `: ${order.reason.toLowerCase()}` : ""}. ¡Perdón y gracias por escribirnos!`;
-      case "reprogramado":
-        return `¡Hola ${firstName}! No llegamos al horario de tu pedido ${order.ref}. ¿Te sirve retirarlo el ${formatPickup(order.proposedPickup ?? order.pickup)}?`;
+        return [`¡Hola ${firstName}! Tu pedido ${order.ref} quedó confirmado${order.modified ? " con estos cambios" : ""}:`, ...summary, "Pagás al retirar. ¡Gracias!"].filter(Boolean).join("\n");
+      case "cancelado":
+        return `¡Hola ${firstName}! Tuvimos que cancelar tu pedido ${order.ref}. Perdón: escribinos y lo resolvemos.`;
     }
   }
   return `¡Hola ${firstName}! Te escribimos de ${shop.name} por tu pedido ${order.ref}.`;
 }
 
 const STATUS_CHIP: Partial<Record<Order["status"], { label: string; tone: string }>> = {
-  "por-confirmar": { label: "Por confirmar", tone: "bg-warn-bg text-warn-ink" },
+  consulta: { label: "Consulta", tone: "bg-warn-bg text-warn-ink" },
   confirmado: { label: "Confirmado", tone: "bg-emerald-100 text-emerald-700" },
-  reprogramado: { label: "Esperando al cliente", tone: "bg-blush text-brand-ink" },
-  rechazado: { label: "Rechazado", tone: "bg-line text-muted" },
+  cancelado: { label: "Cancelado", tone: "bg-line text-muted" },
 };
 
-const REJECT_REASONS = ["Sin stock", "No llegamos a ese horario", "Cerrado ese día"];
+const HOUR_MS = 60 * 60 * 1000;
+const choice =
+  "min-h-11 rounded-full px-4 text-sm font-semibold ring-1 ring-line transition-[background-color,transform] [touch-action:manipulation] active:scale-[0.97] motion-reduce:active:scale-100";
+const stepper =
+  "grid size-11 place-items-center rounded-full bg-paper text-xl leading-none ring-1 ring-line [touch-action:manipulation] active:scale-95 motion-reduce:active:scale-100 disabled:opacity-40";
 
-/** Confirm, reject (with a reason) or propose another pickup time. The customer sees the answer on their order page. */
-function Decision({ order, now }: { order: Order; now: number }) {
-  const [mode, setMode] = useState<"reject" | "propose" | null>(null);
-  const choice =
-    "min-h-11 rounded-full px-4 text-sm font-semibold ring-1 ring-line transition-[background-color,transform] [touch-action:manipulation] active:scale-[0.97] motion-reduce:active:scale-100";
+/** A consulta: confirm it as it is, edit it first (after talking to the customer on WhatsApp) or cancel it. */
+function ConsultaActions({ order, now }: { order: Order; now: number }) {
+  const [editing, setEditing] = useState(false);
+  if (editing) return <Editor order={order} now={now} onDone={() => setEditing(false)} />;
   return (
-    <div className="mt-3 border-t border-line pt-3">
-      <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={() => orderActions.confirm(order.ref)} className={`${choice} bg-emerald-600 text-white ring-emerald-600 hover:bg-emerald-700`}>
-          Confirmar
-        </button>
-        <button type="button" aria-expanded={mode === "propose"} onClick={() => setMode(mode === "propose" ? null : "propose")} className={`${choice} bg-paper hover:bg-cream aria-expanded:bg-blush`}>
-          Otro horario
-        </button>
-        <button type="button" aria-expanded={mode === "reject"} onClick={() => setMode(mode === "reject" ? null : "reject")} className={`${choice} bg-paper hover:bg-cream aria-expanded:bg-blush`}>
-          Rechazar
+    // Phone: Confirmar across the whole width, the other two below it. Wider screens: one row.
+    <div className="mt-3 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+      <button type="button" onClick={() => orderActions.confirm(order.ref)} className={`${choice} col-span-2 bg-emerald-600 text-white ring-emerald-600 hover:bg-emerald-700 sm:col-span-1`}>
+        Confirmar
+      </button>
+      <button type="button" onClick={() => setEditing(true)} className={`${choice} bg-paper hover:bg-cream`}>
+        Modificar
+      </button>
+      <button type="button" onClick={() => orderActions.cancel(order.ref)} className={`${choice} bg-paper text-muted hover:bg-cream`}>
+        Cancelar pedido
+      </button>
+    </div>
+  );
+}
+
+/** Changes what the customer asked for: quantities (0 removes a product), pickup time and a note. The total follows. */
+function Editor({ order, now, onDone }: { order: Order; now: number; onDone: () => void }) {
+  const [items, setItems] = useState(order.items);
+  const [pickup, setPickup] = useState(order.pickup);
+  const [note, setNote] = useState(order.shopNote ?? "");
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const today = startOfArDay(now);
+  const total = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
+  const setQuantity = (index: number, quantity: number) =>
+    setItems((prev) => prev.map((item, i) => (i === index ? { ...item, quantity: Math.max(0, Math.min(20, quantity)) } : item)));
+  const field =
+    "mt-1 block min-h-11 w-full rounded-xl bg-paper px-3 py-2.5 text-base font-normal ring-1 ring-line outline-none focus:ring-2 focus:ring-brand";
+
+  return (
+    <form
+      aria-label="Modificar el pedido"
+      className="mt-3 space-y-4 rounded-2xl bg-cream/70 p-3 ring-1 ring-line"
+      onSubmit={(e) => {
+        e.preventDefault();
+        orderActions.edit(order.ref, { items, pickup, shopNote: note });
+        onDone();
+      }}
+    >
+      <fieldset>
+        <legend className="text-sm font-semibold">Productos</legend>
+        <ul className="mt-2 divide-y divide-line">
+          {items.map((item, i) => (
+            <li key={`${item.productId}-${item.sizeId}`} className="flex items-center gap-3 py-2 first:pt-0 last:pb-0">
+              <span className={`min-w-0 flex-1 text-[15px] leading-snug ${item.quantity === 0 ? "text-muted line-through" : ""}`}>{item.label}</span>
+              <div className="flex shrink-0 items-center gap-1" role="group" aria-label={`Cantidad de ${item.label}`}>
+                <button type="button" aria-label="Restar uno" disabled={item.quantity === 0} onClick={() => setQuantity(i, item.quantity - 1)} className={stepper}>
+                  −
+                </button>
+                <span className="w-7 text-center text-base font-semibold tabular-nums">{item.quantity}</span>
+                <button type="button" aria-label="Sumar uno" onClick={() => setQuantity(i, item.quantity + 1)} className={stepper}>
+                  +
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </fieldset>
+
+      <div>
+        <p className="text-sm font-semibold">Retiro</p>
+        <button
+          type="button"
+          data-field="pickup"
+          aria-haspopup="dialog"
+          onClick={() => setCalendarOpen(true)}
+          className={`${field} flex items-center justify-between gap-2 text-left font-medium [touch-action:manipulation]`}
+        >
+          <span className="min-w-0 truncate">
+            {capitalize(dayLabel(pickup, now))} · {formatTime(pickup)} hs
+          </span>
+          <CalendarIcon width={18} height={18} className="shrink-0 text-brand" />
         </button>
       </div>
-      {mode === "reject" ? (
-        <div role="group" aria-label="Motivo del rechazo" className="mt-2 flex flex-wrap gap-2">
-          {REJECT_REASONS.map((reason) => (
-            <button key={reason} type="button" onClick={() => orderActions.reject(order.ref, reason)} className={`${choice} bg-paper text-warn-ink hover:bg-warn-bg`}>
-              {reason}
-            </button>
-          ))}
-        </div>
-      ) : null}
-      {mode === "propose" ? (
-        <div role="group" aria-label="Proponer otro horario" className="mt-2 flex flex-wrap gap-2">
-          {slotsAfter(order.pickup, 3).map((time) => (
-            <button key={time} type="button" onClick={() => orderActions.propose(order.ref, time)} className={`${choice} bg-paper hover:bg-blush`}>
-              {capitalize(dayLabel(startOfArDay(time), now))} {formatTime(time)} hs
-            </button>
-          ))}
-        </div>
-      ) : null}
-    </div>
+
+      <label className="block text-sm font-semibold">
+        Nota para el cliente (opcional)
+        <input name="note" value={note} onChange={(e) => setNote(e.target.value)} maxLength={140} autoComplete="off" placeholder="Ej: sin semillas, como pediste…" className={field} />
+      </label>
+
+      <div className="flex items-baseline justify-between border-t border-line pt-3">
+        <span className="text-sm text-muted">Nuevo total</span>
+        <span className="text-xl font-semibold tabular-nums">{formatPrice(total)}</span>
+      </div>
+      <div className="grid grid-cols-2 gap-2 sm:flex">
+        <button type="submit" disabled={items.every((i) => i.quantity === 0)} className={`${choice} bg-brand text-white ring-brand hover:bg-brand-ink disabled:opacity-50`}>
+          Guardar cambios
+        </button>
+        <button type="button" onClick={onDone} className={`${choice} bg-paper text-muted hover:bg-cream`}>
+          Descartar
+        </button>
+      </div>
+
+      <DateTimeSheet
+        open={calendarOpen}
+        onOpenChange={setCalendarOpen}
+        title="Día y horario de retiro"
+        today={today}
+        value={pickup}
+        onConfirm={setPickup}
+        confirmLabel="Usar este horario"
+        minDay={today}
+        maxDay={today + 60 * 24 * HOUR_MS}
+        isDayDisabled={(d) => pickupHours(toAr(d).weekday).length === 0}
+        slotsFor={(d) => {
+          const t = toAr(d);
+          return pickupHours(t.weekday).map((hour) => ({ at: fromAr(t.year, t.month, t.date, hour), label: `${hour}:00` }));
+        }}
+      />
+    </form>
   );
 }
 
@@ -248,93 +372,110 @@ function OrderCard({ order, now }: { order: Order; now: number }) {
   const done = order.status === "completado";
   const isNew = !order.sample || now - order.createdAt < 24 * 60 * 60 * 1000;
   const firstName = order.name.split(" ")[0];
-  const chip = needsApproval ? STATUS_CHIP[order.status] : undefined;
-  // Answered orders: the shop tells the customer, in one tap.
-  const answered = needsApproval && (order.status === "confirmado" || order.status === "rechazado" || order.status === "reprogramado");
-  const whatsapp = `https://wa.me/549${order.phone.replace(/\D/g, "").replace(/^0/, "")}?text=${encodeURIComponent(whatsappText(order, firstName))}`;
+  const chip = isConsulta ? STATUS_CHIP[order.status] : undefined;
+  // Consultas: the chat with the customer is one tap away, with the message for this moment ready.
+  const chatLabel = !isConsulta ? order.phone : order.status === "consulta" ? `Abrir chat con ${firstName}` : `Avisar a ${firstName} por WhatsApp`;
+  const text = whatsappText(order, firstName);
+  const whatsapp = `https://wa.me/549${order.phone.replace(/\D/g, "").replace(/^0/, "")}?text=${encodeURIComponent(text)}`;
+  const chatClass =
+    "inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold ring-1 ring-line transition-colors hover:bg-cream sm:w-auto";
+  const canDeliver = !isConsulta || order.status === "confirmado" || done;
 
   return (
     <article
-      className={`rounded-3xl bg-paper p-4 ring-1 ring-line transition-opacity sm:p-5 ${done || order.status === "rechazado" ? "opacity-60" : ""}`}
+      className={`rounded-3xl bg-paper p-4 ring-1 ring-line transition-opacity sm:p-5 ${done || order.status === "cancelado" ? "opacity-60" : ""}`}
       aria-label={`Pedido de ${order.name}, retiro ${formatTime(order.pickup)} hs`}
     >
-      <div className="flex items-start gap-4">
-        <div className="shrink-0 rounded-2xl bg-cream px-3 py-2 text-center">
-          <p className="text-lg font-semibold tabular-nums">{formatTime(order.pickup)}</p>
-          <p className="text-[11px] text-muted">retiro</p>
+      {/* When, and where the order stands */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="inline-flex items-baseline gap-1.5 rounded-xl bg-cream px-2.5 py-1">
+            <span className="text-base font-semibold tabular-nums">{formatTime(order.pickup)}</span>
+            <span className="text-xs text-muted">retiro</span>
+          </span>
+          {chip ? <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${chip.tone}`}>{chip.label}</span> : null}
+          {order.modified ? <span className="rounded-full bg-blush px-2.5 py-1 text-xs font-semibold text-brand-ink">Modificado</span> : null}
+          {isNew && !done && !chip ? <span className="rounded-full bg-blush px-2.5 py-1 text-xs font-semibold text-brand-ink">Nuevo</span> : null}
         </div>
-
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <h3 className="font-semibold">{order.name}</h3>
-            {chip ? <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${chip.tone}`}>{chip.label}</span> : null}
-            {isNew && !done && !chip ? (
-              <span className="rounded-full bg-blush px-2 py-0.5 text-[11px] font-semibold text-brand-ink">Nuevo</span>
-            ) : null}
-          </div>
-          <p className="text-xs text-muted tabular-nums">{order.ref}</p>
-          <ul className="mt-2 text-sm">
-            {order.items.map((item) => (
-              <li key={`${item.productId}-${item.sizeId}`}>
-                <span className="font-semibold tabular-nums">{item.quantity} ×</span> {item.label}
-              </li>
-            ))}
-          </ul>
-          {order.location ? (
-            <p className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-brand-ink">
-              <PinIcon width={14} height={14} /> Retira en {order.location}
-            </p>
-          ) : null}
-          {order.notes ? <p className="mt-1 text-sm text-muted italic">“{order.notes}”</p> : null}
-          {order.status === "rechazado" && order.reason ? <p className="mt-1 text-sm text-muted">Motivo: {order.reason}</p> : null}
-          {order.status === "reprogramado" && order.proposedPickup ? <p className="mt-1 text-sm text-muted">Propusiste: {formatPickup(order.proposedPickup)}</p> : null}
-        </div>
-
-        <div className="shrink-0 text-right">
-          <p className="font-semibold tabular-nums">{formatPrice(order.total)}</p>
-          {order.payment === "pagado" ? (
-            <p className="mt-1 inline-flex items-center gap-1 text-xs text-emerald-700">
-              <CheckIcon width={14} height={14} /> Pagado
-            </p>
-          ) : paysOnline ? (
-            <p className="mt-1 inline-flex items-center gap-1 text-xs text-warn-ink">
-              <AlertIcon width={14} height={14} /> Pago pendiente
-            </p>
-          ) : (
-            <p className="mt-1 text-xs text-muted">Paga al retirar</p>
-          )}
-        </div>
+        <p className="shrink-0 pt-1.5 text-xs text-muted tabular-nums">{order.ref}</p>
       </div>
 
-      {needsApproval && order.status === "por-confirmar" ? <Decision order={order} now={now} /> : null}
+      {/* Who and what */}
+      <h3 className="mt-3 text-lg leading-snug font-semibold">{order.name}</h3>
+      <ul className="mt-1.5 space-y-0.5 text-[15px] leading-snug">
+        {order.items.map((item) => (
+          <li key={`${item.productId}-${item.sizeId}`}>
+            <span className="font-semibold tabular-nums">{item.quantity} ×</span> {item.label}
+          </li>
+        ))}
+      </ul>
+      {order.location ? (
+        <p className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-brand-ink">
+          <PinIcon width={14} height={14} /> Retira en {order.location}
+        </p>
+      ) : null}
+      {order.notes ? <p className="mt-2 text-sm text-muted italic">“{order.notes}”</p> : null}
+      {order.requested ? (
+        <p className="mt-2 rounded-xl bg-cream px-3 py-2 text-sm text-muted">
+          <span className="font-semibold text-ink">Pidió:</span> {order.requested.items.map((i) => `${i.quantity} × ${i.label}`).join(", ")} · {formatPickup(order.requested.pickup)}
+        </p>
+      ) : null}
+      {order.shopNote ? <p className="mt-2 text-sm text-muted">Nota para el cliente: {order.shopNote}</p> : null}
 
-      <div className="mt-3 flex items-center justify-between gap-3 border-t border-line pt-3">
+      {/* How much */}
+      <div className="mt-3 flex items-end justify-between gap-3 border-t border-line pt-3">
+        <div>
+          <p className="text-xs text-muted">Total</p>
+          <p className="text-xl leading-tight font-semibold tabular-nums">{formatPrice(order.total)}</p>
+        </div>
+        {order.payment === "pagado" ? (
+          <p className="inline-flex items-center gap-1 pb-0.5 text-sm text-emerald-700">
+            <CheckIcon width={16} height={16} /> Pagado
+          </p>
+        ) : paysOnline ? (
+          <p className="inline-flex items-center gap-1 pb-0.5 text-sm text-warn-ink">
+            <AlertIcon width={16} height={16} /> Pago pendiente
+          </p>
+        ) : (
+          <p className="pb-0.5 text-sm text-muted">Paga al retirar</p>
+        )}
+      </div>
+
+      {isConsulta && order.status === "consulta" ? <ConsultaActions order={order} now={now} /> : null}
+
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         {order.phone ? (
-          <a
-            href={whatsapp}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted hover:text-ink"
-          >
-            <WhatsappIcon width={18} height={18} /> {answered ? `Avisar a ${firstName} por WhatsApp` : order.phone}
-          </a>
+          simulatedWhatsapp ? (
+            <Link
+              href={`/whatsapp?ref=${order.ref}&vista=local`}
+              // After answering, the chat opens with the message for this moment already written.
+              onClick={() => orderActions.setDraft(order.ref, order.status === "consulta" ? undefined : text)}
+              className={chatClass}
+            >
+              <WhatsappIcon width={18} height={18} /> {chatLabel}
+            </Link>
+          ) : (
+            <a href={whatsapp} target="_blank" rel="noreferrer" className={chatClass}>
+              <WhatsappIcon width={18} height={18} /> {chatLabel}
+            </a>
+          )
         ) : (
           <span />
         )}
-        {needsApproval && order.status !== "confirmado" && !done ? null : (
-        <label className="inline-flex cursor-pointer items-center gap-2 rounded-full py-1 pr-1 pl-3 text-sm font-semibold select-none">
-          {done ? "Entregado" : "Marcar entregado"}
-          <Checkbox.Root
-            checked={done}
-            onCheckedChange={(checked) => orderActions.setStatus(order.ref, checked ? "completado" : needsApproval ? "confirmado" : "pendiente")}
-            className="grid size-7 place-items-center rounded-full bg-paper ring-2 ring-line transition-colors outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand data-checked:bg-emerald-600 data-checked:text-white data-checked:ring-emerald-600"
-          >
-            <Checkbox.Indicator>
-              <CheckIcon width={16} height={16} />
-            </Checkbox.Indicator>
-          </Checkbox.Root>
-        </label>
-        )}
+        {canDeliver ? (
+          <label className="inline-flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-full py-1 pr-1 pl-4 text-sm font-semibold select-none sm:justify-end">
+            {done ? "Entregado" : "Marcar entregado"}
+            <Checkbox.Root
+              checked={done}
+              onCheckedChange={(checked) => orderActions.setStatus(order.ref, checked ? "completado" : isConsulta ? "confirmado" : "pendiente")}
+              className="grid size-9 place-items-center rounded-full bg-paper ring-2 ring-line transition-colors outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand data-checked:bg-emerald-600 data-checked:text-white data-checked:ring-emerald-600"
+            >
+              <Checkbox.Indicator>
+                <CheckIcon width={18} height={18} />
+              </Checkbox.Indicator>
+            </Checkbox.Root>
+          </label>
+        ) : null}
       </div>
       <p className="sr-only">{capitalize(dayLabel(order.pickup, now))}</p>
     </article>

@@ -14,6 +14,7 @@ import {
   locationsSummary,
   noun,
   paysOnline,
+  reservations,
   salonLabels,
   shop,
   shortName,
@@ -70,6 +71,14 @@ export default function HomePage() {
                   className="inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3.5 font-semibold ring-1 ring-line transition-[background-color,transform] hover:bg-blush active:scale-[0.97]"
                 >
                   {salonLabels.cta}
+                </Link>
+              ) : null}
+              {reservations ? (
+                <Link
+                  href="/reservas"
+                  className="inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3.5 font-semibold ring-1 ring-line transition-[background-color,transform] hover:bg-blush active:scale-[0.97]"
+                >
+                  Reservar mesa
                 </Link>
               ) : null}
             </div>

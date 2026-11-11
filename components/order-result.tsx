@@ -1,28 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { m } from "motion/react";
 import { useCart } from "@/components/cart/cart-provider";
 import { AlertIcon, CheckIcon, ClockIcon, PinIcon, WhatsappIcon } from "@/components/icons";
 import { ShopBrand } from "@/components/shop-logo";
-import { greeting, locationLabel, locations, noun, shop, whatsappLink } from "@/lib/shop";
+import { greeting, locationLabel, locations, noun, shop, simulatedWhatsapp, whatsappLink } from "@/lib/shop";
 import { useLastOrder } from "@/lib/last-order";
 import { orderActions, useOrders, type Order } from "@/lib/orders";
 import { formatPrice } from "@/lib/menu";
 import { formatPickup } from "@/lib/pickup";
+import { slug } from "@/shops/current";
 
-export type OrderStatus = "approved" | "demo" | "pending" | "rejected" | "whatsapp" | "sent";
+export type OrderStatus = "approved" | "demo" | "pending" | "rejected" | "whatsapp";
 
 const scheduled = `Recibimos tu pago. Ya estamos agendando tu ${noun.one}.`;
 
 const COPY = {
   approved: { title: "¡Pedido confirmado!", text: scheduled },
   demo: { title: "¡Pedido confirmado!", text: scheduled },
-  whatsapp: {
-    title: "¡Ya casi está!",
-    text: `Enviá el pedido por WhatsApp para que ${shop.shortName} lo confirme. Pagás al retirar.`,
-  },
   pending: {
     title: "Pago en proceso",
     text: "Te avisamos por mail apenas se acredite. Guardamos tu horario de retiro.",
@@ -34,28 +32,32 @@ const COPY = {
 } as const;
 
 /**
- * Shops that confirm orders (needsApproval): what the customer reads about an order they sent. It follows the
- * shop's answer in /admin (demo: same browser, this page updates when the shop answers).
+ * A WhatsApp consulta: what the customer reads. It follows the shop's answer in /admin (demo: same browser, so this
+ * page updates when the shop confirms or cancels it there).
  */
-function sentCopy(live?: Order) {
+function consultaCopy(live?: Order) {
   switch (live?.status) {
     case "confirmado":
     case "completado":
-      return { kind: "ok", title: "¡Pedido confirmado!", text: `${shop.shortName} confirmó tu pedido. Pagás al retirar.` } as const;
-    case "rechazado":
-      return { kind: "warn", title: "No pudimos tomar tu pedido", text: `${live.reason ? `${live.reason}. ` : ""}Perdón por las molestias.` } as const;
-    case "reprogramado":
       return {
-        kind: "warn",
-        title: "Te proponemos otro horario",
-        text: `${shop.shortName} puede tenerlo listo ${live.proposedPickup ? formatPickup(live.proposedPickup) : "en otro horario"}. ¿Te sirve?`,
+        kind: "ok",
+        title: "¡Pedido confirmado!",
+        text: `${shop.shortName} confirmó tu pedido${live.modified ? " con algunos cambios" : ""}. Pagás al retirar.`,
       } as const;
+    case "cancelado":
+      return { kind: "warn", title: "El pedido se canceló", text: "Si querés, hacé uno nuevo o escribile al local." } as const;
     default:
-      return { kind: "wait", title: "¡Pedido enviado!", text: `${shop.shortName} lo revisa y te confirma por WhatsApp. No se cobra nada ahora.` } as const;
+      return {
+        kind: "whatsapp",
+        title: "¡Consulta guardada!",
+        text: `Te abrimos WhatsApp para que se la mandes a ${shop.shortName}: ahí la confirman con vos. Pagás al retirar.`,
+      } as const;
   }
 }
 
 const MAX_LISTED_ITEMS = 2;
+// WhatsApp opens by itself a moment after the consulta is saved (the button is there if it doesn't).
+const OPEN_WHATSAPP_AFTER_MS = simulatedWhatsapp ? 1600 : 2500;
 
 const rise = {
   initial: { opacity: 0, y: 14 },
@@ -73,54 +75,36 @@ export function OrderResult({
   pickup: number | null;
 }) {
   const { actions } = useCart();
+  const router = useRouter();
   const order = useLastOrder();
-  const sent = status === "sent";
   const live = useOrders()?.find((o) => o.ref === reference);
-  const answer = sent ? sentCopy(live) : null;
   const confirmed = status === "approved" || status === "demo";
   const viaWhatsapp = status === "whatsapp";
   const showSummary = status !== "rejected";
-  const copy = answer ?? COPY[status as Exclude<OrderStatus, "sent">];
-  const tone = answer ? answer.kind : confirmed || viaWhatsapp ? "ok" : "warn";
-  // An accepted new time replaces the one in the URL.
+  const answer = viaWhatsapp ? consultaCopy(live) : null;
+  const copy = answer ?? COPY[status as Exclude<OrderStatus, "whatsapp">];
+  const tone = answer ? answer.kind : confirmed ? "ok" : "warn";
+  // What the shop agreed (it may have edited the consulta) replaces what the customer first asked for.
   const shownPickup = live?.pickup ?? pickup;
+  const items = live?.items ?? order?.items ?? [];
+  const total = live?.total ?? order?.total;
 
   // The drawer may still be open after the in-app redirect; once paid, the cart has done its job.
   useEffect(() => {
     actions.close();
-    // A WhatsApp order is complete too: everything the message needs was saved with the order.
-    if (confirmed || viaWhatsapp || sent) actions.clear();
-  }, [confirmed, viaWhatsapp, sent, actions]);
+    // A WhatsApp consulta is complete too: everything the message needs was saved with the order.
+    if (confirmed || viaWhatsapp) actions.clear();
+  }, [confirmed, viaWhatsapp, actions]);
 
-  // Hand the order to the shop's admin list (demo: same browser). add() ignores repeats.
-  useEffect(() => {
-    if (!showSummary || !order || !reference || !pickup) return;
-    orderActions.add({
-      ref: reference,
-      createdAt: Date.now(),
-      pickup,
-      name: order.name,
-      phone: order.phone ?? "",
-      notes: order.notes ?? "",
-      location: order.location || undefined,
-      items: order.items,
-      total: order.total,
-      payment: confirmed ? "pagado" : "pendiente",
-      status: sent ? "por-confirmar" : "pendiente",
-      sample: false,
-    });
-  }, [showSummary, order, reference, pickup, confirmed, sent]);
-
-  const items = order?.items ?? [];
   // The branch chosen in the cart; a single-place shop always has just the one.
   const place = locations.find((l) => l.name === order?.location) ?? locations[0];
   const extraItems = items.length - MAX_LISTED_ITEMS;
-  // WhatsApp orders send the whole order; paid ones only a note with the receipt.
+  // A consulta sends the whole order, as asked (the shop may change it later); paid orders only a note with the receipt.
   const message = (
     viaWhatsapp
       ? [
-          `${greeting} Quiero hacer este pedido${reference ? ` (${reference})` : ""}:`,
-          ...items.map((i) => `• ${i.quantity} × ${i.label}: ${formatPrice(i.unitPrice * i.quantity)}`),
+          `${greeting} Quiero consultar este pedido${reference ? ` (${reference})` : ""}:`,
+          ...(order?.items ?? []).map((i) => `• ${i.quantity} × ${i.label}: ${formatPrice(i.unitPrice * i.quantity)}`),
           order ? `Total: ${formatPrice(order.total)}` : "",
           pickup ? `Retiro: ${formatPickup(pickup)}` : "",
           place.name ? `Retiro en: ${locationLabel(place)}` : "",
@@ -137,6 +121,49 @@ export function OrderResult({
   )
     .filter(Boolean)
     .join("\n");
+  const messageLink = whatsappLink(message);
+  // The demo's chat is part of the site; a live shop opens the real WhatsApp.
+  const chatHref = reference ? `/whatsapp?ref=${reference}&vista=cliente` : "/whatsapp";
+
+  // Hand the order to the shop's admin list (demo: same browser). add() ignores repeats. A consulta starts its
+  // WhatsApp chat with the message the customer sends.
+  useEffect(() => {
+    if (!showSummary || !order || !reference || !pickup) return;
+    const now = Date.now();
+    orderActions.add({
+      ref: reference,
+      createdAt: now,
+      pickup,
+      name: order.name,
+      phone: order.phone ?? "",
+      notes: order.notes ?? "",
+      location: order.location || undefined,
+      items: order.items,
+      total: order.total,
+      payment: confirmed ? "pagado" : "pendiente",
+      status: viaWhatsapp ? "consulta" : "pendiente",
+      messages: viaWhatsapp ? [{ from: "cliente", text: message, at: now }] : undefined,
+      sample: false,
+    });
+  }, [showSummary, order, reference, pickup, confirmed, viaWhatsapp, message]);
+
+  // Redirect to WhatsApp (or the demo's chat) with the consulta, once per order (coming back to this page doesn't send the customer away again).
+  const waiting = viaWhatsapp && live?.status === "consulta" && Boolean(order);
+  useEffect(() => {
+    if (!waiting || !reference) return;
+    const key = `${slug}-wa-opened:${reference}`;
+    try {
+      if (sessionStorage.getItem(key)) return;
+    } catch {}
+    const timer = setTimeout(() => {
+      try {
+        sessionStorage.setItem(key, "1");
+      } catch {}
+      if (simulatedWhatsapp) router.push(chatHref);
+      else window.location.assign(messageLink);
+    }, OPEN_WHATSAPP_AFTER_MS);
+    return () => clearTimeout(timer);
+  }, [waiting, reference, messageLink, chatHref, router]);
 
   return (
     <main className="flex min-h-dvh flex-col bg-cream px-5 pt-[max(1.25rem,env(safe-area-inset-top))] pb-[max(1.25rem,env(safe-area-inset-bottom))]">
@@ -155,14 +182,12 @@ export function OrderResult({
           variants={{ initial: { scale: 0.4, opacity: 0 }, animate: { scale: 1, opacity: 1 } }}
           transition={{ type: "spring", duration: 0.6, bounce: 0.45 }}
           className={`mx-auto grid size-20 place-items-center rounded-full [@media(max-height:700px)]:size-16 ${
-            tone === "ok" ? "bg-emerald-100 text-emerald-700" : tone === "wait" ? "bg-blush text-brand-ink" : "bg-warn-bg text-warn-ink"
+            tone === "ok" || tone === "whatsapp" ? "bg-emerald-100 text-emerald-700" : "bg-warn-bg text-warn-ink"
           }`}
         >
-          {tone === "ok" && !viaWhatsapp ? (
+          {tone === "ok" ? (
             <CheckIcon width={40} height={40} />
-          ) : tone === "wait" ? (
-            <ClockIcon width={36} height={36} />
-          ) : viaWhatsapp ? (
+          ) : tone === "whatsapp" ? (
             <WhatsappIcon width={36} height={36} />
           ) : (
             <AlertIcon width={36} height={36} />
@@ -197,10 +222,19 @@ export function OrderResult({
                 </dd>
               </div>
             ) : null}
-            {order ? (
+            {total !== undefined ? (
               <div className="flex justify-between gap-3">
                 <dt className="text-muted">Total</dt>
-                <dd className="font-semibold tabular-nums">{formatPrice(order.total)}</dd>
+                <dd className="font-semibold tabular-nums">{formatPrice(total)}</dd>
+              </div>
+            ) : null}
+            {live?.modified || live?.shopNote ? (
+              <div className="rounded-2xl bg-blush px-3 py-2 text-brand-ink">
+                <dt className="sr-only">Cambios del local</dt>
+                <dd>
+                  {live.modified ? "El local ajustó tu pedido." : null}
+                  {live.shopNote ? ` “${live.shopNote}”` : null}
+                </dd>
               </div>
             ) : null}
             <div className="flex items-start gap-2 border-t border-line pt-3">
@@ -229,44 +263,38 @@ export function OrderResult({
         transition={{ type: "spring", duration: 0.6, bounce: 0, delay: 0.35 }}
         className="mx-auto flex w-full max-w-md flex-col gap-2"
       >
-        {sent ? (
-          <>
-            {live?.status === "reprogramado" && reference ? (
-              <button
-                type="button"
-                onClick={() => orderActions.acceptProposal(reference)}
-                className="rounded-full bg-brand px-5 py-3.5 font-semibold text-white hover:bg-brand-ink"
-              >
-                Aceptar el nuevo horario
-              </button>
-            ) : null}
-            {live?.status === "rechazado" ? (
-              <Link href="/take-away" className="rounded-full bg-brand px-5 py-3.5 text-center font-semibold text-white hover:bg-brand-ink">
-                Hacer otro pedido
-              </Link>
-            ) : (
-              <a
-                href={whatsappLink(`${greeting} Te escribo por mi pedido${reference ? ` (${reference})` : ""}.`)}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-5 py-3.5 font-semibold text-cream hover:bg-brand-ink"
-              >
-                <WhatsappIcon /> Escribirle al local
-              </a>
-            )}
-          </>
+        {viaWhatsapp && live?.status === "cancelado" ? (
+          <Link href="/take-away" className="rounded-full bg-brand px-5 py-3.5 text-center font-semibold text-white hover:bg-brand-ink">
+            Hacer otro pedido
+          </Link>
+        ) : viaWhatsapp && simulatedWhatsapp ? (
+          <Link
+            href={chatHref}
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-[#1a7f4b] px-5 py-3.5 font-semibold text-white hover:bg-[#156b3f]"
+          >
+            <WhatsappIcon /> {live?.status === "consulta" ? "Abrir WhatsApp con la consulta" : "Abrir el chat con el local"}
+          </Link>
+        ) : viaWhatsapp && (live?.status === "confirmado" || live?.status === "completado") ? (
+          <a
+            href={whatsappLink(`${greeting} Te escribo por mi pedido${reference ? ` (${reference})` : ""}.`)}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-5 py-3.5 font-semibold text-cream hover:bg-brand-ink"
+          >
+            <WhatsappIcon /> Escribirle al local
+          </a>
         ) : viaWhatsapp ? (
           <a
-            href={whatsappLink(message)}
+            href={messageLink}
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-[#1a7f4b] px-5 py-3.5 font-semibold text-white hover:bg-[#156b3f]"
           >
-            <WhatsappIcon /> Enviar pedido por WhatsApp
+            <WhatsappIcon /> Abrir WhatsApp con la consulta
           </a>
         ) : confirmed ? (
           <a
-            href={whatsappLink(message)}
+            href={messageLink}
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-5 py-3.5 font-semibold text-cream hover:bg-brand-ink"

@@ -8,7 +8,7 @@ import { formatPrice } from "@/lib/menu";
 import { useOrders } from "@/lib/orders";
 import { toAr } from "@/lib/pickup";
 import { useNow } from "@/lib/use-now";
-import { closedLabel, needsApproval, noun, paysOnline, shortName, weekSchedule } from "@/lib/shop";
+import { closedLabel, isConsulta, noun, paysOnline, shortName, weekSchedule } from "@/lib/shop";
 
 const PERIODS = [
   { value: 7, label: "Últimos 7 días" },
@@ -37,7 +37,7 @@ export function SalesDashboard() {
     // Shops that confirm orders only count the ones they accepted (not the waiting, rejected or rescheduled).
     const paid = paysOnline
       ? orders.filter((o) => o.payment === "pagado")
-      : needsApproval
+      : isConsulta
         ? orders.filter((o) => o.status === "confirmado" || o.status === "completado")
         : orders;
     const inPeriod = paid.filter((o) => o.createdAt >= from);

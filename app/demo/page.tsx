@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ShopBrand } from "@/components/shop-logo";
 import { ArrowIcon } from "@/components/icons";
-import { needsApproval, paysOnline, shop } from "@/lib/shop";
+import { isConsulta, paysOnline, reservations, shop } from "@/lib/shop";
 
 // The one link sent to a shop in a pitch: the video, the storefront and the panel together,
 // instead of three separate links. Not linked from the site itself.
@@ -14,27 +14,40 @@ export const metadata: Metadata = {
 
 const youtubeId = shop.demo?.youtubeId;
 
-// A test order only makes sense with simulated payment: a WhatsApp order would message the shop's real number.
-const guided = (paysOnline || needsApproval) && shop.admin;
+// A test order only makes sense with the panel to follow it: the order is saved there (payment is simulated or, for
+// a consulta, nothing is sent: WhatsApp opens with the message but the visitor doesn't have to send it).
+const guided = shop.admin;
 
 const steps = [
   {
     href: "/",
     title: "Probar la tienda",
     text: guided
-      ? needsApproval
-        ? "Hagan un pedido de prueba: no se cobra nada y ustedes lo confirman."
+      ? isConsulta
+        ? "Hagan una consulta de prueba. Se abre WhatsApp con el mensaje: no hace falta enviarlo."
         : "Hagan un pedido de prueba, como si fueran un cliente."
       : "Recorran el menú como si fueran un cliente.",
     action: "Probar",
   },
+  ...(reservations
+    ? [
+        {
+          href: "/reservas",
+          title: "Reservar una mesa",
+          text: shop.admin
+            ? "Hagan una reserva de prueba: se abre WhatsApp con el pedido de mesa, y ustedes la confirman en el panel."
+            : "Elijan día, horario y cuántos son, como si fueran un cliente.",
+          action: "Reservar",
+        },
+      ]
+    : []),
   ...(shop.admin
     ? [
         {
           href: "/admin",
-          title: needsApproval ? "Confirmar el pedido en el panel" : guided ? "Ver el pedido en el panel" : "Ver el panel",
-          text: needsApproval
-            ? "Ábranlo en el mismo celular o computadora: ahí les llega el pedido para confirmarlo, rechazarlo o proponer otro horario."
+          title: isConsulta ? "Modificar y confirmar la consulta" : guided ? "Ver el pedido en el panel" : "Ver el panel",
+          text: isConsulta
+            ? "Ábranlo en el mismo celular o computadora: ahí aparece la consulta para modificarla y confirmarla."
             : guided
             ? "Ábranlo en el mismo celular o computadora: ahí aparecen su pedido y las ventas."
             : "Lo que ven ustedes: los pedidos por día y las ventas.",
@@ -80,7 +93,7 @@ export default function DemoPage() {
           Pruébenla ustedes
         </h2>
         <p className="mt-1 text-center text-muted text-pretty">
-          {paysOnline ? "Es una demo: pueden tocar todo, el pago está simulado y no se cobra nada." : needsApproval ? "Es una demo: pueden tocar todo, y no se cobra nada." : "Es una demo: pueden tocar todo."}
+          {paysOnline ? "Es una demo: pueden tocar todo, el pago está simulado y no se cobra nada." : "Es una demo: pueden tocar todo, y no se cobra nada."}
         </p>
         <ol className="mt-5 grid gap-3">
           {steps.map(({ href, title, text, action }, i) => (

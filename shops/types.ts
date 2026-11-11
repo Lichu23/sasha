@@ -102,6 +102,22 @@ export type ShopConfig = {
     stayLimit?: string;
   };
 
+  /**
+   * Table reservations (needs `salon`): a "Reservas" page for customers, who pick the day, the time and how many
+   * people, and a "Reservas" tab in /admin where the shop confirms, modifies or cancels each one. Like a consulta,
+   * a reservation is agreed on WhatsApp (see `orders.simulatedWhatsapp`). Leave out for shops that don't take them.
+   */
+  reservations?: {
+    /** Seats of the salón: a time with fewer free seats than the party can't be picked. */
+    seats: number;
+    /** Largest party that can be asked for online. */
+    maxPartySize: number;
+    /** Minutes a table is held for a reservation. Default 90. */
+    stayMinutes?: number;
+    /** Hours of notice before a reservation. Default 2. */
+    minNoticeHours?: number;
+  };
+
   orders: {
     /** What is ordered: { one: "torta", other: "tortas", feminine: true }. */
     item: { one: string; other: string; feminine: boolean };
@@ -110,12 +126,18 @@ export type ShopConfig = {
     /** Hours of notice, counting only open days. 0 for same-day orders. */
     leadTimeHours: number;
     /**
-     * "whatsapp": the order arrives in the shop's WhatsApp, paid on pickup.
+     * "whatsapp": the cart says "Consultar". The order is saved in /admin as a consulta and WhatsApp opens with the
+     * message ready; the shop agrees the details there, edits the order in /admin and confirms it. Paid on pickup.
+     * See README, "WhatsApp consultas".
      * "mercadopago": paid online before pickup (simulated while MP_ACCESS_TOKEN is empty).
-     * "confirmacion": no payment online. The order is sent to the shop, which confirms it, rejects it or proposes
-     * another pickup time in /admin before anything is agreed; paid at pickup. See README, "Confirmation mode".
      */
-    payment: "whatsapp" | "mercadopago" | "confirmacion";
+    payment: "whatsapp" | "mercadopago";
+    /**
+     * Demo of the "whatsapp" mode: the consulta opens a simulated WhatsApp chat in the site (/whatsapp) instead of
+     * the real one, so nothing is sent to the shop's number. The shop sees the same chat from /admin. Leave it out
+     * (or false) when the shop goes live: the consulta then opens wa.me with the real number.
+     */
+    simulatedWhatsapp?: boolean;
     /** Prefix for order numbers, 2 to 10 capital letters: SASHA-1A2B3C4D. */
     referencePrefix: string;
     /** Home button, e.g. "Hacer un pedido". Defaults to "Encargar una torta" from `item`. */

@@ -55,13 +55,17 @@ export default defineShop({
     summary: "Café a repetir, boulangerie, tostadas y platos franceses",
   },
 
+  // Mesas del salón: se piden online y el local las confirma por WhatsApp. Demo: 24 lugares.
+  reservations: { seats: 24, maxPartySize: 8 },
+
   orders: {
     item: { one: "caja", other: "cajas", feminine: true },
     title: "Boulangerie para llevar",
     cta: "Hacer un pedido",
     leadTimeHours: 24,
-    // They want to check every order before agreeing to it (no online payment): see README, "Confirmation mode".
-    payment: "confirmacion",
+    // They want to agree every order with the customer on WhatsApp before confirming it: see README, "WhatsApp consultas".
+    payment: "whatsapp",
+    simulatedWhatsapp: true, // demo: remove it, with a real number in `whatsapp`, when they go live
     referencePrefix: "BONNE",
     sizeLegend: "Cantidad",
     notesPlaceholder: "Ej: croissants sin semillas, o los gustos de las cookies…",
@@ -69,5 +73,5 @@ export default defineShop({
   },
 
   admin: true,
-  demo: { youtubeId: "ZybnQvugyuo" },
+  demo: { youtubeId: "oURnpx6uWBo" },
 });

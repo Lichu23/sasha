@@ -3,10 +3,13 @@
 import { useSyncExternalStore } from "react";
 import { takeawayMenu } from "@/lib/menu";
 import { fromAr, pickupHours, toAr } from "@/lib/pickup";
-import { hasBranches, lineLabel, locations, needsApproval, shop } from "@/lib/shop";
+import { hasBranches, isConsulta, lineLabel, locations, shop } from "@/lib/shop";
 import { slug } from "@/shops/current";
 
 export type OrderItem = { productId: number; sizeId: string; label: string; quantity: number; unitPrice: number };
+
+/** One message of a consulta's WhatsApp chat (the demo's simulated chat). */
+export type ChatMessage = { from: "cliente" | "local"; text: string; at: number };
 
 export type Order = {
   ref: string;
@@ -22,21 +25,27 @@ export type Order = {
   /** "pendiente": still to be paid (online or at pickup). */
   payment: "pagado" | "pendiente";
   /**
-   * Shops that confirm orders (needsApproval): por-confirmar → confirmado | rechazado | reprogramado (the shop
-   * proposed another time, waiting for the customer) → completado. The others: pendiente → completado.
+   * Consultas (isConsulta, payment "whatsapp"): consulta → confirmado → completado, or cancelado. The shop agrees the
+   * details with the customer on WhatsApp, edits the order here and confirms it. Mercado Pago shops: pendiente → completado.
    */
-  status: "pendiente" | "completado" | "por-confirmar" | "confirmado" | "reprogramado" | "rechazado";
-  /** Why the shop rejected the order. */
-  reason?: string;
-  /** The pickup time the shop proposed instead (status reprogramado). */
-  proposedPickup?: number;
+  status: "pendiente" | "completado" | "consulta" | "confirmado" | "cancelado";
+  /** The shop changed what the customer asked for (items, pickup time). */
+  modified?: boolean;
+  /** What the customer asked for, kept the first time the shop edits the order. */
+  requested?: { items: OrderItem[]; total: number; pickup: number };
+  /** A note from the shop for the customer. */
+  shopNote?: string;
+  /** The simulated WhatsApp chat about this consulta: first the customer's message with the order. */
+  messages?: ChatMessage[];
+  /** A message the shop's chat opens with, written for the moment (e.g. the confirmation), until it is sent. */
+  draft?: string;
   /** Sample data generated for the demo, as opposed to an order placed in the store. */
   sample: boolean;
 };
 
 // Demo only: orders live in this browser's localStorage. A real deployment would
 // keep them in a database behind an authenticated admin.
-const KEY = `${slug}-orders:v3`;
+const KEY = `${slug}-orders:v4`;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 let cached: Order[] | null = null;
@@ -96,20 +105,40 @@ export const orderActions = {
   setStatus(ref: string, status: Order["status"]) {
     store.update((orders) => orders.map((o) => (o.ref === ref ? { ...o, status } : o)));
   },
-  // The shop's answer to an order it has to confirm (needsApproval).
+  addMessage(ref: string, message: ChatMessage) {
+    store.update((orders) => orders.map((o) => (o.ref === ref ? { ...o, messages: [...(o.messages ?? []), message] } : o)));
+  },
+  setDraft(ref: string, draft?: string) {
+    store.update((orders) => orders.map((o) => (o.ref === ref ? { ...o, draft } : o)));
+  },
+  /** The shop confirms a consulta, as it is (or as edited). */
   confirm(ref: string) {
-    store.update((orders) => orders.map((o) => (o.ref === ref ? { ...o, status: "confirmado", reason: undefined, proposedPickup: undefined } : o)));
+    store.update((orders) => orders.map((o) => (o.ref === ref ? { ...o, status: "confirmado" } : o)));
   },
-  reject(ref: string, reason: string) {
-    store.update((orders) => orders.map((o) => (o.ref === ref ? { ...o, status: "rechazado", reason } : o)));
+  cancel(ref: string) {
+    store.update((orders) => orders.map((o) => (o.ref === ref ? { ...o, status: "cancelado" } : o)));
   },
-  propose(ref: string, proposedPickup: number) {
-    store.update((orders) => orders.map((o) => (o.ref === ref ? { ...o, status: "reprogramado", proposedPickup } : o)));
-  },
-  /** The customer accepts the time the shop proposed. */
-  acceptProposal(ref: string) {
+  /**
+   * The shop edits a consulta after talking to the customer: items (a quantity of 0 removes the line), pickup
+   * time and a note. The total follows, and what the customer asked for is kept the first time.
+   */
+  edit(ref: string, patch: { items: OrderItem[]; pickup: number; shopNote: string }) {
     store.update((orders) =>
-      orders.map((o) => (o.ref === ref && o.proposedPickup ? { ...o, status: "confirmado", pickup: o.proposedPickup, proposedPickup: undefined } : o)),
+      orders.map((o) => {
+        if (o.ref !== ref) return o;
+        const items = patch.items.filter((i) => i.quantity > 0);
+        const total = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
+        const changed = total !== o.total || patch.pickup !== o.pickup || JSON.stringify(items) !== JSON.stringify(o.items);
+        return {
+          ...o,
+          items,
+          total,
+          pickup: patch.pickup,
+          shopNote: patch.shopNote.trim() || undefined,
+          modified: o.modified || changed,
+          requested: o.requested ?? (changed ? { items: o.items, total: o.total, pickup: o.pickup } : undefined),
+        };
+      }),
     );
   },
 };
@@ -117,7 +146,7 @@ export const orderActions = {
 // ---------------------------------------------------------------------------
 // Sample data: realistic orders built from the real take-away menu and prices.
 
-function random(seed: number) {
+export function random(seed: number) {
   // mulberry32: small, deterministic PRNG so the sample data is stable per day.
   return () => {
     seed |= 0;
@@ -128,8 +157,8 @@ function random(seed: number) {
   };
 }
 
-const FIRST_NAMES = ["Lucía", "Martina", "Sofía", "Valentina", "Camila", "Julieta", "Paula", "Florencia", "Mateo", "Santiago", "Tomás", "Joaquín", "Facundo", "Nicolás", "Agustina", "Carolina", "Gonzalo", "Mariana"];
-const LAST_NAMES = ["González", "Rodríguez", "Fernández", "López", "Martínez", "Pérez", "Gómez", "Díaz", "Sánchez", "Romero", "Álvarez", "Torres", "Ruiz", "Benítez", "Acosta", "Medina"];
+export const FIRST_NAMES = ["Lucía", "Martina", "Sofía", "Valentina", "Camila", "Julieta", "Paula", "Florencia", "Mateo", "Santiago", "Tomás", "Joaquín", "Facundo", "Nicolás", "Agustina", "Carolina", "Gonzalo", "Mariana"];
+export const LAST_NAMES = ["González", "Rodríguez", "Fernández", "López", "Martínez", "Pérez", "Gómez", "Díaz", "Sánchez", "Romero", "Álvarez", "Torres", "Ruiz", "Benítez", "Acosta", "Medina"];
 const NOTES = ["", "", "", "", "Escribir “Feliz cumple, Sofi”", "Con velitas, por favor", "Retira su hermano", "Sin frutos secos si se puede", "Escribir “Felicidades”"];
 
 function sampleOrders(now: number): Order[] {
@@ -189,9 +218,9 @@ function sampleOrders(now: number): Order[] {
         location: hasBranches ? pick(locations).name : undefined,
         items,
         total: items.reduce((sum, it) => sum + it.unitPrice * it.quantity, 0),
-        // WhatsApp orders and orders the shop confirms are paid on pickup, so only past ones count as paid.
-        payment: shop.orders.payment !== "mercadopago" ? (isPast ? "pagado" : "pendiente") : !isPast && rand() < 0.12 ? "pendiente" : "pagado",
-        status: isPast ? "completado" : needsApproval ? (rand() < 0.3 ? "por-confirmar" : "confirmado") : "pendiente",
+        // WhatsApp orders are paid on pickup, so only past ones count as paid.
+        payment: shop.orders.payment === "whatsapp" ? (isPast ? "pagado" : "pendiente") : !isPast && rand() < 0.12 ? "pendiente" : "pagado",
+        status: isPast ? "completado" : isConsulta ? (rand() < 0.3 ? "consulta" : "confirmado") : "pendiente",
         sample: true,
       });
     }

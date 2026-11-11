@@ -11,14 +11,16 @@ import { Radio } from "@base-ui/react/radio";
 import { RadioGroup } from "@base-ui/react/radio-group";
 import { useCart, type ResolvedLine } from "@/components/cart/cart-provider";
 import { Drawer, SidePanel } from "@/components/ui/drawer";
+import { Calendar } from "@/components/ui/calendar";
 import { QuantityField } from "@/components/ui/quantity-field";
 import { BagIcon, CalendarIcon, CloseIcon, PinIcon, WhatsappIcon } from "@/components/icons";
 import { startCheckout } from "@/lib/checkout-actions";
+import { startOfArDay } from "@/lib/admin-dates";
 import { saveLastOrder } from "@/lib/last-order";
 import { formatPrice } from "@/lib/menu";
 import { pickupDays } from "@/lib/pickup";
 import { useNow } from "@/lib/use-now";
-import { closedLabel, hasBranches, leadTimeLabel, lineLabel, locations, needsApproval, noun, paysOnline, shop } from "@/lib/shop";
+import { closedLabel, hasBranches, leadTimeLabel, lineLabel, locations, noun, paysOnline, shop } from "@/lib/shop";
 
 const one = noun.g("una", "uno");
 
@@ -177,19 +179,6 @@ function CartContents() {
               Pago seguro en Mercado Pago. Tu pedido se confirma al acreditarse el pago.
             </p>
           </>
-        ) : needsApproval ? (
-          <>
-            <button
-              type="submit"
-              disabled={pending}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-3.5 font-semibold text-white transition-[background-color,transform] hover:bg-brand-ink active:scale-[0.98] disabled:opacity-70"
-            >
-              {pending ? "Enviando tu pedido…" : "Enviar pedido"}
-            </button>
-            <p className="mt-2 text-center text-xs text-muted">
-              No se cobra nada ahora. {shop.shortName} revisa tu pedido y te confirma por WhatsApp. Pagás al retirar.
-            </p>
-          </>
         ) : (
           <>
             <button
@@ -197,10 +186,10 @@ function CartContents() {
               disabled={pending}
               className="flex w-full items-center justify-center gap-2 rounded-full bg-[#1a7f4b] px-5 py-3.5 font-semibold text-white transition-[background-color,transform] hover:bg-[#156b3f] active:scale-[0.98] disabled:opacity-70"
             >
-              <WhatsappIcon /> {pending ? "Preparando tu pedido…" : "Pedir por WhatsApp"}
+              <WhatsappIcon /> {pending ? "Preparando tu consulta…" : "Consultar"}
             </button>
             <p className="mt-2 text-center text-xs text-muted">
-              Te armamos el mensaje con todo el pedido. Pagás al retirar.
+              Te abrimos WhatsApp con tu pedido para que {shop.shortName} lo confirme con vos. No se cobra nada ahora: pagás al retirar.
             </p>
           </>
         )}
@@ -300,28 +289,23 @@ function PickupPicker({ error }: { error?: string }) {
 
       {day ? (
         <>
-          {/* Scrolls sideways: horizontal drags here scroll the days instead of swiping the drawer closed.
-              `relative` makes it the offset parent, so Base UI scrolls the checked day into view correctly. */}
-          <RadioGroup
-            aria-label="Día de retiro"
-            value={day.key}
-            onValueChange={(key: string) => {
-              setDayKey(key);
-              setSlot(null);
+          {/* The day, in the same calendar as the rest of the site: only the days with a pickup time can be picked. */}
+          <Calendar
+            today={startOfArDay(now!)}
+            value={day.start}
+            onChange={(start) => {
+              const next = days.find((d) => d.start === start);
+              if (next) {
+                setDayKey(next.key);
+                setSlot(null);
+              }
             }}
-            data-base-ui-swipe-ignore="x"
-            className="no-scrollbar relative -mx-5 flex gap-2 overflow-x-auto px-5 pb-1"
-          >
-            {days.map((d) => (
-              <Radio.Root
-                key={d.key}
-                value={d.key}
-                className="shrink-0 cursor-pointer rounded-2xl bg-paper px-3 py-2 text-left text-sm ring-1 ring-line transition-colors outline-none first-letter:uppercase hover:ring-ink/40 focus-visible:ring-2 focus-visible:ring-brand data-checked:bg-ink data-checked:text-cream data-checked:ring-ink"
-              >
-                {d.label}
-              </Radio.Root>
-            ))}
-          </RadioGroup>
+            minDay={days[0].start}
+            maxDay={days.at(-1)?.start}
+            isDisabled={(start) => !days.some((d) => d.start === start)}
+            className="rounded-2xl bg-paper p-2 ring-1 ring-line"
+          />
+          <p className="mt-2 text-sm text-muted first-letter:uppercase">{day.label}</p>
           {/* Submitted as "pickup" through the group's hidden input. */}
           <RadioGroup
             name="pickup"
