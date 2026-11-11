@@ -14,7 +14,8 @@
     "menu-from-csv": "node scripts/menu-from-csv.mjs",
     "new-shop": "node scripts/new-shop.mjs",
     "import-nucleocheck": "node scripts/import-nucleocheck.mjs",
-    "record-demo": "node scripts/record-demo.mjs"
+    "record-demo": "node scripts/record-demo.mjs",
+    "record-whatsapp-demo": "node scripts/record-whatsapp-demo.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

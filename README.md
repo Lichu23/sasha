@@ -88,6 +88,27 @@ order comment: make it match what gets ordered. Needs Chrome (`CHROME=<path>` if
 Windows location). In Git Bash, prefix the command with `MSYS_NO_PATHCONV=1` so `/admin` isn't turned into
 a Windows path. Don't change `FPS` unless asked.
 
+### Dental clinic demo (WhatsApp assistant)
+
+A second kind of demo, for clinics: a simulated WhatsApp assistant that books a turno, sends the reminder,
+handles an urgency and hands over to reception, then the clinic's agenda. It lives at `/clinica` (chat) and
+`/clinica/agenda` (panel) and doesn't depend on `SHOP`; the clinic's name, colors, people and figures are in
+`lib/clinica.ts`, the conversation in `components/clinica/chat-script.ts`. Nothing is sent anywhere, so visitors
+can also try it by typing or tapping. The bot opens a calendar with only the days and times that are free in the
+agenda; what the patient books in the chat shows up in the agenda right away (and leaves the calendar), through
+`lib/clinica-store.ts`.
+
+```bash
+npm run dev -- -p 3100                                      # in another terminal
+MSYS_NO_PATHCONV=1 npm run record-whatsapp-demo -- demo/clinica-whatsapp.mp4
+```
+
+Same rules as above (frame by frame, 30 fps, one phone on 1920x1080, `-email.mp4` copy). Every step has a title
+beside the phone, the list of steps is on the right, and an intro and a closing card with what's included frame
+the video. The titles are the `STEPS` list at the top of `scripts/record-whatsapp-demo.mjs`. `TEST=1` records
+only the chat up to the reminder, without titles (about 1 minute). Both recorders share the virtual clock in
+`scripts/lib/virtual-clock.mjs`.
+
 ## Send one link
 
 Every shop has a pitch page at `/demo` (e.g. [delfis-pasteleria.vercel.app/demo](https://delfis-pasteleria.vercel.app/demo)):
