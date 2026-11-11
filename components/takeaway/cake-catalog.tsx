@@ -121,9 +121,13 @@ export function CakeCatalog({ sections }: { sections: Section[] }) {
             <CakeDetail
               key={detail.id}
               cake={detail}
-              onAdd={(sizeId, quantity) => {
-                actions.add(detail.id, sizeId, quantity);
+              onAdd={async (sizeId, quantity, photo) => {
+                // The photo starts flying to the cart before the sheet closes, so it is still where it was; the
+                // badge counts the product as it lands (as with the card's +).
+                const flight = flyToCart(photo);
                 setOpen(false);
+                await flight;
+                actions.add(detail.id, sizeId, quantity);
                 confirmAdded(detail.name);
               }}
             />
@@ -179,7 +183,7 @@ export function CakeCatalog({ sections }: { sections: Section[] }) {
   );
 }
 
-function CakeDetail({ cake, onAdd }: { cake: Product; onAdd: (sizeId: string, quantity: number) => void }) {
+function CakeDetail({ cake, onAdd }: { cake: Product; onAdd: (sizeId: string, quantity: number, photo: Element | null | undefined) => void }) {
   // Default to the most popular size (the largest) so one tap is enough.
   const [sizeId, setSizeId] = useState(cake.sizes.at(-1)!.id);
   const [quantity, setQuantity] = useState(1);
@@ -187,7 +191,7 @@ function CakeDetail({ cake, onAdd }: { cake: Product; onAdd: (sizeId: string, qu
 
   return (
     <>
-      <div className="relative h-48 shrink-0 bg-blush sm:h-56">
+      <div data-fly-photo className="relative h-48 shrink-0 bg-blush sm:h-56">
         {cake.image ? <Image src={cake.image} alt={cake.name} fill sizes="448px" className="object-cover" /> : null}
         <Drawer.Close
           className="absolute top-3 right-3 grid size-10 place-items-center rounded-full bg-paper/95 shadow"
@@ -245,7 +249,7 @@ function CakeDetail({ cake, onAdd }: { cake: Product; onAdd: (sizeId: string, qu
         </div>
         <button
           type="button"
-          onClick={() => onAdd(sizeId, quantity)}
+          onClick={(e) => onAdd(sizeId, quantity, e.currentTarget.closest("[role=dialog]")?.querySelector("[data-fly-photo]"))}
           className="mt-4 w-full rounded-full bg-brand px-5 py-3.5 font-semibold text-white transition-[background-color,transform] hover:bg-brand-ink active:scale-[0.98]"
         >
           Agregar
