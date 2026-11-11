@@ -160,8 +160,8 @@ function SheetBody({
         ) : null}
       </div>
 
-      {/* Stays in view while the times scroll: the sheet's bottom edge runs 3rem past the screen (see ui/drawer.tsx). */}
-      <div className="sticky bottom-[calc(3rem+env(safe-area-inset-bottom))] z-10 mt-2 flex flex-col gap-2 border-t border-line bg-cream px-5 pt-3 pb-3">
+      {/* Stays in view while the times scroll (the sheet pads its own bottom, see ui/drawer.tsx). */}
+      <div className="sticky bottom-0 z-10 mt-2 flex flex-col gap-2 border-t border-line bg-cream px-5 pt-3 pb-3">
         <button
           type="button"
           disabled={!ready}
