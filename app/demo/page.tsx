@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ShopBrand } from "@/components/shop-logo";
 import { ArrowIcon } from "@/components/icons";
@@ -66,15 +67,37 @@ const steps = management ? managementSteps : [
     : []),
 ];
 
+const headline = management ? "Así podría ser la gestión de" : "Así podría ser la página de";
+
 export default function DemoPage() {
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 pt-[max(2.5rem,env(safe-area-inset-top))] pb-[max(2.5rem,env(safe-area-inset-bottom))] sm:px-6">
       <header className="flex flex-col items-center text-center">
-        <div className="flex items-center gap-3 font-display text-2xl font-semibold">
-          <ShopBrand size={56} name={<span>{shop.name}</span>} />
-        </div>
-        <h1 className="mt-6 font-display text-3xl leading-tight font-semibold tracking-tight text-balance sm:text-4xl">
-          {management ? `Así podría ser la gestión de ${shop.shortName}` : `Así podría ser la página de ${shop.shortName}`}
+        {/* A shop with a wordmark has its logo in the title instead of its name, so it isn't shown twice. */}
+        {shop.wordmark ? null : (
+          <div className="flex items-center gap-3 font-display text-2xl font-semibold">
+            <ShopBrand size={56} name={<span>{shop.name}</span>} />
+          </div>
+        )}
+        <h1
+          aria-label={`${headline} ${shop.shortName}`}
+          className={`${shop.wordmark ? "" : "mt-6 "}font-display text-3xl leading-tight font-semibold tracking-tight text-balance sm:text-4xl`}
+        >
+          {headline}{" "}
+          {shop.wordmark ? (
+            <Image
+              src={shop.wordmark.src}
+              alt=""
+              width={shop.wordmark.width}
+              height={shop.wordmark.height}
+              preload
+              // The logo reads as a word of the title: its height follows the text, centered on the line.
+              style={{ height: "1.9em", width: "auto" }}
+              className="inline-block -translate-y-[0.06em] align-middle"
+            />
+          ) : (
+            shop.shortName
+          )}
         </h1>
       </header>
 
@@ -86,7 +109,7 @@ export default function DemoPage() {
           <div className="aspect-video overflow-hidden rounded-2xl bg-ink shadow-lg ring-1 ring-line">
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId)}?rel=0`}
-              title={`Video: cómo funciona la página de ${shop.shortName}`}
+              title={`Video: cómo funciona ${management ? "la gestión" : "la página"} de ${shop.shortName}`}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
@@ -102,7 +125,11 @@ export default function DemoPage() {
           Pruébenla ustedes
         </h2>
         <p className="mt-1 text-center text-muted text-pretty">
-          {paysOnline ? "Es una demo: pueden tocar todo, el pago está simulado y no se cobra nada." : "Es una demo: pueden tocar todo, y no se cobra nada."}
+          {management
+            ? "Es una demo: pueden tocar todo. Los datos son de ejemplo."
+            : paysOnline
+              ? "Es una demo: pueden tocar todo, el pago está simulado y no se cobra nada."
+              : "Es una demo: pueden tocar todo, y no se cobra nada."}
         </p>
         <ol className="mt-5 grid gap-3">
           {steps.map(({ href, title, text, action }, i) => (
