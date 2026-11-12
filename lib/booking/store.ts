@@ -58,7 +58,7 @@ export function seedBookings(venue: Venue, today: number): Booking[] {
     };
   };
 
-  for (let d = -3; d <= 10; d++) {
+  for (let d = -60; d <= 10; d++) {
     const day = today + d * DAY;
     if (!isBookableDay(venue, day)) continue;
 

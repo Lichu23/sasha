@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { formatTime, dayLabel } from "@/lib/admin-dates";
 import type { Booking } from "@/lib/booking/availability";
 import { euros, offerOf, staffOf, type Venue } from "@/lib/booking/venues";
@@ -40,9 +39,6 @@ export function Confirmation({ venue, booking, now, onAgain }: { venue: Venue; b
         </dl>
         <p className="mt-4 rounded-2xl bg-blush px-4 py-3 text-sm text-brand-ink">Te enviamos un recordatorio por WhatsApp el día antes. Si no puedes venir, avísanos con 12 horas de antelación.</p>
         <div className="mt-5 grid gap-2">
-          <Link href={`/${venue.slug}/admin?nuevo=${booking.ref}`} className={`${ghostButton} w-full`}>
-            Ver cómo la ve el {venue.mode === "classes" ? "estudio" : "centro"}
-          </Link>
           <button type="button" onClick={onAgain} className={`${ghostButton} w-full`}>
             Reservar otra
           </button>

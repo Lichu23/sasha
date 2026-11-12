@@ -2,7 +2,7 @@ import { BASE, createPhoneDemo } from "./lib/phone-demo.mjs";
 
 // Records the demo video of a booking demo: `estudio` (Brisa Studio: pilates / yoga / training classes) or `belleza`
 // (Lumi Nails & Beauty: nails and beauty treatments). The customer books and pays a simulated deposit, then a slide to
-// the business's panel shows the booking and the day. A title for every step. ALWAYS frame by frame at 30 fps
+// the business's panel (reservations with attendance and filters, and sales). A title for every step. ALWAYS frame by frame at 30 fps
 // (scripts/lib/phone-demo.mjs).
 //
 // Usage: npm run dev -- -p 3100      (any SHOP: /estudio and /belleza don't depend on it)
@@ -24,7 +24,9 @@ const VENUES = {
       { label: "Paga y reserva", title: "Paga con tarjeta o Bizum", text: "Un minuto, sin llamar ni escribir." },
       { label: "Plaza reservada", title: "Plaza reservada al instante", text: "Con su referencia y el recordatorio del día antes." },
       { label: "La reserva en el panel", title: "La reserva aparece en el panel", text: "En la clase, con las plazas que quedan y el pago hecho." },
-      { label: "Control de asistencia", title: "Controla quién viene", text: "Un toque para vino o no vino, y el calendario con el movimiento de cada día." },
+      { label: "Control de asistencia", title: "Controla quién viene", text: "Un toque para vino o no vino, y filtra por estado." },
+      { label: "Día y semana", title: "Filtra por día y por semana", text: "El calendario muestra cuántas reservas tiene cada día." },
+      { label: "Ventas", title: "Mira las ventas", text: "Ingresos por día, clases que más venden, asistencia y cómo pagan." },
     ],
     outro: {
       title: "El estudio, con las clases llenas",
@@ -33,8 +35,8 @@ const VENUES = {
         ["Pago al reservar", "Tarjeta o Bizum: menos plantones"],
         ["Plazas a la vista", "Cada clase muestra cuántas quedan"],
         ["Panel del estudio", "Quién viene a cada clase, de un vistazo"],
-        ["Asistencia", "Vino o no vino, con un toque"],
-        ["Recordatorios", "Por WhatsApp el día antes (opcional)"],
+        ["Asistencia y filtros", "Vino o no vino; por día, semana y estado"],
+        ["Ventas", "Ingresos, asistencia y cómo pagan"],
       ],
     },
   },
@@ -46,7 +48,9 @@ const VENUES = {
       { label: "Paga la señal", title: "Paga una pequeña señal", text: "Con tarjeta o Bizum. Asegura el hueco y evita plantones." },
       { label: "Cita confirmada", title: "Cita confirmada al instante", text: "Con su referencia y el recordatorio del día antes." },
       { label: "La cita en la agenda", title: "La cita cae sola en la agenda", text: "Con la señal cobrada y lo que resta por pagar." },
-      { label: "Control del día", title: "Controla el día", text: "Llegó o no vino con un toque, y el calendario con las citas de cada día." },
+      { label: "Control del día", title: "Controla quién viene", text: "Llegó o no vino con un toque, y filtra por estado." },
+      { label: "Día y semana", title: "Filtra por día y por semana", text: "El calendario muestra cuántas citas tiene cada día." },
+      { label: "Ventas", title: "Mira las ventas", text: "Ingresos por día, tratamientos que más venden, asistencia y señales retenidas." },
     ],
     outro: {
       title: "La agenda llena, sin llamadas",
@@ -55,8 +59,8 @@ const VENUES = {
         ["Señal online", "Tarjeta o Bizum: menos plantones"],
         ["Agenda por profesional", "Nunca dos citas a la misma hora"],
         ["Duración de cada servicio", "Los huecos se calculan solos"],
-        ["Control del día", "Señales cobradas y ocupación"],
-        ["Recordatorios", "Por WhatsApp el día antes (opcional)"],
+        ["Control del día", "Llegó o no vino; por día, semana y estado"],
+        ["Ventas", "Ingresos, señales retenidas y cómo pagan"],
       ],
     },
   },
@@ -173,21 +177,36 @@ demo.startPart("panel");
 // 5. The booking in the panel
 caption(5);
 await hold(2600);
-await glide(await offsetOf(SLUG === "estudio" ? "ul[aria-label='Clases']" : "ul[aria-label='Citas']", 100), 1400); await hold(3200);
+await glide(await offsetOf(SLUG === "estudio" ? "ul[aria-label='Clases']" : "ul[aria-label='Citas']", 170), 1400); await hold(3200);
 
-// 6. Attendance, and the calendar with each day's movement
+// 6. Attendance, and the filter by status
 caption(6);
 if (SLUG === "estudio") await tap(await find("li[data-booking] button[aria-label$=' vino']")); else await tap(await find("button", "Llegó"));
 await hold(2200);
 await glide(0, 1200); await hold(500);
+await tap(await find("[aria-label='Estado'] [role=radio]", "Vinieron")); await hold(2600);
+await tap(await find("[aria-label='Estado'] [role=radio]", "Todas")); await hold(1200);
+
+// 7. The calendar with each day's bookings, and the week
+caption(7);
 await tap("button[data-calendar]"); await hold(2800); // the calendar opens over the page, with a count per day
 {
   const days = await page.$$eval("[role=dialog] button[data-day]:not(:disabled)", (els) => els.map((e) => Number(e.dataset.day)));
   const today = await page.$eval("[role=dialog] [data-today]", (el) => Number(el.dataset.day));
-  await tap(`[role=dialog] button[data-day='${days.find((d) => d >= today && d !== today) ?? today}']`); await hold(1000);
+  await tap(`[role=dialog] button[data-day='${days.find((d) => d > today) ?? today}']`); await hold(1000);
 }
-await tap(await find("[role=dialog] button", "Ver este día")); await hold(3000);
-await glide(await offsetOf(SLUG === "estudio" ? "ul[aria-label='Clases']" : "ul[aria-label='Citas']", 100), 1400); await hold(2400);
+await tap(await find("[role=dialog] button", "Ver este día")); await hold(2800);
+await tap(await find("[aria-label='Vista'] [role=radio]", "Semana")); await hold(3600); // the week, a row per day
+
+// 8. The sales view
+caption(8);
+await tap(await find("nav[aria-label='Panel'] a", "Ventas"));
+await until(() => location.pathname.endsWith("/ventas"));
+await hold(2800);
+await glide(await offsetOf("#by-day", 150), 1500); await hold(2600);
+await glide(await offsetOf("#by-offer", 150), 1500); await hold(2600);
+await glide(await offsetOf("#methods", 150), 1500); await hold(2400);
+await tap(await find("[aria-label='Período'] [role=radio]", "7 días")); await glide(0, 1400); await hold(2600);
 await hold(demo.outroMs); // the closing card covers this
 await demo.endPart();
 

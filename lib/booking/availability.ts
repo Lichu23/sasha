@@ -77,3 +77,9 @@ export function timesFor(venue: Venue, day: number, offer: Offer, staffId: strin
 export const isBookableDay = (venue: Venue, day: number) => (venue.mode === "classes" ? venue.timetable.some((r) => r.weekdays.includes(toAr(day).weekday)) : Boolean(venue.open[toAr(day).weekday]));
 
 export const today = (now: number) => startOfArDay(now);
+
+/**
+ * What a booking is worth in the sales: a customer who came is worth the full price (the deposit and what is paid at
+ * the center), a no-show keeps the deposit, a cancellation is refunded, and one still to come counts what was paid.
+ */
+export const saleValue = (b: Booking) => (b.status === "cancelada" ? 0 : b.status === "asistio" ? b.price : b.paid);

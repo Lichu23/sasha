@@ -5,7 +5,7 @@ import { belleza } from "@/lib/booking/venues";
 export default function BellezaPage() {
   return (
     <>
-      <VenueHeader venue={belleza} current="cliente" />
+      <VenueHeader venue={belleza} />
       <main className="flex flex-1 flex-col">
         <VenueHero venue={belleza} />
         <ServicesBooking venue={belleza} />

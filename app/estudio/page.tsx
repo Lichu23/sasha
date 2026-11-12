@@ -5,7 +5,7 @@ import { estudio } from "@/lib/booking/venues";
 export default function EstudioPage() {
   return (
     <>
-      <VenueHeader venue={estudio} current="cliente" />
+      <VenueHeader venue={estudio} />
       <main className="flex flex-1 flex-col">
         <VenueHero venue={estudio} />
         <ClassesBooking venue={estudio} />

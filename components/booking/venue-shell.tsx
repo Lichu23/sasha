@@ -18,9 +18,8 @@ export function VenueShell({ venue, fonts, children }: { venue: Venue; fonts: { 
   );
 }
 
-export function VenueHeader({ venue, current }: { venue: Venue; current: "cliente" | "panel" }) {
-  const tab = (active: boolean) =>
-    `inline-flex min-h-11 items-center rounded-full px-4 text-sm font-semibold [touch-action:manipulation] transition-colors active:scale-95 motion-reduce:active:scale-100 ${active ? "bg-brand text-white" : "text-muted hover:text-ink"}`;
+/** The customer's header: the venue and a way to the booking. The business's panel is a separate address, not linked here. */
+export function VenueHeader({ venue }: { venue: Venue }) {
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-cream/95 backdrop-blur">
       <div className="mx-auto flex w-full max-w-md items-center justify-between gap-2 px-4 py-2">
@@ -30,14 +29,12 @@ export function VenueHeader({ venue, current }: { venue: Venue; current: "client
           </span>
           <span className="truncate font-display text-lg font-semibold">{venue.name}</span>
         </Link>
-        <nav aria-label="Vista" className="flex shrink-0 gap-1">
-          <Link href={`/${venue.slug}`} aria-current={current === "cliente" ? "page" : undefined} className={tab(current === "cliente")}>
-            Reservar
-          </Link>
-          <Link href={`/${venue.slug}/admin`} aria-current={current === "panel" ? "page" : undefined} className={tab(current === "panel")}>
-            Panel
-          </Link>
-        </nav>
+        <a
+          href="#reservar"
+          className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-brand px-4 text-sm font-semibold text-white [touch-action:manipulation] transition-transform active:scale-95 motion-reduce:active:scale-100"
+        >
+          {venue.mode === "classes" ? "Reservar clase" : "Reservar cita"}
+        </a>
       </div>
     </header>
   );
