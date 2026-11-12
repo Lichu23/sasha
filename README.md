@@ -169,6 +169,37 @@ MSYS_NO_PATHCONV=1 npm run record-gestion-demo -- demo/magnolia-gestion.mp4
 Same rules as the others (frame by frame, 30 fps, one phone on 1920x1080, `-email.mp4` copy, a title per step: the
 `STEPS` list at the top of `scripts/record-gestion-demo.mjs`). `TEST=1` records only the Caja (about 35 seconds).
 
+### Booking demos (studio and beauty center, for Spain)
+
+Two standalone demos for businesses that live off appointments, in Spanish from Spain and euros, independent of `SHOP`:
+
+- **`/estudio`: Brisa Studio** (pilates, yoga, training). The customer picks a day in the calendar, sees that day's classes
+  with the seats left, takes one and pays for it. Panel at `/estudio/admin`: one card per class with its seats and who is
+  coming, vino / no vino, and a calendar with each day's bookings.
+- **`/belleza`: Lumi Nails & Beauty** (nails, lashes, aesthetics). The customer picks a treatment, a professional (or
+  "cualquiera"), a day and a time (taken times are struck through, and the durations are respected), and pays a small
+  deposit (señal, 5 €) to hold it. Panel at `/belleza/admin`: the day's agenda with deposits, occupation and Llegó / No vino.
+
+Payment is a simulated sheet (card or Bizum): nothing is charged, and a real business would use its own Stripe or Redsys
+account, paid to the business and never through ours. A booking made on the customer's page shows up in the panel
+(`?nuevo=REF`, the link on the confirmation). Everything lives in localStorage, like the other demos; a real version needs
+a database with the seat / time check done on the server, the panel's login and the WhatsApp reminders.
+
+The venues (name, colors, staff, treatments, timetable) are in `lib/booking/venues.ts`; availability in
+`lib/booking/availability.ts`; the bookings, seeded around today, in `lib/booking/store.ts`; the screens in
+`components/booking/`. Their colors and fonts replace the template's through a style tag in the layout (the sheets are
+drawn in a portal, so a wrapper element wouldn't reach them).
+
+```bash
+npm run dev -- -p 3100                                       # in another terminal
+MSYS_NO_PATHCONV=1 npm run record-booking-demo -- estudio demo/estudio-pilates-yoga/estudio-pilates-yoga.mp4
+MSYS_NO_PATHCONV=1 npm run record-booking-demo -- belleza demo/estetica-unas/estetica-unas.mp4
+```
+
+Same rules as the others (frame by frame, 30 fps, one phone on 1920x1080, `-email.mp4` copy, a title per step: the `VENUES`
+list at the top of `scripts/record-booking-demo.mjs`). `NOTES` is the customer's comment (beauty); `TEST=1` records only the
+customer's part. If Chrome can't start (a sandboxed shell), set `CHROME_FLAGS="--no-sandbox --disable-gpu"`.
+
 ## Send one link
 
 Every shop has a pitch page at `/demo` (e.g. [delfis-pasteleria.vercel.app/demo](https://delfis-pasteleria.vercel.app/demo)):

@@ -14,7 +14,7 @@ import { installClock } from "./virtual-clock.mjs";
 //   demo.startPart("a"); ...actions, demo.caption(1)...; await demo.endPart();      // one phone video per part
 //   await demo.finish({ colors, logoSvg, intro, outro });                           // parts slide into each other
 //
-// Env: FPS=30 (the rule), DPR=1.25, BASE=http://localhost:3100, CHROME=<path to chrome.exe>
+// Env: FPS=30 (the rule), DPR=1.25, BASE=http://localhost:3100, CHROME=<path to chrome.exe>, CHROME_FLAGS="--no-sandbox ..." (extra flags)
 
 const FPS = Number(process.env.FPS || 30);
 const DPR = Number(process.env.DPR || 1.25);
@@ -57,7 +57,7 @@ export async function createPhoneDemo({ out, steps, introMs = 3200, outroMs = 50
 
   const browser = await puppeteer.launch({
     executablePath: CHROME, headless: true, defaultViewport: null,
-    args: [`--force-device-scale-factor=${DPR}`, "--window-size=390,844", "--disable-renderer-backgrounding", "--disable-background-timer-throttling"],
+    args: [`--force-device-scale-factor=${DPR}`, "--window-size=390,844", "--disable-renderer-backgrounding", "--disable-background-timer-throttling", ...(process.env.CHROME_FLAGS ? process.env.CHROME_FLAGS.split(" ") : [])],
   });
   const page = (await browser.pages())[0] ?? (await browser.newPage());
   await page.setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148");
@@ -274,7 +274,7 @@ small{margin-top:46px;font-size:26px;color:${colors.muted}}`,
       outro.items.map(([t, d]) => `<div class="t"><i>${logoSvg(32, colors.brand)}</i><b>${t}</b><span>${d}</span></div>`).join("")
     }</div><small>${outro.footer}</small></div>`, backdrop);
 
-    const fb = await puppeteer.launch({ executablePath: CHROME, headless: true });
+    const fb = await puppeteer.launch({ executablePath: CHROME, headless: true, args: process.env.CHROME_FLAGS ? process.env.CHROME_FLAGS.split(" ") : [] });
     const fp = await fb.newPage(); await fp.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 1 });
     const render = async (html, name, transparent) => { await fp.setContent(html); const path = join(work, `${name}.png`); await fp.screenshot({ path, omitBackground: transparent }); return path; };
     const artPng = await render(art, "frame-art", false);
