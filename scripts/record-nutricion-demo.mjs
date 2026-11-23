@@ -16,22 +16,19 @@ const TEST = Boolean(process.env.TEST);
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 const steps = [
-  { key: "web", label: "Tu web", title: "Tu consultorio, abierto las 24 h", text: "Tus pacientes ven las consultas y los precios cuando quieran." },
-  { key: "turno", label: "Reserva", title: "Eligen consulta, día y hora", text: "Solo ven los horarios libres de tu agenda." },
-  { key: "datos", label: "Sin pago", title: "Reservan sin pagar", text: "Dejan sus datos y el turno queda reservado." },
-  { key: "email", label: "Email", title: "Reciben un email con todo", text: "Los datos del turno y un link para cancelarlo." },
-  { key: "agenda", label: "Agenda", title: "Tu agenda del día", text: "Cada turno con el paciente y lo que escribió." },
-  { key: "llega", label: "Llega", title: "El paciente llega", text: "Confirmás que vino y abrís su ficha con todos los datos." },
-  { key: "cobro", label: "Cobro", title: "Confirmás el cobro", text: "En efectivo o por transferencia, antes o después de la consulta." },
-  { key: "notas", label: "Notas", title: "Anotás la consulta", text: "Peso, medidas e indicaciones, solo para vos." },
-  { key: "mail", label: "Email", title: "Le enviás su plan por email", text: "Elegís una plantilla y adjuntás el plan, la lista de compras y recetas." },
-  { key: "ventas", label: "Ventas", title: "Todo queda registrado", text: "Tus cobros y tus consultas del período, claros." },
+  { key: "web", label: "Tu página web", title: "Tus pacientes te encuentran 24 h", text: "Ven tus consultas y precios, a cualquier hora." },
+  { key: "turno", label: "Paciente reserva", title: "El paciente reserva su turno solo", text: "Elige día y hora, y deja sus datos." },
+  { key: "email", label: "Paciente: email", title: "Recibe un email de confirmación", text: "Con todos sus datos y un link para cancelar." },
+  { key: "agenda", label: "Tu agenda", title: "Ves los turnos del día", text: "Quién viene, a qué hora y qué te escribió." },
+  { key: "consulta", label: "Llega el paciente", title: "Lo recibís y registrás la visita", text: "Marcás que vino, confirmás el pago y anotás lo importante." },
+  { key: "mail", label: "Después de la consulta", title: "Le mandás su plan por email", text: "Elegís una plantilla y adjuntás imágenes: plan, compras y recetas." },
+  { key: "ventas", label: "Tus ventas", title: "Sabés cuánto cobraste", text: "Cobros y consultas del período, sin hacer cuentas." },
 ];
 
 const outro = {
   title: "Un día de consultorio, sin mensajes sueltos",
   items: [
-    ["Turnos 24 h", "Tus pacientes reservan solos, sin pagar"],
+    ["Turnos 24 h", "Tus pacientes reservan solos"],
     ["Email automático", "Con los datos y el link para cancelar"],
     ["Ficha del paciente", "Datos, notas y consultas en un lugar"],
     ["Cobro a mano", "Efectivo o transferencia, cuando se paga"],
@@ -111,7 +108,6 @@ const chip = free[Math.min(3, free.length - 1)];
 await reveal(chip); await tap(chip, true); await hold(1300);
 
 // Her data: no payment, just a name, a phone and an email
-cap("datos");
 await tap(await find("button", "Reservar turno"), true); await hold(1100);
 await tapIn("[role=dialog] input[name=name]"); await type("Lucía Fernández", 50); await hold(300);
 await tapIn("[role=dialog] input[name=phone]"); await type("11 2345-6789", 50); await hold(300);
@@ -146,18 +142,16 @@ await hold(2400);
 await glide(await offsetOf("ul[aria-label='Citas'] li:nth-child(2)", 120), 1300); await hold(1800);
 await glide(0, 1000); await hold(500);
 
-// The patient arrives: attendance, then her file
-cap("llega");
+// The patient arrives: attendance, then her file, the payment and a note
+cap("consulta");
 await tap(await find("ul[aria-label='Citas'] li:first-child button", "Llegó")); await hold(1600);
 await tap(await find("ul[aria-label='Citas'] li:first-child button", "Abrir ficha"), true); await hold(2600);
 
 // The payment, confirmed by hand
-cap("cobro");
 await tapIn("[role=dialog] [role=radio]", "Transferencia"); await hold(900);
 await tapIn("[role=dialog] [data-cta=cobrar]"); await hold(2000);
 
 // A note about the consultation
-cap("notas");
 await tapIn("[role=dialog] textarea[name=visitNote]"); await type("Peso 68 kg. Objetivo: bajar 4 kg en 2 meses.", 40); await hold(700);
 await tapIn("[role=dialog] [data-cta=guardar-nota]"); await hold(1800);
 

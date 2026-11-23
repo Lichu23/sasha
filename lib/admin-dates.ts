@@ -3,7 +3,7 @@ import { fromAr, toAr } from "@/lib/pickup";
 const TZ = "America/Argentina/Buenos_Aires";
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-const dayFormat = new Intl.DateTimeFormat("es-AR", { weekday: "long", day: "numeric", month: "long", timeZone: TZ });
+const dayFormat = new Intl.DateTimeFormat("es-AR", { weekday: "short", day: "numeric", month: "short", timeZone: TZ });
 const shortDayFormat = new Intl.DateTimeFormat("es-AR", { weekday: "short", day: "numeric", timeZone: TZ });
 const timeFormat = new Intl.DateTimeFormat("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: TZ });
 
@@ -21,7 +21,7 @@ export function dayLabel(time: number, now: number) {
   if (diff === 0) return "Hoy";
   if (diff === 1) return "Mañana";
   if (diff === -1) return "Ayer";
-  return capitalize(dayFormat.format(time));
+  return capitalize(dayFormat.format(time).replace(/\./g, ""));
 }
 
 export const shortDay = (time: number) => shortDayFormat.format(time).replace(".", "");
