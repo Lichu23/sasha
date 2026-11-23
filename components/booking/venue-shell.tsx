@@ -108,7 +108,9 @@ export function VenueFooter({ venue }: { venue: Venue }) {
       <p className="mt-1">
         {venue.address} · {venue.phone}
       </p>
-      <p className="mx-auto mt-4 max-w-xl rounded-2xl bg-blush px-4 py-3 text-brand-ink">Página web de prueba: los datos son de ejemplo y el pago está simulado, no se cobra nada.</p>
+      {venue.payAtVenue ? null : (
+        <p className="mx-auto mt-4 max-w-xl rounded-2xl bg-blush px-4 py-3 text-brand-ink">Página web de prueba: los datos son de ejemplo y el pago está simulado, no se cobra nada.</p>
+      )}
     </footer>
   );
 }

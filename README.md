@@ -238,15 +238,21 @@ What changed in the shared booking code to support it: `Venue.locale` (`es-ES` /
 `say`), `Venue.payments` (the two ways to pay, `payLabel`), `Venue.words` (cita / turno, centro / consultorio), `Venue.deposit`,
 `Venue.solo`, `Venue.patients`. The estudio and belleza demos keep their euros and Bizum.
 
-Demo video (one video, two separate parts: the patient's workflow, then the nutritionist's panel; a title card per step):
-`scripts/record-nutricion-demo.mjs`.
+The nutrition template is paid at the consultorio (`Venue.payAtVenue`): booking is free and asks for an email; the patient gets a
+confirmation email (`/nutricion/email?ref=`, with the data and a link to `/nutricion/cancelar?ref=` that cancels the turno), and the
+panel confirms the payment by hand. In the agenda each turno has "Llegó" and "Abrir ficha" (`booking-file.tsx`): data, payment
+(efectivo / transferencia), a private note, and an email after the visit (template + pictures from `lib/booking/emails.ts`). Emails
+are examples, nothing is sent. `?turno=REF` opens the panel on a booking's day, pinned.
+
+Demo video: one typical day in two separate parts (the patient books and gets the email; then the day at the practice: attendance,
+payment, note, email after the visit, sales), a title card per step: `scripts/record-nutricion-demo.mjs`.
 
 ```bash
 npm run dev -- -p 3100                                       # in another terminal
 MSYS_NO_PATHCONV=1 npm run record-nutricion-demo -- demo/nutricion/nutricion-demo.mp4
 ```
 
-Result: `demo/nutricion/nutricion-demo.mp4` (about 100 s) and `-email.mp4`. Same rules as the other demos (frame by frame, 30 fps).
+Result: `demo/nutricion/nutricion-demo.mp4` (about 105 s) and `-email.mp4`. Same rules as the other demos (frame by frame, 30 fps).
 (the `STEPS` list at the top of `scripts/record-consulta-demo.mjs`), an intro card and a closing card. `NOTES` is the
 customer's comment; `TEST=1` records only the customer's part (about 1 minute).
 

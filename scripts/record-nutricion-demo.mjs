@@ -1,9 +1,11 @@
 import { BASE, createPhoneDemo } from "./lib/phone-demo.mjs";
 
-// Records the demo video of the nutrition practice template (/nutricion), in ONE video with two separate parts:
-// the patient's workflow (the page, the booking, the deposit, the confirmation), then the nutritionist's panel (agenda,
-// attendance, week, patients, sales). A title card for every step. ALWAYS frame by frame at 30 fps on the virtual clock
-// (scripts/lib/phone-demo.mjs).
+// Records the demo video of the nutrition practice template (/nutricion) as ONE typical day, in two separate parts:
+//   1. the patient: opens the page, books a consultation (free, no payment), gets the confirmation email with her data and the
+//      link to cancel;
+//   2. the nutritionist's day at the practice: the agenda, the patient arrives (attendance), the payment confirmed by hand, a note,
+//      the email after the visit (template + pictures) and the sales it all adds up to.
+// A title card for every step. ALWAYS frame by frame at 30 fps on the virtual clock (scripts/lib/phone-demo.mjs).
 //
 // Usage: npm run dev -- -p 3100
 //        MSYS_NO_PATHCONV=1 npm run record-nutricion-demo -- demo/nutricion/nutricion-demo.mp4
@@ -11,40 +13,36 @@ import { BASE, createPhoneDemo } from "./lib/phone-demo.mjs";
 // Env:   TEST=1  only the patient part, no titles (a quick check)    FPS=30 is the rule
 const OUT = process.argv[2] ?? "demo/nutricion/nutricion-demo.mp4";
 const TEST = Boolean(process.env.TEST);
-const LONG = true;
 const DAY_MS = 24 * 60 * 60 * 1000;
-/** A pause: the first number for the 30 s ad, the second for the 60 s one. */
-const h = (short, long) => (LONG ? long : short);
 
-const CATALOG = [
-  { key: "web", label: "Tu web", title: "Tu consultorio, abierto las 24 h", text: "Consultas, precios y cómo trabajás, siempre a mano." },
-  { key: "confianza", long: true, label: "Confianza", title: "Opiniones, recetas y respuestas", text: "Tus pacientes llegan convencidos y con las dudas resueltas." },
-  { key: "turno", label: "Turnos online", title: "Turnos online: presencial o videollamada", text: "Solo ven los horarios libres de tu agenda." },
-  { key: "sena", label: "Seña", title: "Cobrá la seña con Mercado Pago", text: "Menos ausencias: el turno queda firme al reservar." },
-  { key: "confirmacion", label: "Confirmación", title: "Confirmación y recordatorio", text: "Por WhatsApp, con el link si la consulta es online." },
-  { key: "agenda", label: "Agenda", title: "El turno cae solo en tu agenda", text: "Con la seña cobrada y lo que dejó escrito el paciente." },
-  { key: "asistencia", label: "Asistencia", title: "Marcá quién vino con un toque", text: "Y filtrá por estado." },
-  { key: "semana", long: true, label: "Día y semana", title: "Tu semana de un vistazo", text: "Turnos e ingresos de cada día." },
-  { key: "pacientes", label: "Pacientes", title: "La ficha de cada paciente", text: "Consultas, pagos y próximo turno. Buscalo por nombre." },
-  { key: "ventas", label: "Ventas", title: "Tus ventas, claras", text: "Ingresos por día, consultas que más venden y cómo te pagan." },
+const steps = [
+  { key: "web", label: "Tu web", title: "Tu consultorio, abierto las 24 h", text: "Tus pacientes ven las consultas y los precios cuando quieran." },
+  { key: "turno", label: "Reserva", title: "Eligen consulta, día y hora", text: "Solo ven los horarios libres de tu agenda." },
+  { key: "datos", label: "Sin pago", title: "Reservan sin pagar", text: "Dejan sus datos y el turno queda reservado." },
+  { key: "email", label: "Email", title: "Reciben un email con todo", text: "Los datos del turno y un link para cancelarlo." },
+  { key: "agenda", label: "Agenda", title: "Tu agenda del día", text: "Cada turno con el paciente y lo que escribió." },
+  { key: "llega", label: "Llega", title: "El paciente llega", text: "Confirmás que vino y abrís su ficha con todos los datos." },
+  { key: "cobro", label: "Cobro", title: "Confirmás el cobro", text: "En efectivo o por transferencia, antes o después de la consulta." },
+  { key: "notas", label: "Notas", title: "Anotás la consulta", text: "Peso, medidas e indicaciones, solo para vos." },
+  { key: "mail", label: "Email", title: "Le enviás su plan por email", text: "Elegís una plantilla y adjuntás el plan, la lista de compras y recetas." },
+  { key: "ventas", label: "Ventas", title: "Todo queda registrado", text: "Tus cobros y tus consultas del período, claros." },
 ];
-const steps = CATALOG.filter((s) => LONG || !s.long);
 
 const outro = {
-  title: "Menos mensajes, más consultas",
+  title: "Un día de consultorio, sin mensajes sueltos",
   items: [
-    ["Turnos 24 h", "Tus pacientes reservan solos, a cualquier hora"],
-    ["Presencial u online", "Cada consulta con su modalidad"],
-    ["Seña con Mercado Pago", "Menos ausencias sin aviso"],
-    ["Recordatorio por WhatsApp", "Con el link si es videollamada"],
-    ["Ficha de pacientes", "Consultas, pagos y próximo turno"],
-    ["Ventas y cobros", "Ingresos, asistencia y cómo te pagan"],
+    ["Turnos 24 h", "Tus pacientes reservan solos, sin pagar"],
+    ["Email automático", "Con los datos y el link para cancelar"],
+    ["Ficha del paciente", "Datos, notas y consultas en un lugar"],
+    ["Cobro a mano", "Efectivo o transferencia, cuando se paga"],
+    ["Emails con tu plan", "Plantillas e imágenes después de la consulta"],
+    ["Ventas claras", "Tus cobros del día y del período"],
   ],
 };
 
 const mark = (size, color) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-7.2 4.4-12.6 14-14 .4 8.6-4.2 14-11.4 14.2"/><path d="M5 19c2.2-4.4 5.2-7.6 9-9.6"/></svg>`;
 
-const demo = await createPhoneDemo({ out: OUT, steps, });
+const demo = await createPhoneDemo({ out: OUT, steps });
 const { page, hold, until, find, tap, type, load, glide, offsetOf, caption } = demo;
 const cap = (key) => caption(steps.findIndex((s) => s.key === key) + 1);
 const URL = `${BASE}/nutricion`;
@@ -56,17 +54,14 @@ async function pickDay() {
   return days.find((d) => d >= today + 2 * DAY_MS) ?? days.at(-1);
 }
 
-/**
- * Brings something inside the open sheet into view, one frame at a time. The sheet scrolls by itself (not the page), and the
- * quick pace of the ad is too short for the smooth scroll a tap starts, so the sheet is moved here, eased, before the tap.
- */
-async function reveal(handle, ms = 450) {
+/** Moves the open sheet (it scrolls by itself, not the page) so the element sits in view, eased, one frame at a time. */
+async function reveal(handle, ms = 650) {
   const plan = await handle.evaluate((e) => {
     const sheet = e.closest("[role=dialog]");
     if (!sheet) return null;
     const r = e.getBoundingClientRect();
-    if (r.top > 70 && r.bottom < innerHeight - 110) return null; // already in view, clear of the footer
-    return { from: sheet.scrollTop, to: Math.max(0, sheet.scrollTop + r.top - innerHeight * 0.42) };
+    if (r.top > 90 && r.bottom < innerHeight - 130) return null; // already in view, clear of the footer
+    return { from: sheet.scrollTop, to: Math.max(0, sheet.scrollTop + r.top - innerHeight * 0.4) };
   });
   if (!plan) return;
   const n = Math.max(1, Math.round(ms / (1000 / 30)));
@@ -75,13 +70,13 @@ async function reveal(handle, ms = 450) {
     await page.evaluate((v) => { document.querySelector("[role=dialog]").scrollTop = v; }, plan.from + (plan.to - plan.from) * e);
     await hold(1000 / 30);
   }
-  await hold(120);
+  await hold(200);
 }
-/** Reveals the element (a selector, or text inside a selector) and taps it. */
-async function tapIn(selector, text, js = false) {
+/** Brings an element of the open sheet into view and taps it (inside the sheets a script click is the reliable one). */
+async function tapIn(selector, text) {
   const el = await find(selector, text);
   await reveal(el);
-  await tap(el, js);
+  await tap(el, true);
 }
 
 // ---------- Part 1: the patient ----------
@@ -96,50 +91,44 @@ const colors = await page.evaluate(() => {
 demo.startPart("paciente");
 await hold(demo.introMs); // the intro card covers this
 
-// The home: consultations and how it works
+// The home: the consultations with their prices
 cap("web");
-await hold(h(300, 900));
-await glide(await offsetOf("#servicios", 70), h(800, 1400)); await hold(h(900, 1800));
-if (LONG) { await glide(await offsetOf("#pasos-titulo", 80), 1300); await hold(1500); }
-if (LONG) {
-  // Trust: reviews, recipes and the questions, one of them opened
-  cap("confianza");
-  await glide(await offsetOf("#opiniones-titulo", 80), 1300); await hold(1800);
-  await glide(await offsetOf("#tips-titulo", 80), 1300); await hold(1800);
-  await glide(await offsetOf("#faq-titulo", 80), 1300); await hold(700);
-  await tap(await find("summary", "¿Cómo pago?")); await hold(2000);
-}
+await hold(1200);
+await glide(await offsetOf("#servicios", 70), 1500); await hold(2200);
+await glide(await offsetOf("#pasos-titulo", 80), 1400); await hold(1800);
 
 // The booking: consultation, online, day, time
 cap("turno");
-await glide(0, h(450, 800));
+await glide(0, 800);
 await tap(await find("header a", "Reservar turno"));
 await until(() => location.pathname.endsWith("/reservar"));
-await hold(h(300, 900));
-await tap(await find("[role=radio]", "Primera consulta")); await hold(h(400, 1100));
-if (LONG) { await tapIn("[role=dialog] [role=radio]", "Online", true); await hold(900); await tapIn("[role=dialog] [role=radio]", "Presencial", true); await hold(900); }
-await tapIn("[role=dialog] [role=radio]", "Online", true); await hold(h(300, 900));
-await tap(`[aria-label='Calendario'] button[data-day='${await pickDay()}']`); await hold(h(300, 900));
+await hold(1000);
+await tap(await find("[role=radio]", "Primera consulta")); await hold(1400);
+await tapIn("[role=dialog] [role=radio]", "Online"); await hold(1100);
+await tap(`[aria-label='Calendario'] button[data-day='${await pickDay()}']`); await hold(1200);
 const free = await page.$$("[aria-label^='Hora del'] [role=radio]:not([data-disabled]):not([aria-disabled='true'])");
 const chip = free[Math.min(3, free.length - 1)];
-await reveal(chip, h(350, 450)); await tap(chip, true); await hold(h(350, 1000));
+await reveal(chip); await tap(chip, true); await hold(1300);
 
-// The deposit: Mercado Pago
-cap("sena");
-await tap(await find("button", "Reservar y señar"), true); await hold(h(350, 900));
-await tapIn("[role=dialog] input[name=name]", undefined, true); await type("Lucía Fernández", h(18, 45)); await hold(h(100, 300));
-await tapIn("[role=dialog] input[name=phone]", undefined, true); await type("11 2345-6789", h(18, 45)); await hold(h(100, 300));
-await tapIn("[role=dialog] textarea[name=notes]", undefined, true); await type(h("Quiero bajar de peso", "Quiero bajar de peso y rendir mejor"), h(18, 40)); await hold(h(200, 700));
-if (LONG) { await tapIn("[role=dialog] [role=radio]", "Tarjeta", true); await hold(900); await tapIn("[role=dialog] [role=radio]", "Mercado Pago", true); await hold(1300); }
-else await hold(250);
-await tap("[role=dialog] button[type=submit]", true); await hold(300);
+// Her data: no payment, just a name, a phone and an email
+cap("datos");
+await tap(await find("button", "Reservar turno"), true); await hold(1100);
+await tapIn("[role=dialog] input[name=name]"); await type("Lucía Fernández", 50); await hold(300);
+await tapIn("[role=dialog] input[name=phone]"); await type("11 2345-6789", 50); await hold(300);
+await tapIn("[role=dialog] input[name=email]"); await type("lucia.fernandez@gmail.com", 40); await hold(300);
+await tapIn("[role=dialog] textarea[name=notes]"); await type("Quiero bajar de peso", 45); await hold(900);
+await tap("[role=dialog] [data-cta=pagar]", true); await hold(300);
 
-// Confirmed
-cap("confirmacion");
+// Confirmed, and the email she gets
 await until(() => Boolean(document.querySelector("#confirmada")), [], 20000);
-await hold(h(800, 2200));
-await glide(260, h(500, 1000)); await hold(h(700, 2000));
+await hold(2000);
+await glide(260, 1000); await hold(1800);
 const ref = await page.$eval("#confirmada + p b", (el) => el.textContent.trim());
+cap("email");
+await tap(await find("a", "Abrir el email"), true);
+await until(() => location.pathname.endsWith("/email"));
+await hold(2200);
+await glide(await offsetOf("[data-cta=cancelar-turno]", 420), 1500); await hold(3000);
 await demo.endPart();
 
 if (TEST) {
@@ -147,52 +136,55 @@ if (TEST) {
   process.exit(0);
 }
 
-// ---------- Part 2: the practice's panel ----------
-await load(`${URL}/admin?nuevo=${ref}`);
+// ---------- Part 2: a day at the practice ----------
+await load(`${URL}/admin?turno=${ref}`);
 await hold(300);
-demo.startPart("panel");
+demo.startPart("consultorio");
 
 cap("agenda");
-await hold(h(600, 1800));
-await glide(await offsetOf("ul[aria-label='Citas']", 170), h(600, 1300)); await hold(h(900, 2400));
+await hold(2400);
+await glide(await offsetOf("ul[aria-label='Citas'] li:nth-child(2)", 120), 1300); await hold(1800);
+await glide(0, 1000); await hold(500);
 
-cap("asistencia");
-await tap(await find("button", "Llegó")); await hold(h(700, 1800));
-if (LONG) {
-  await glide(0, 900);
-  await tap(await find("[aria-label='Estado'] [role=radio]", "Vinieron")); await hold(1800);
-  await tap(await find("[aria-label='Estado'] [role=radio]", "Todas")); await hold(700);
-}
+// The patient arrives: attendance, then her file
+cap("llega");
+await tap(await find("ul[aria-label='Citas'] li:first-child button", "Llegó")); await hold(1600);
+await tap(await find("ul[aria-label='Citas'] li:first-child button", "Abrir ficha"), true); await hold(2600);
 
-if (LONG) {
-  cap("semana");
-  await tap("button[data-calendar]"); await hold(2400);
-  const days = await page.$$eval("[role=dialog] button[data-day]:not(:disabled)", (els) => els.map((e) => Number(e.dataset.day)));
-  const today = await page.$eval("[role=dialog] [data-today]", (el) => Number(el.dataset.day));
-  await tap(`[role=dialog] button[data-day='${days.find((d) => d > today) ?? today}']`); await hold(800);
-  await tap(await find("[role=dialog] button", "Ver este día")); await hold(1800);
-  await tap(await find("[aria-label='Vista'] [role=radio]", "Semana")); await hold(3000);
-}
+// The payment, confirmed by hand
+cap("cobro");
+await tapIn("[role=dialog] [role=radio]", "Transferencia"); await hold(900);
+await tapIn("[role=dialog] [data-cta=cobrar]"); await hold(2000);
 
-cap("pacientes");
-await tap(await find("nav[aria-label='Panel'] a", "Pacientes"));
-await until(() => location.pathname.endsWith("/pacientes"));
-await hold(h(600, 1800));
-await tap("input[name=q]", true); await type("Lucía", h(35, 80)); await hold(h(1000, 2600));
+// A note about the consultation
+cap("notas");
+await tapIn("[role=dialog] textarea[name=visitNote]"); await type("Peso 68 kg. Objetivo: bajar 4 kg en 2 meses.", 40); await hold(700);
+await tapIn("[role=dialog] [data-cta=guardar-nota]"); await hold(1800);
 
+// The email after the visit: template, pictures, send
+cap("mail");
+await tapIn("[role=dialog] [role=radio]", "Plan alimentario"); await hold(900);
+await tapIn("[role=dialog] [data-image=plan]"); await hold(800);
+await tapIn("[role=dialog] [data-image=compras]"); await hold(800);
+await tapIn("[role=dialog] [data-image=recetas]"); await hold(1000);
+await reveal(await find("[role=dialog] article"), 1200); await hold(2200);
+await tapIn("[role=dialog] [data-cta=enviar-email]"); await hold(2600);
+await tap(await find("[role=dialog] button[aria-label=Cerrar]"), true); await hold(1800); // back to the agenda: the card now says it all
+
+// The sales
 cap("ventas");
 await tap(await find("nav[aria-label='Panel'] a", "Ventas"));
 await until(() => location.pathname.endsWith("/ventas"));
-await hold(h(800, 2000));
-await glide(await offsetOf("#by-day", 150), h(600, 1400)); await hold(h(700, 2000));
-await glide(await offsetOf("#by-offer", 150), h(600, 1400)); await hold(h(600, 2000));
-if (LONG) { await glide(await offsetOf("#methods", 150), 1400); await hold(2200); }
+await hold(2600);
+await tap(await find("[aria-label='Período'] [role=radio]", "7 días")); await glide(0, 1200); await hold(2200);
+await glide(await offsetOf("#by-day", 150), 1400); await hold(2800);
+await glide(await offsetOf("#methods", 150), 1400); await hold(2400);
 await hold(demo.outroMs); // the closing card covers this
 await demo.endPart();
 
 await demo.finish({
   colors,
   logoSvg: mark,
-  intro: { title: "Raíz Nutrición", subtitle: "Turnos online con seña para nutricionistas", note: "Demostración: el pago está simulado" },
-  outro: { title: outro.title, subtitle: "Raíz Nutrición", items: outro.items, footer: "Página web de prueba con datos de ejemplo: no se cobra ni se envía nada." },
+  intro: { title: "Raíz Nutrición", subtitle: "Un día de consultorio con turnos online", note: "De la reserva del paciente a la consulta" },
+  outro: { title: outro.title, subtitle: "Raíz Nutrición", items: outro.items, footer: "Turnos, cobros y emails de tu consultorio, en un solo lugar." },
 });

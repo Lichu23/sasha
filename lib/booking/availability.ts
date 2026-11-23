@@ -10,6 +10,9 @@ export const MINUTE = 60_000;
 /** How long before the start a booking is still accepted. */
 export const NOTICE_MINUTES = 60;
 
+/** What the practice did after the consultation: a private note, and the email sent to the patient. */
+export type Visit = { note?: string; mail?: { template: string; images: string[]; sentAt: number } };
+
 export type Status = "confirmada" | "asistio" | "noshow" | "cancelada";
 export type Booking = {
   id: string;
@@ -26,6 +29,11 @@ export type Booking = {
   /** What was paid online: the full price, or the deposit when the venue asks for one. */
   paid: number;
   method: PayMethod;
+  /** The patient's email (for the confirmation and the emails after the visit). */
+  email?: string;
+  /** Booked without paying online: what is paid is whatever the panel has confirmed by hand. */
+  onSite?: boolean;
+  visit?: Visit;
   /** In person or by video call (offers that can be both). */
   modality?: Modality;
   status: Status;
@@ -84,4 +92,4 @@ export const today = (now: number) => startOfArDay(now);
  * What a booking is worth in the sales: a customer who came is worth the full price, a no-show keeps what was already
  * paid online, a cancellation is refunded, and one still to come counts what was paid.
  */
-export const saleValue = (b: Booking) => (b.status === "cancelada" ? 0 : b.status === "asistio" ? b.price : b.paid);
+export const saleValue = (b: Booking) => (b.status === "cancelada" ? 0 : b.onSite ? b.paid : b.status === "asistio" ? b.price : b.paid);

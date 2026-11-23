@@ -27,7 +27,7 @@ const FADE = 0.6;
 
 // A visible touch marker (runs on the virtual clock), and the Next.js dev badge hidden so it never shows.
 const marker = () => {
-  const hide = () => { const s = document.createElement("style"); s.textContent = "nextjs-portal{display:none!important}"; document.documentElement.append(s); };
+  const hide = () => { const s = document.createElement("style"); s.textContent = "nextjs-portal{display:none!important}*{caret-color:transparent!important}"; document.documentElement.append(s); };
   document.documentElement ? hide() : document.addEventListener("DOMContentLoaded", hide);
   window.__tap = (x, y) => {
     const dot = document.createElement("div");

@@ -4,7 +4,7 @@
 // business's local time (the shared calendar works in a fixed offset, see lib/pickup.ts).
 
 export type VenueSlug = "estudio" | "belleza" | "nutricion";
-export type PayMethod = "tarjeta" | "bizum" | "mercadopago";
+export type PayMethod = "tarjeta" | "bizum" | "mercadopago" | "efectivo" | "transferencia";
 export type Modality = "presencial" | "online";
 export type Staff = { id: string; name: string; role: string };
 export type Offer = {
@@ -44,6 +44,8 @@ export type Venue = {
   payments: [PayMethod, PayMethod];
   /** The share of the price paid online to hold the booking (0 to 1); absent = the full price. */
   deposit?: number;
+  /** Nothing is paid when booking: the patient pays at the practice and the panel confirms the payment by hand. */
+  payAtVenue?: boolean;
   /** One professional only: the booking skips the "con quién" step. */
   solo?: boolean;
   /** The panel has a patients view (a practice with clients that come back). */
@@ -193,8 +195,8 @@ export const belleza: Venue = {
 export const nutricion: Venue = {
   slug: "nutricion",
   locale: "es-AR",
-  payments: ["mercadopago", "tarjeta"],
-  deposit: 0.3,
+  payments: ["efectivo", "transferencia"],
+  payAtVenue: true,
   solo: true,
   patients: true,
   words: { appt: "turno", appts: "turnos", place: "consultorio" },
@@ -214,11 +216,11 @@ export const nutricion: Venue = {
   open: { 1: [hm(9), hm(19)], 2: [hm(9), hm(19)], 3: [hm(9), hm(19)], 4: [hm(9), hm(19)], 5: [hm(9), hm(19)], 6: [hm(9), hm(13)] },
   bookingPath: "/nutricion/reservar",
   reviews: [
-    { name: "Carolina M.", text: "Por fin un plan que puedo sostener. Saqué el turno desde el celu y me llegó el recordatorio por WhatsApp." },
+    { name: "Carolina M.", text: "Por fin un plan que puedo sostener. Saqué el turno desde el celu y me llegó todo por email." },
     { name: "Julián P.", text: "Hice la primera consulta online y fue igual de completa que en persona. Muy claro todo." },
     { name: "Martina S.", text: "Me armó la alimentación para mis entrenamientos y bajé tiempos en la carrera. Recomendadísima." },
   ],
-  policies: ["Señás el 30 % online y el resto lo abonás en la consulta.", "Si cancelás hasta 24 horas antes, te devolvemos la seña.", "Las consultas online son por videollamada: te mandamos el link por WhatsApp."],
+  policies: ["Reservás sin pagar: abonás en el consultorio, en efectivo o por transferencia.", "Podés cancelar el turno con el link del email, hasta 24 horas antes.", "Las consultas online son por videollamada: te mandamos el link por email."],
   theme: { cream: "#fbf6ee", paper: "#ffffff", blush: "#fbe6d3", brand: "#bd5320", "brand-ink": "#8f3c13", ink: "#2a1e16", muted: "#755f50", line: "#eddfce" },
   staff: [{ id: "sol", name: "Lic. Sol Márquez", role: "Nutricionista" }],
   offers: [
@@ -233,8 +235,8 @@ export const nutricion: Venue = {
   home: {
     steps: [
       { title: "Elegí tu turno", text: "Mirá los días y horarios libres y reservá en un minuto." },
-      { title: "Señá online", text: "Pagás el 30 % con Mercado Pago o tarjeta y el turno queda firme." },
-      { title: "Recibí el recordatorio", text: "Te escribimos por WhatsApp el día antes, con el link si es online." },
+      { title: "Recibí tu email", text: "Te llega con todos los datos del turno y un link para cancelarlo si no podés venir." },
+      { title: "Vení a tu consulta", text: "Pagás en el consultorio y, después, te mandamos tu plan por email." },
     ],
     about: {
       name: "Lic. Sol Márquez",
@@ -249,9 +251,9 @@ export const nutricion: Venue = {
     ],
     faq: [
       { q: "¿Cuánto dura la primera consulta?", a: "Una hora: repasamos tu historia, tus hábitos y tus objetivos, y salís con un plan." },
-      { q: "¿Atendés online?", a: "Sí. La consulta por videollamada es igual de completa; te mandamos el link por WhatsApp." },
-      { q: "¿Cómo pago?", a: "Señás el 30 % al reservar, con Mercado Pago o tarjeta. El resto se abona en la consulta." },
-      { q: "¿Puedo cancelar o cambiar el turno?", a: "Sí, hasta 24 horas antes y te devolvemos la seña." },
+      { q: "¿Atendés online?", a: "Sí. La consulta por videollamada es igual de completa; te mandamos el link por email." },
+      { q: "¿Cómo pago?", a: "Reservar es gratis. Abonás la consulta en el consultorio, en efectivo o por transferencia." },
+      { q: "¿Puedo cancelar o cambiar el turno?", a: "Sí: en el email de confirmación hay un link para cancelarlo, hasta 24 horas antes." },
     ],
   },
 };
@@ -275,4 +277,4 @@ export function money(venue: Venue, n: number) {
 export const depositOf = (venue: Venue, price: number) => (venue.deposit ? Math.round((price * venue.deposit) / 100) * 100 : price);
 /** Picks the text for the venue's way of speaking: tuteo (Spain) or voseo (Argentina). */
 export const say = (venue: Venue, tu: string, vos: string) => (venue.locale === "es-AR" ? vos : tu);
-export const payLabel: Record<PayMethod, string> = { tarjeta: "Tarjeta", bizum: "Bizum", mercadopago: "Mercado Pago" };
+export const payLabel: Record<PayMethod, string> = { tarjeta: "Tarjeta", bizum: "Bizum", mercadopago: "Mercado Pago", efectivo: "Efectivo", transferencia: "Transferencia" };

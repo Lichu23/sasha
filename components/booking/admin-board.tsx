@@ -10,6 +10,7 @@ import { bookingActions, useBookings } from "@/lib/booking/store";
 import { money, offerOf, staffOf, type Venue } from "@/lib/booking/venues";
 import { toAr } from "@/lib/pickup";
 import { useNow } from "@/lib/use-now";
+import { BookingFile } from "./booking-file";
 import { CalendarIcon, ChevronIcon, ClockIcon, UserIcon } from "./ui";
 
 // The panel's reservations view: one day at a time (arrows, or the calendar with how many bookings each day has) or a
@@ -42,7 +43,10 @@ const small =
 export function AdminBoard({ venue }: { venue: Venue }) {
   const now = useNow();
   const bookings = useBookings(venue);
-  const fresh = useSearchParams().get("nuevo");
+  const params = useSearchParams();
+  const fresh = params.get("nuevo");
+  const pinned = params.get("turno"); // opens on that booking's day, pinned, without the "Nueva" tag
+  const [fileId, setFileId] = useState<string | null>(null);
   const [picked, setPicked] = useState<number | null>(null);
   const [view, setView] = useState<"dia" | "semana">("dia");
   const [filter, setFilter] = useState<Filter>("todas");
@@ -57,7 +61,7 @@ export function AdminBoard({ venue }: { venue: Venue }) {
   if (now === null || bookings === null) return <p className="px-5 py-10 text-center text-muted">Cargando la agenda…</p>;
 
   const today = startOfArDay(now);
-  const freshBooking = fresh ? bookings.find((b) => b.ref === fresh) : undefined;
+  const freshBooking = fresh || pinned ? bookings.find((b) => b.ref === (fresh ?? pinned)) : undefined;
   const day = picked ?? (freshBooking ? startOfArDay(freshBooking.start) : today);
   const weekStart = day - ((toAr(day).weekday + 6) % 7) * DAY_MS;
   const step = view === "dia" ? DAY_MS : 7 * DAY_MS;
@@ -129,11 +133,12 @@ export function AdminBoard({ venue }: { venue: Venue }) {
           {venue.mode === "classes" ? (
             <ClassesDay venue={venue} day={day} bookings={bookings} shown={shown} fresh={freshBooking?.ref} setStatus={actions.setStatus} filtered={filter !== "todas"} />
           ) : (
-            <ServicesDay venue={venue} shown={shown} fresh={freshBooking?.ref} setStatus={actions.setStatus} />
+            <ServicesDay venue={venue} shown={shown} fresh={freshBooking?.ref} tagged={Boolean(fresh)} setStatus={actions.setStatus} onFile={setFileId} />
           )}
         </>
       )}
       </div>
+      <BookingFile venue={venue} booking={bookings.find((b) => b.id === fileId) ?? null} now={now} onClose={() => setFileId(null)} />
     </main>
   );
 }
@@ -218,7 +223,7 @@ function WeekView({ venue, bookings, weekStart, today, open }: { venue: Venue; b
 
 // ---------- The beauty center: one card per appointment ----------
 
-function ServicesDay({ venue, shown, fresh, setStatus }: { venue: Venue; shown: Booking[]; fresh?: string; setStatus: (id: string, s: Status) => void }) {
+function ServicesDay({ venue, shown, fresh, tagged, setStatus, onFile }: { venue: Venue; shown: Booking[]; fresh?: string; tagged: boolean; setStatus: (id: string, s: Status) => void; onFile: (id: string) => void }) {
   const ordered = [...shown.filter((b) => b.ref === fresh), ...shown.filter((b) => b.ref !== fresh)];
   return (
     <>
@@ -234,7 +239,7 @@ function ServicesDay({ venue, shown, fresh, setStatus }: { venue: Venue; shown: 
                   <ClockIcon className="size-4 text-brand" /> {formatTime(b.start)}–{formatTime(b.start + b.minutes * MINUTE)}
                 </p>
                 <span className="flex items-center gap-1.5">
-                  {b.ref === fresh ? <NewTag /> : null}
+                  {b.ref === fresh && tagged ? <NewTag /> : null}
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${chip.className}`}>{chip.label}</span>
                 </span>
               </div>
@@ -246,10 +251,22 @@ function ServicesDay({ venue, shown, fresh, setStatus }: { venue: Venue; shown: 
                 {venue.solo ? null : <span>con {staffOf(venue, b.staff)?.name}</span>}
                 {b.modality ? <span className="rounded-full bg-cream px-2 py-0.5 text-xs font-semibold ring-1 ring-line">{b.modality === "online" ? "Online" : "Presencial"}</span> : null}
               </p>
+              {venue.payAtVenue ? (
+                <p className="mt-2 flex flex-wrap gap-1.5 text-sm">
+                  {b.paid > 0 ? (
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-800">Cobrada {money(venue, b.paid)}</span>
+                  ) : (
+                    <span className="rounded-full bg-warn-bg px-2 py-0.5 font-medium text-warn-ink">Cobro pendiente {money(venue, b.price)}</span>
+                  )}
+                  {b.visit?.mail ? <span className="rounded-full bg-blush px-2 py-0.5 font-medium text-brand-ink">Email enviado</span> : null}
+                  {b.visit?.note ? <span className="rounded-full bg-cream px-2 py-0.5 font-medium ring-1 ring-line">Con nota</span> : null}
+                </p>
+              ) : (
               <p className="mt-2 text-sm">
                 <span className="rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-800">{venue.deposit ? "Seña" : "Pagada"} {money(venue, b.paid)}</span>
                 {b.price > b.paid ? <span className="ml-2 text-muted">Resta {money(venue, b.price - b.paid)} en el {venue.words.place}</span> : null}
               </p>
+              )}
               {b.notes ? <p className="mt-2 rounded-xl bg-cream px-3 py-2 text-sm">“{b.notes}”</p> : null}
               <div className="mt-3 flex gap-2">
                 {b.status === "confirmada" ? (
@@ -260,15 +277,22 @@ function ServicesDay({ venue, shown, fresh, setStatus }: { venue: Venue; shown: 
                     <button type="button" onClick={() => setStatus(b.id, "noshow")} className={`${small} bg-paper ring-1 ring-line`}>
                       No vino
                     </button>
-                    <button type="button" onClick={() => setStatus(b.id, "cancelada")} className={`${small} bg-paper ring-1 ring-line`}>
-                      Cancelar
-                    </button>
+                    {venue.payAtVenue ? null : (
+                      <button type="button" onClick={() => setStatus(b.id, "cancelada")} className={`${small} bg-paper ring-1 ring-line`}>
+                        Cancelar
+                      </button>
+                    )}
                   </>
                 ) : (
                   <button type="button" onClick={() => setStatus(b.id, "confirmada")} className={`${small} bg-paper ring-1 ring-line`}>
                     Deshacer
                   </button>
                 )}
+                {venue.payAtVenue && b.status !== "cancelada" ? (
+                  <button type="button" data-file={b.ref} onClick={() => onFile(b.id)} className={`${small} bg-ink text-cream`}>
+                    Abrir ficha
+                  </button>
+                ) : null}
               </div>
             </li>
           );

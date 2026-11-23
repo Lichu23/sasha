@@ -112,11 +112,11 @@ export function SalesBoard({ venue }: { venue: Venue }) {
         </div>
         <Tile label={unit[0].toUpperCase() + unit.slice(1)} value={data ? String(data.count) : "–"} />
         <Tile label={venue.mode === "classes" ? "Por reserva" : "Ticket medio"} value={data ? money(venue, venue.locale === "es-AR" ? Math.round(data.avg) : Math.round(data.avg * 10) / 10) : "–"} />
-        <Tile label="Cobrado online" value={data ? euroRound(data.online) : "–"} hint="pagos al reservar" />
+        <Tile label={venue.payAtVenue ? "Cobrado" : "Cobrado online"} value={data ? euroRound(data.online) : "–"} hint={venue.payAtVenue ? "confirmado en el panel" : "pagos al reservar"} />
         <Tile label="Asistencia" value={data?.attendance != null ? `${Math.round(data.attendance * 100)} %` : "–"} hint={data ? `${data.missed} no vinieron` : undefined} />
       </section>
 
-      {data && data.missed > 0 ? (
+      {data && data.missed > 0 && !venue.payAtVenue ? (
         <p className="mt-3 rounded-2xl bg-blush px-4 py-3 text-sm text-brand-ink">
           Los {data.missed} plantones de este período dejaron <b>{money(venue, data.kept)}</b> ya cobrados por adelantado, en vez de huecos vacíos sin ingreso.
         </p>
@@ -151,7 +151,7 @@ export function SalesBoard({ venue }: { venue: Venue }) {
           ) : null}
         </Panel>
 
-        <Panel id="methods" title="Cómo pagan" hint="Pagos online del período">
+        <Panel id="methods" title="Cómo pagan" hint={venue.payAtVenue ? "Cobros del período" : "Pagos online del período"}>
           {data ? <Methods venue={venue} first={firstPay} second={secondPay} card={data.card} bizum={data.bizum} /> : null}
         </Panel>
       </div>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { formatTime, dayLabel } from "@/lib/admin-dates";
 import type { Booking } from "@/lib/booking/availability";
 import { money, offerOf, payLabel, say, staffOf, type Venue } from "@/lib/booking/venues";
@@ -15,8 +16,10 @@ export function Confirmation({ venue, booking, now, onAgain }: { venue: Venue; b
     ...(booking.modality ? ([["Modalidad", booking.modality === "online" ? "Online, por videollamada" : "Presencial, en el consultorio"]] as [string, string][]) : []),
     ...(venue.solo ? [] : ([[venue.mode === "classes" ? "Con" : "Profesional", staff?.name ?? ""]] as [string, string][])),
     [say(venue, "A nombre de", "A nombre de"), booking.name],
-    [venue.deposit ? "Seña pagada" : "Pagado ahora", `${money(venue, booking.paid)} (${payLabel[booking.method]})`],
-    ...(rest > 0 ? ([[`Resto en el ${venue.words.place}`, money(venue, rest)]] as [string, string][]) : []),
+    ...(venue.payAtVenue
+      ? ([["Pago", `En el consultorio · ${money(venue, booking.price)}`]] as [string, string][])
+      : ([[venue.deposit ? "Seña pagada" : "Pagado ahora", `${money(venue, booking.paid)} (${payLabel[booking.method]})`]] as [string, string][])),
+    ...(rest > 0 && !venue.payAtVenue ? ([[`Resto en el ${venue.words.place}`, money(venue, rest)]] as [string, string][]) : []),
   ];
   return (
     <section aria-labelledby="confirmada" className="mx-auto w-full max-w-md px-4 pt-8 pb-10 lg:max-w-xl lg:pt-16 lg:pb-20">
@@ -39,13 +42,20 @@ export function Confirmation({ venue, booking, now, onAgain }: { venue: Venue; b
           ))}
         </dl>
         <p className="mt-4 rounded-2xl bg-blush px-4 py-3 text-sm text-brand-ink">
-          {booking.modality === "online"
+          {venue.payAtVenue
+            ? `Te enviamos un email a ${booking.email} con todos los datos y el link para cancelar el turno.`
+            : booking.modality === "online"
             ? "Te mandamos el link de la videollamada por WhatsApp, con un recordatorio el día antes. Si no podés conectarte, avisanos con 24 horas de anticipación."
             : venue.locale === "es-AR"
               ? "Te enviamos un recordatorio por WhatsApp el día antes. Si no podés venir, avisanos con 24 horas de anticipación y te devolvemos la seña."
               : "Te enviamos un recordatorio por WhatsApp el día antes. Si no puedes venir, avísanos con 12 horas de antelación."}
         </p>
         <div className="mt-5 grid gap-2">
+          {venue.payAtVenue ? (
+            <Link href={`/nutricion/email?ref=${encodeURIComponent(booking.ref)}`} data-cta="ver-email" className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-brand px-5 font-semibold text-white [touch-action:manipulation] active:scale-[0.98]">
+              Abrir el email
+            </Link>
+          ) : null}
           <button type="button" onClick={onAgain} className={`${ghostButton} w-full`}>
             {say(venue, "Reservar otra", "Reservar otro turno")}
           </button>

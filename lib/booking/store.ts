@@ -18,6 +18,9 @@ const LAST = ["García", "Martínez", "López", "Sánchez", "Pérez", "Gómez", 
 const FIRST_AR = ["Lucía", "Martina", "Camila", "Julieta", "Agustina", "Florencia", "Mariana", "Valentina", "Carolina", "Sofía", "Nicolás", "Matías", "Federico", "Lucas", "Julián", "Facundo", "Candela", "Milagros"];
 const LAST_AR = ["González", "Rodríguez", "Fernández", "López", "Martínez", "Pérez", "Gómez", "Díaz", "Sosa", "Romero", "Álvarez", "Torres", "Ruiz", "Acosta", "Benítez", "Medina"];
 
+/** A believable email for a seeded patient: "lucia.fernandez@gmail.com". */
+const emailOf = (name: string) => `${name.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/\s+/g, ".")}@gmail.com`;
+
 function rng(seed: number) {
   let a = seed >>> 0;
   return () => {
@@ -48,6 +51,8 @@ export function seedBookings(venue: Venue, today: number): Booking[] {
   const make = (offerId: string, staff: string, start: number, paid: (price: number) => number): Booking => {
     const offer = offerOf(venue, offerId)!;
     const patient = who();
+    const st = status(start, offer.minutes);
+    const onSite = Boolean(venue.payAtVenue);
     return {
       id: crypto.randomUUID(),
       ref: ref(),
@@ -59,10 +64,11 @@ export function seedBookings(venue: Venue, today: number): Booking[] {
       phone: patient.phone,
       notes: "",
       price: offer.price,
-      paid: paid(offer.price),
+      paid: onSite ? (st === "asistio" ? offer.price : 0) : paid(offer.price),
       method: venue.payments[rand() < 0.4 ? 1 : 0],
+      ...(onSite ? { onSite, email: emailOf(patient.name) } : {}),
       ...(offer.modes && offer.modes.length > 1 ? { modality: rand() < 0.35 ? ("online" as const) : ("presencial" as const) } : {}),
-      status: status(start, offer.minutes),
+      status: st,
       createdAt: start - Math.floor(rand() * 5 + 1) * DAY,
     };
   };
@@ -155,6 +161,10 @@ export const bookingActions = (venue: Venue) => ({
   },
   setStatus(id: string, status: Status) {
     write(venue, read(venue).map((b) => (b.id === id ? { ...b, status } : b)));
+  },
+  /** Changes some fields of a booking (the payment confirmed by hand, the note, the email sent). */
+  update(id: string, patch: Partial<Booking>) {
+    write(venue, read(venue).map((b) => (b.id === id ? { ...b, ...patch } : b)));
   },
   reset() {
     memory = {};

@@ -10,10 +10,11 @@ import { control, LockIcon, primaryButton } from "./ui";
 // The booking sheet: who it is for and a simulated payment (card or Bizum). Nothing is charged: the demo only shows
 // the step a real business would have with its payment provider (Stripe, Redsys), paid to the business's own account.
 
-export type Contact = { name: string; phone: string; notes: string; method: PayMethod };
+export type Contact = { name: string; phone: string; email: string; notes: string; method: PayMethod };
 
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE = /^\+?[\d\s()-]{9,20}$/;
-type Errors = Partial<Record<"name" | "phone" | "card" | "expiry" | "cvc", string>>;
+type Errors = Partial<Record<"name" | "phone" | "email" | "card" | "expiry" | "cvc", string>>;
 
 const digits = (s: string) => s.replace(/\D/g, "");
 const formatCard = (s: string) => digits(s).slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
@@ -76,6 +77,9 @@ function SheetBody({
   const ar = venue.locale === "es-AR";
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  // A practice that is paid at the consultorio: booking is free, so no payment step, but the email gets the confirmation.
+  const free = Boolean(venue.payAtVenue);
   const [notes, setNotes] = useState("");
   const [card, setCard] = useState("");
   const [expiry, setExpiry] = useState("");
@@ -88,7 +92,8 @@ function SheetBody({
     const next: Errors = {};
     if (name.trim().length < 2) next.name = say(venue, "Escribe tu nombre y apellido.", "Escribí tu nombre y apellido.");
     if (!PHONE.test(phone.trim())) next.phone = say(venue, "Escribe un teléfono válido, por ejemplo 612 345 678.", "Escribí un teléfono válido, por ejemplo 11 2345-6789.");
-    if (method === "tarjeta") {
+    if (free && !EMAIL.test(email.trim())) next.email = "Escribí un email válido, por ejemplo lucia@gmail.com.";
+    if (!free && method === "tarjeta") {
       if (digits(card).length < 15) next.card = say(venue, "Revisa el número de la tarjeta.", "Revisá el número de la tarjeta.");
       if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) next.expiry = "Usa el formato MM/AA.";
       if (digits(cvc).length < 3) next.cvc = "3 dígitos.";
@@ -97,7 +102,7 @@ function SheetBody({
     if (Object.keys(next).length) return;
     setPaying(true);
     // The demo's "bank": a moment of processing, then it is paid.
-    setTimeout(() => onPaid({ name: name.trim(), phone: phone.trim(), notes: notes.trim(), method }), 1400);
+    setTimeout(() => onPaid({ name: name.trim(), phone: phone.trim(), email: email.trim(), notes: notes.trim(), method }), free ? 900 : 1400);
   }
 
   return (
@@ -130,6 +135,13 @@ function SheetBody({
             <input name="phone" type="tel" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} autoComplete="tel" maxLength={20} placeholder={ar ? "Ej: 11 2345-6789…" : "Ej: 612 345 678…"} aria-invalid={Boolean(errors.phone)} className={`${control} mt-1 font-normal`} />
             {errors.phone ? <span className="mt-1 block text-brand-ink">{errors.phone}</span> : null}
           </label>
+          {free ? (
+            <label className="block text-sm font-medium">
+              Email
+              <input name="email" type="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" maxLength={80} placeholder="Ej: lucia@gmail.com…" aria-invalid={Boolean(errors.email)} className={`${control} mt-1 font-normal`} />
+              {errors.email ? <span className="mt-1 block text-brand-ink">{errors.email}</span> : <span className="mt-1 block text-muted">Te mandamos ahí los datos del turno y el link para cancelarlo.</span>}
+            </label>
+          ) : null}
           {askNotes ? (
             <label className="block text-sm font-medium">
               {notesLabel ?? "Comentarios (opcional)"}
@@ -138,6 +150,7 @@ function SheetBody({
           ) : null}
         </fieldset>
 
+        {free ? null : (
         <fieldset className="min-w-0">
           <legend className="mb-2 flex w-full items-center justify-between font-semibold">
             <span>Pago</span>
@@ -182,16 +195,19 @@ function SheetBody({
             </p>
           )}
         </fieldset>
+        )}
 
-        <div className="flex items-baseline justify-between border-t border-line pt-3">
-          <span className="text-sm text-muted">{venue.deposit ? "Seña a pagar ahora" : "Total"}</span>
-          <span className="font-display text-2xl font-semibold tabular-nums">{money(venue, amount)}</span>
-        </div>
+        {free ? null : (
+          <div className="flex items-baseline justify-between border-t border-line pt-3">
+            <span className="text-sm text-muted">{venue.deposit ? "Seña a pagar ahora" : "Total"}</span>
+            <span className="font-display text-2xl font-semibold tabular-nums">{money(venue, amount)}</span>
+          </div>
+        )}
       </div>
 
       <div className="sticky bottom-[calc(-1*env(safe-area-inset-bottom))] z-10 border-t border-line bg-cream px-5 pt-3 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
         <button type="submit" data-cta="pagar" disabled={paying} className={primaryButton}>
-          {paying ? "Procesando el pago…" : `Pagar ${money(venue, amount)} y reservar`}
+          {free ? (paying ? "Reservando tu turno…" : "Reservar turno") : paying ? "Procesando el pago…" : `Pagar ${money(venue, amount)} y reservar`}
         </button>
       </div>
     </form>

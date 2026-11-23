@@ -47,7 +47,7 @@ export function ServicesBooking({ venue }: { venue: Venue }) {
   const staffChoice = offer && (staffId === "any" || offer.staff.includes(staffId)) ? staffId : "any";
   const modes = offer?.modes ?? [];
   const modality: Modality | undefined = modes.length ? (modes.includes(how) ? how : modes[0]) : undefined;
-  const due = offer ? depositOf(venue, offer.price) : 0; // what is paid online now
+  const due = offer && !venue.payAtVenue ? depositOf(venue, offer.price) : 0; // what is paid online now
   const day = picked ?? today;
   const times = offer ? timesFor(venue, day, offer, staffChoice, bookings, now) : [];
   const chosen = times.find((t) => t.start === start && t.free);
@@ -68,6 +68,7 @@ export function ServicesBooking({ venue }: { venue: Venue }) {
       price: offer.price,
       paid: due,
       method: contact.method,
+      ...(venue.payAtVenue ? { onSite: true, email: contact.email } : {}),
       ...(modality ? { modality } : {}),
       status: "confirmada",
       createdAt: stamp,
@@ -124,7 +125,9 @@ export function ServicesBooking({ venue }: { venue: Venue }) {
         {say(venue, "Reserva tu cita", "Reservá tu turno")}
       </h1>
       <p className="mt-1 text-muted lg:text-lg">
-        {venue.deposit
+        {venue.payAtVenue
+          ? "Elegí la consulta, el día y la hora. Reservar es gratis: pagás en el consultorio."
+          : venue.deposit
           ? `Elegí ${venue.slug === "nutricion" ? "la consulta" : "el servicio"}, el día y la hora. Señás el ${Math.round(venue.deposit * 100)} % online y tu turno queda asegurado.`
           : "Elige el tratamiento, el día y la hora. Pagas online y tu hueco queda asegurado."}
       </p>
@@ -218,7 +221,8 @@ export function ServicesBooking({ venue }: { venue: Venue }) {
             ? [
                 `${offer.name} · ${offer.minutes} min${modality ? ` · ${modality === "online" ? "videollamada" : "en el consultorio"}` : ""}`,
                 `${dayLabel(chosen.start, now)}, ${formatTime(chosen.start)} h${venue.solo ? "" : ` · con ${staffOf(venue, chosen.staff ?? "")?.name}`}`,
-                ...(offer && due < offer.price ? [`Total ${money(venue, offer.price)} · el resto (${money(venue, offer.price - due)}) lo abonás en la consulta`] : []),
+                ...(venue.payAtVenue ? ["Reservás sin pagar: abonás la consulta en el consultorio"] : []),
+                ...(offer && !venue.payAtVenue && due < offer.price ? [`Total ${money(venue, offer.price)} · el resto (${money(venue, offer.price - due)}) lo abonás en la consulta`] : []),
               ]
             : []
         }
@@ -341,7 +345,7 @@ function Checkout({ venue, offer, when, onPay }: { venue: Venue; offer: Offer; w
         <b>{offer.name}</b> · {when ? <span className="first-letter:uppercase">{when}</span> : <span className="text-muted">{say(venue, "elige una hora", "elegí un horario")}</span>}
       </p>
       <button type="button" data-cta="reservar" disabled={!when} onClick={onPay} className={primaryButton}>
-        {venue.deposit ? `Reservar y señar · ${money(venue, depositOf(venue, offer.price))}` : `Reservar y pagar · ${money(venue, offer.price)}`}
+        {venue.payAtVenue ? "Reservar turno" : venue.deposit ? `Reservar y señar · ${money(venue, depositOf(venue, offer.price))}` : `Reservar y pagar · ${money(venue, offer.price)}`}
       </button>
     </>
   );
