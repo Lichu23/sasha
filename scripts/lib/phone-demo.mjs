@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer-core";
 import ffmpegPath from "ffmpeg-static";
-import { mkdirSync, rmSync } from "node:fs";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { execFileSync, spawn } from "node:child_process";
 import { once } from "node:events";
 import { join } from "node:path";
@@ -321,12 +321,14 @@ small{margin-top:46px;font-size:26px;color:${colors.muted}}`,
       graph.push(`[${n + 2 + k}:v]format=rgba${fades ? `,${fades}` : ""},setpts=PTS-STARTPTS+${o.start.toFixed(3)}/TB[o${k}]`);
       graph.push(`[v${k}][o${k}]overlay=0:0:eof_action=pass${k === overlays.length - 1 ? ",format=yuv420p" : ""}[v${k + 1}]`);
     });
-    execFileSync(ffmpegPath, ["-y", "-v", "error", ...inputs, "-filter_complex", graph.join(";"),
+    // Few threads: this graph holds a dozen looped 1080p inputs, and the default thread count can exhaust a small machine's memory.
+    writeFileSync(join(work, "marks.json"), JSON.stringify({ marks, lengths, starts, total }));
+    execFileSync(ffmpegPath, ["-y", "-v", "error", "-threads", "2", "-filter_threads", "1", "-filter_complex_threads", "1", ...inputs, "-filter_complex", graph.join(";"),
       "-map", `[v${overlays.length}]`, "-r", String(FPS), "-t", total.toFixed(3), "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-maxrate", "12M", "-bufsize", "24M",
       "-g", String(FPS * 2), "-movflags", "+faststart", out]);
 
     // Email/WhatsApp copy: the same frames, smaller (higher CRF).
-    execFileSync(ffmpegPath, ["-y", "-v", "error", "-i", out, "-c:v", "libx264", "-preset", "medium", "-crf", "28", "-movflags", "+faststart",
+    execFileSync(ffmpegPath, ["-y", "-v", "error", "-threads", "2", "-i", out, "-c:v", "libx264", "-preset", "medium", "-crf", "28", "-movflags", "+faststart",
       out.replace(/\.mp4$/, "-email.mp4")]);
     rmSync(work, { recursive: true, force: true });
     console.log(`${total.toFixed(1)} s, parts start at ${starts.map((s) => s.toFixed(1)).join(", ")} s; saved ${out} in ${((Date.now() - started) / 1000).toFixed(0)} s`);

@@ -21,7 +21,7 @@
     "record-reservas-demo": "node scripts/record-reservas-demo.mjs",
     "record-gestion-demo": "node scripts/record-gestion-demo.mjs",
     "record-booking-demo": "node scripts/record-booking-demo.mjs",
-    "record-booking-ad": "node scripts/record-booking-ad.mjs"
+    "record-nutricion-demo": "node scripts/record-nutricion-demo.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
