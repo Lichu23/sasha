@@ -4,13 +4,13 @@ import { useState } from "react";
 import { CloseIcon } from "@/components/icons";
 import { BottomSheet, Drawer } from "@/components/ui/drawer";
 import { Segmented } from "@/components/ui/segmented";
-import { euros } from "@/lib/booking/venues";
+import { money, payLabel, say, type PayMethod, type Venue } from "@/lib/booking/venues";
 import { control, LockIcon, primaryButton } from "./ui";
 
 // The booking sheet: who it is for and a simulated payment (card or Bizum). Nothing is charged: the demo only shows
 // the step a real business would have with its payment provider (Stripe, Redsys), paid to the business's own account.
 
-export type Contact = { name: string; phone: string; notes: string; method: "tarjeta" | "bizum" };
+export type Contact = { name: string; phone: string; notes: string; method: PayMethod };
 
 const PHONE = /^\+?[\d\s()-]{9,20}$/;
 type Errors = Partial<Record<"name" | "phone" | "card" | "expiry" | "cvc", string>>;
@@ -23,25 +23,24 @@ const formatExpiry = (s: string) => {
 };
 
 export function PaySheet({
+  venue,
   open,
   onOpenChange,
   title,
   lines,
   amount,
-  total,
   askNotes,
   notesLabel,
   onPaid,
 }: {
+  venue: Venue;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   /** What is being booked, one line each. */
   lines: string[];
-  /** What is paid now. */
+  /** The full price, paid now. */
   amount: number;
-  /** The full price; when higher than `amount` the rest is paid at the business. */
-  total: number;
   askNotes?: boolean;
   notesLabel?: string;
   onPaid: (contact: Contact) => void;
@@ -50,30 +49,31 @@ export function PaySheet({
     <Drawer.Root open={open} onOpenChange={onOpenChange} swipeDirection="down">
       <BottomSheet>
         {/* Mounted only while open: every booking starts from an empty form. */}
-        <SheetBody title={title} lines={lines} amount={amount} total={total} askNotes={askNotes} notesLabel={notesLabel} onPaid={onPaid} />
+        <SheetBody venue={venue} title={title} lines={lines} amount={amount} askNotes={askNotes} notesLabel={notesLabel} onPaid={onPaid} />
       </BottomSheet>
     </Drawer.Root>
   );
 }
 
 function SheetBody({
+  venue,
   title,
   lines,
   amount,
-  total,
   askNotes,
   notesLabel,
   onPaid,
 }: {
+  venue: Venue;
   title: string;
   lines: string[];
   amount: number;
-  total: number;
   askNotes?: boolean;
   notesLabel?: string;
   onPaid: (contact: Contact) => void;
 }) {
-  const [method, setMethod] = useState<"tarjeta" | "bizum">("tarjeta");
+  const [method, setMethod] = useState<PayMethod>(venue.payments[0]);
+  const ar = venue.locale === "es-AR";
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
@@ -86,10 +86,10 @@ function SheetBody({
   function submit(e: React.FormEvent) {
     e.preventDefault();
     const next: Errors = {};
-    if (name.trim().length < 2) next.name = "Escribe tu nombre y apellido.";
-    if (!PHONE.test(phone.trim())) next.phone = "Escribe un teléfono válido, por ejemplo 612 345 678.";
+    if (name.trim().length < 2) next.name = say(venue, "Escribe tu nombre y apellido.", "Escribí tu nombre y apellido.");
+    if (!PHONE.test(phone.trim())) next.phone = say(venue, "Escribe un teléfono válido, por ejemplo 612 345 678.", "Escribí un teléfono válido, por ejemplo 11 2345-6789.");
     if (method === "tarjeta") {
-      if (digits(card).length < 15) next.card = "Revisa el número de la tarjeta.";
+      if (digits(card).length < 15) next.card = say(venue, "Revisa el número de la tarjeta.", "Revisá el número de la tarjeta.");
       if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) next.expiry = "Usa el formato MM/AA.";
       if (digits(cvc).length < 3) next.cvc = "3 dígitos.";
     }
@@ -99,8 +99,6 @@ function SheetBody({
     // The demo's "bank": a moment of processing, then it is paid.
     setTimeout(() => onPaid({ name: name.trim(), phone: phone.trim(), notes: notes.trim(), method }), 1400);
   }
-
-  const rest = total - amount;
 
   return (
     <form onSubmit={submit} noValidate>
@@ -124,12 +122,12 @@ function SheetBody({
           <legend className="mb-2 font-semibold">¿A nombre de quién?</legend>
           <label className="block text-sm font-medium">
             Nombre y apellido
-            <input name="name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" maxLength={80} placeholder="Ej: Lucía Fernández…" aria-invalid={Boolean(errors.name)} className={`${control} mt-1 font-normal`} />
+            <input name="name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" maxLength={80} placeholder={ar ? "Ej: Lucía Fernández…" : "Ej: Lucía Fernández…"} aria-invalid={Boolean(errors.name)} className={`${control} mt-1 font-normal`} />
             {errors.name ? <span className="mt-1 block text-brand-ink">{errors.name}</span> : null}
           </label>
           <label className="block text-sm font-medium">
             Teléfono / WhatsApp
-            <input name="phone" type="tel" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} autoComplete="tel" maxLength={20} placeholder="Ej: 612 345 678…" aria-invalid={Boolean(errors.phone)} className={`${control} mt-1 font-normal`} />
+            <input name="phone" type="tel" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} autoComplete="tel" maxLength={20} placeholder={ar ? "Ej: 11 2345-6789…" : "Ej: 612 345 678…"} aria-invalid={Boolean(errors.phone)} className={`${control} mt-1 font-normal`} />
             {errors.phone ? <span className="mt-1 block text-brand-ink">{errors.phone}</span> : null}
           </label>
           {askNotes ? (
@@ -142,7 +140,7 @@ function SheetBody({
 
         <fieldset className="min-w-0">
           <legend className="mb-2 flex w-full items-center justify-between font-semibold">
-            <span>{rest > 0 ? "Paga la señal" : "Pago"}</span>
+            <span>Pago</span>
             <span className="inline-flex items-center gap-1 text-xs font-medium text-muted">
               <LockIcon className="size-3.5" /> Pago de prueba
             </span>
@@ -154,10 +152,7 @@ function SheetBody({
               setMethod(v);
               setErrors({});
             }}
-            options={[
-              { value: "tarjeta", label: "Tarjeta" },
-              { value: "bizum", label: "Bizum" },
-            ]}
+            options={venue.payments.map((value) => ({ value, label: payLabel[value] }))}
           />
           {method === "tarjeta" ? (
             <div className="mt-3 space-y-3">
@@ -180,20 +175,23 @@ function SheetBody({
               </div>
             </div>
           ) : (
-            <p className="mt-3 rounded-xl bg-paper px-3.5 py-3 text-sm ring-1 ring-line">Al continuar recibirás una notificación en la app de tu banco para aprobar el pago con Bizum al {phone.trim() || "teléfono que has indicado"}.</p>
+            <p className="mt-3 rounded-xl bg-paper px-3.5 py-3 text-sm ring-1 ring-line">
+              {method === "mercadopago"
+                ? "Al continuar te llevamos a Mercado Pago para que apruebes el pago con tu cuenta, tu tarjeta guardada o el dinero disponible."
+                : `Al continuar recibirás una notificación en la app de tu banco para aprobar el pago con Bizum al ${phone.trim() || "teléfono que has indicado"}.`}
+            </p>
           )}
         </fieldset>
 
         <div className="flex items-baseline justify-between border-t border-line pt-3">
-          <span className="text-sm text-muted">{rest > 0 ? "Señal ahora" : "Total"}</span>
-          <span className="font-display text-2xl font-semibold tabular-nums">{euros(amount)}</span>
+          <span className="text-sm text-muted">{venue.deposit ? "Seña a pagar ahora" : "Total"}</span>
+          <span className="font-display text-2xl font-semibold tabular-nums">{money(venue, amount)}</span>
         </div>
-        {rest > 0 ? <p className="-mt-3 text-sm text-muted">El resto ({euros(rest)}) lo pagas en el centro. La señal se descuenta del total.</p> : null}
       </div>
 
-      <div className="sticky bottom-0 z-10 border-t border-line bg-cream px-5 pt-3 pb-3">
-        <button type="submit" disabled={paying} className={primaryButton}>
-          {paying ? "Procesando el pago…" : `Pagar ${euros(amount)} y reservar`}
+      <div className="sticky bottom-[calc(-1*env(safe-area-inset-bottom))] z-10 border-t border-line bg-cream px-5 pt-3 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
+        <button type="submit" data-cta="pagar" disabled={paying} className={primaryButton}>
+          {paying ? "Procesando el pago…" : `Pagar ${money(venue, amount)} y reservar`}
         </button>
       </div>
     </form>

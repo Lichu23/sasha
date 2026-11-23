@@ -50,3 +50,7 @@ next-env.d.ts
 
 # private plans and notes (only README.md is published)
 /plans/
+
+# adkit work files (captures, renders): rebuilt from ads/*/ad.yaml
+ads/*/.adkit/
+ads/*/out/

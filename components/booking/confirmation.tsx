@@ -1,6 +1,6 @@
 import { formatTime, dayLabel } from "@/lib/admin-dates";
 import type { Booking } from "@/lib/booking/availability";
-import { euros, offerOf, staffOf, type Venue } from "@/lib/booking/venues";
+import { money, offerOf, payLabel, say, staffOf, type Venue } from "@/lib/booking/venues";
 import { CheckIcon, ghostButton } from "./ui";
 
 // What the customer sees right after paying: the booking, its reference and what was paid.
@@ -10,21 +10,22 @@ export function Confirmation({ venue, booking, now, onAgain }: { venue: Venue; b
   const staff = staffOf(venue, booking.staff);
   const rest = booking.price - booking.paid;
   const rows: [string, string][] = [
-    [venue.mode === "classes" ? "Clase" : "Tratamiento", offer?.name ?? ""],
+    [venue.mode === "classes" ? "Clase" : venue.slug === "nutricion" ? "Consulta" : "Tratamiento", offer?.name ?? ""],
     ["Cuándo", `${dayLabel(booking.start, now)}, ${formatTime(booking.start)} h`],
-    [venue.mode === "classes" ? "Con" : "Profesional", staff?.name ?? ""],
-    ["A nombre de", booking.name],
-    ["Pagado ahora", `${euros(booking.paid)} (${booking.method === "bizum" ? "Bizum" : "tarjeta"})`],
-    ...(rest > 0 ? ([["Pendiente en el centro", euros(rest)]] as [string, string][]) : []),
+    ...(booking.modality ? ([["Modalidad", booking.modality === "online" ? "Online, por videollamada" : "Presencial, en el consultorio"]] as [string, string][]) : []),
+    ...(venue.solo ? [] : ([[venue.mode === "classes" ? "Con" : "Profesional", staff?.name ?? ""]] as [string, string][])),
+    [say(venue, "A nombre de", "A nombre de"), booking.name],
+    [venue.deposit ? "Seña pagada" : "Pagado ahora", `${money(venue, booking.paid)} (${payLabel[booking.method]})`],
+    ...(rest > 0 ? ([[`Resto en el ${venue.words.place}`, money(venue, rest)]] as [string, string][]) : []),
   ];
   return (
-    <section aria-labelledby="confirmada" className="mx-auto w-full max-w-md px-4 pt-8 pb-10">
+    <section aria-labelledby="confirmada" className="mx-auto w-full max-w-md px-4 pt-8 pb-10 lg:max-w-xl lg:pt-16 lg:pb-20">
       <div className="rounded-3xl bg-paper p-6 text-center shadow-sm ring-1 ring-line">
         <span className="mx-auto grid size-16 place-items-center rounded-full bg-brand text-white">
           <CheckIcon className="size-8" />
         </span>
         <h2 id="confirmada" className="mt-4 font-display text-3xl font-semibold">
-          {venue.mode === "classes" ? "¡Plaza reservada!" : "¡Cita confirmada!"}
+          {venue.mode === "classes" ? "¡Plaza reservada!" : venue.slug === "nutricion" ? "¡Turno confirmado!" : "¡Cita confirmada!"}
         </h2>
         <p className="mt-1 text-muted">
           Referencia <b className="text-ink tabular-nums">{booking.ref}</b>
@@ -37,10 +38,16 @@ export function Confirmation({ venue, booking, now, onAgain }: { venue: Venue; b
             </div>
           ))}
         </dl>
-        <p className="mt-4 rounded-2xl bg-blush px-4 py-3 text-sm text-brand-ink">Te enviamos un recordatorio por WhatsApp el día antes. Si no puedes venir, avísanos con 12 horas de antelación.</p>
+        <p className="mt-4 rounded-2xl bg-blush px-4 py-3 text-sm text-brand-ink">
+          {booking.modality === "online"
+            ? "Te mandamos el link de la videollamada por WhatsApp, con un recordatorio el día antes. Si no podés conectarte, avisanos con 24 horas de anticipación."
+            : venue.locale === "es-AR"
+              ? "Te enviamos un recordatorio por WhatsApp el día antes. Si no podés venir, avisanos con 24 horas de anticipación y te devolvemos la seña."
+              : "Te enviamos un recordatorio por WhatsApp el día antes. Si no puedes venir, avísanos con 12 horas de antelación."}
+        </p>
         <div className="mt-5 grid gap-2">
           <button type="button" onClick={onAgain} className={`${ghostButton} w-full`}>
-            Reservar otra
+            {say(venue, "Reservar otra", "Reservar otro turno")}
           </button>
         </div>
       </div>

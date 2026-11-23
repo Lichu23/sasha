@@ -1,0 +1,183 @@
+# yaml-language-server: $schema=../../../adkit/schema/ad.schema.json
+# Raíz Nutrición: a 60 s ad (30 bars at 120 BPM) for the nutrition practice template (/nutricion). The phone is always shown entire.
+# The patient part is ONE take (the real booking, frame by frame): offer, online, day, scroll to the times, time, typing, card and
+# Mercado Pago, deposit. Then a whip to the nutritionist's panel: the new turno, the agenda in another take, the patients, the sales.
+# Fictional brand, example data.
+meta: {fps: 30, width: 1080, height: 1920, bars: 30}
+
+brief:
+  audience: Nutritionists and other consulting professionals who book turnos by WhatsApp today.
+  message: "Your own booking page: patients choose, pay the deposit and show up; you only see your agenda."
+  language: es-AR
+  tone: warm, clear, calm confidence
+
+brand:
+  name: Raíz Nutrición
+  contact: "Escribinos: +54 11 5555-0123"
+  colors: {paper: "#FBF6EE", paperDeep: "#F4E6D3", ink: "#2A1E16", glow: "#FBE0C4", accent: "#BD5320", night: "#1B120C"}
+  fonts: {sans: NunitoSans, serif: InstrumentSerif, mark: Fraunces}
+  icon: {text: RN, color: "#BD5320", textColor: "#FFF3E6"}
+
+capture: capture.yaml
+
+scenes:
+  # 1. The problem: WhatsApp messages pile up, faster and faster, then fly into the chat icon.
+  - block: chaos
+    id: hook
+    bars: 1.75
+    pings: [6, 6.5]
+    items:
+      - {frame: -42, text: "Hola! ¿Tenés turno para el jueves?"}
+      - {frame: -35, text: "¿Atendés online?"}
+      - {frame: -28, text: "¿Cuánto sale la primera consulta?"}
+      - {frame: -21, text: "Hola?? Te escribí ayer"}
+      - {frame: -14, text: "¿Me pasás el turno al viernes?"}
+      - {frame: -7, text: "¿A qué hora era mi turno?"}
+      - {beat: 0, text: "No llego, ¿podemos cambiarlo?"}
+      - {frame: 8, text: "¿Me mandás el plan de nuevo?"}
+      - {beat: 1, side: out, text: "Hola! Un segundito y te confirmo"}
+      - {frame: 22, text: "¿Aceptás transferencia?"}
+      - {beat: 2, text: "¿Queda lugar el sábado?"}
+      - {frame: 38, text: "Hola?? ¿Seguís ahí?"}
+      - {beat: 3, text: "¿Dónde queda el consultorio?"}
+      - {beat: 3.5, text: "Te transferí la seña, ¿te llegó?"}
+      - {beat: 3.5, side: out, text: "Ahora te miro, estoy en consulta"}
+      - {beat: 4, text: "No pude ir, perdón 🙏"}
+      - {frame: 64, text: "¿Puedo pasar a online?"}
+      - {beat: 4.5, text: "¿Cuánto dura la consulta?"}
+      - {beat: 5, text: "¿Me anotás para el martes?"}
+      - {frame: 78, text: "¿Hacés consulta deportiva?"}
+      - {beat: 5.5, side: out, text: "Sí! Te escribo en un rato"}
+      - {frame: 86, text: "Mandé el comprobante"}
+      - {frame: 88, text: "¿Me confirmás el horario?"}
+    title: {lines: ["¿Todavía agendás", "turnos por", "*WhatsApp?*"], at: 1.5, to: 6.5, y: 410, size: 104, color: "#FFFFFF", accent: "#5BE08A"}
+
+  # 2. The chat icon turns into the app icon.
+  - {block: iconOpen, bars: 0.25}
+
+  # 3. The icon opens into the phone with the practice's page.
+  - block: reveal
+    bars: 2
+    screen: home
+    scroll: 40
+    titles:
+      - {lines: ["Tu", "*consultorio,*"], at: 0.5, to: 3.5, size: 124}
+      - {lines: ["abierto", "*24_horas.*"], at: 4.5, to: 8, size: 124}
+
+  # 4. The page: consultations and prices, how it works, who, the opinions and the recipes (the phone entire, the page scrolls in it).
+  - block: tapFlow
+    id: tour
+    bars: 2.5
+    start: {screen: home, scroll: 40}
+    titles:
+      - {lines: ["Precios, recetas", "y *opiniones.*"], at: 1, to: 9, size: 100, scrim: true}
+    steps:
+      - {type: swipe, at: 0.5, from: servicios, to: servicios, beats: 2.5, scroll: 640}
+      - {type: swipe, at: 3.5, from: servicios, to: servicios, beats: 3, scroll: 1200}
+      - {type: swipe, at: 7, from: servicios, to: servicios, beats: 2.5, scroll: 900}
+    camera:
+      - {at: 0, zoom: 0.96, qy: 1185}
+
+  # 5. The patient books and pays the deposit: ONE take, the real page. Frame = beat x 15.
+  - block: tapFlow
+    id: patient
+    bars: 10
+    start: {screen: flow, transition: live, enter: fade}
+    titles:
+      - {lines: ["Elegí tu", "*consulta…*"], at: 1, to: 5.5, size: 118}
+      - {lines: ["…online o", "*presencial…*"], at: 6.5, to: 11.5, size: 118}
+      - {lines: ["…día y", "*horario…*"], at: 12.5, to: 18, size: 118}
+      - {lines: ["Seña con", "*Mercado_Pago.*"], at: 19, to: 33, size: 118}
+      - {lines: ["*Turno*", "confirmado."], at: 34.5, to: 39, size: 118}
+    steps:
+      - {type: tap, at: 2, element: offerCard, radius: 26}
+      - {type: tap, at: 6, element: modeChip, radius: 24, pan: -0.2}
+      - {type: tap, at: 8, element: dayChip, radius: 22}
+      - {type: tap, at: 13, element: timeChip, radius: 24, pan: 0.2}
+      - {type: tap, at: 16, element: payButton, radius: 28, press: true}
+      - {type: tap, at: 19, element: nameInput, radius: 22}
+      - {type: tap, at: 22, element: phoneInput, radius: 22}
+      - {type: tap, at: 24, element: notesInput, radius: 22}
+      - {type: tap, at: 28, element: tarjetaTab, radius: 22}
+      - {type: tap, at: 30, element: mpTab, radius: 22}
+      - {type: tap, at: 32, element: submit, radius: 28, press: true}
+      - {type: pulse, at: 37, element: confirmTitle, count: 2}
+    camera:
+      - {at: 0, zoom: 0.96, qy: 1185}
+
+  # 6. Whip pan to the nutritionist's phone.
+  - {block: whip, to: owner}
+
+  # 7. The nutritionist gets the new turno.
+  - block: notification
+    id: owner
+    bars: 1.5
+    screen: adminAgenda
+    element: newCard
+    slideAt: 3
+    landAt: 3.5
+    banner: {title: "Nuevo turno", body: "Primera consulta · Online · Seña cobrada", time: ahora}
+    titles:
+      - {lines: ["Vos solo", "*atendés.*"], at: 2, to: 6, size: 124, scrim: true}
+    camera:
+      - {at: 0, zoom: 0.96, qy: 1185}
+
+  # 8. The agenda: the patient arrived, the filter by status, the week. ONE take.
+  - block: tapFlow
+    id: agenda
+    bars: 4
+    start: {screen: agendaTake, transition: live, enter: fade}
+    titles:
+      - {lines: ["Marcás quién", "*vino.*"], at: 1, to: 5.5, size: 118}
+      - {lines: ["Filtrás y ves", "tu *semana.*"], at: 6.5, to: 15.5, size: 118}
+    steps:
+      - {type: tap, at: 2, element: arrived, radius: 24, press: true}
+      - {type: tap, at: 6, element: vineronTab, radius: 22}
+      - {type: tap, at: 9, element: todasTab, radius: 22}
+      - {type: tap, at: 12, element: semanaTab, radius: 22}
+    camera:
+      - {at: 0, zoom: 0.96, qy: 1185}
+
+  # 9. The patients: each file with the visits, the payments and the next turno.
+  - block: tapFlow
+    id: files
+    bars: 2.5
+    start: {screen: adminPacientes, transition: slide}
+    titles:
+      - {lines: ["Cada paciente,", "*su_ficha.*"], at: 1, to: 9, size: 112, scrim: true}
+    steps:
+      - {type: swipe, at: 2, from: firstPatient, to: firstPatient, beats: 4, scroll: 640}
+    camera:
+      - {at: 0, zoom: 0.96, qy: 1185}
+
+  # 10. The sales.
+  - block: statCountUp
+    id: sales
+    bars: 3
+    screen: adminSales
+    scroll: {from: 0, to: 250}
+    number: {element: revenueNumber, from: 0, to: 362100, prefix: "$ ", thousands: ".", fontSize: 46, weight: 500, color: "#2A1E16", startAt: 1, doneAt: 3}
+    card: revenueCard
+    chart: {element: chartArea, at: 5}
+    camera:
+      - {at: 0, zoom: 0.96, qy: 1185}
+
+  # 11. End card.
+  - block: endCard
+    bars: 2.5
+    screen: home
+    scroll: 40
+    mark: monogram
+    title: {lines: ["Tus turnos,", "*sin_chat.*"], at: 0, y: 585, size: 108}
+    lockupAt: 3
+    contactAt: 5
+    hitAt: 7
+
+sound: sound.yaml
+
+# Frames that jump on purpose: 77 the chat pile shifts up one row, 120 the icon opens into the phone. In the takes the app itself changes at once:
+# 420 the booking sheet opens, 630 the booking sheet is replaced by the payment sheet, 926 the payment sheet by the confirmation, 1260 the day
+# view by the week. maxSpike 1: typing and the stepped scroll are made of one-frame actions, so each frame is the whole change of its action.
+checks: {cuts: [77, 120, 420, 630, 926, 1260], maxSpike: 1}
+
+output: {file: out/ad.mp4, crf: 18}

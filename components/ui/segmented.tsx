@@ -28,6 +28,7 @@ export function Segmented<T extends string | number>({
         <Radio.Root
           key={option.value}
           value={option.value}
+          data-value={String(option.value)}
           className="shrink-0 cursor-pointer rounded-full px-3.5 py-1.5 whitespace-nowrap text-sm font-medium text-muted transition-colors outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-brand data-checked:bg-ink data-checked:text-cream"
         >
           {option.label}

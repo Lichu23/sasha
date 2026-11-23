@@ -1,7 +1,7 @@
 import { BASE, createPhoneDemo } from "./lib/phone-demo.mjs";
 
 // Records the demo video of a booking demo: `estudio` (Brisa Studio: pilates / yoga / training classes) or `belleza`
-// (Lumi Nails & Beauty: nails and beauty treatments). The customer books and pays a simulated deposit, then a slide to
+// (Lumi Nails & Beauty: nails and beauty treatments). The customer books and pays the full price (simulated), then a slide to
 // the business's panel (reservations with attendance and filters, and sales). A title for every step. ALWAYS frame by frame at 30 fps
 // (scripts/lib/phone-demo.mjs).
 //
@@ -41,26 +41,26 @@ const VENUES = {
     },
   },
   belleza: {
-    intro: { subtitle: "Reserva de citas con señal online", note: "Demostración: el pago está simulado" },
+    intro: { subtitle: "Reserva de citas con pago online", note: "Demostración: el pago está simulado" },
     steps: [
       { label: "Elige el tratamiento", title: "Elige el tratamiento", text: "Con su precio y su duración, sin preguntar por mensaje." },
       { label: "Profesional, día y hora", title: "Elige profesional, día y hora", text: "Solo ve los huecos libres de la agenda." },
-      { label: "Paga la señal", title: "Paga una pequeña señal", text: "Con tarjeta o Bizum. Asegura el hueco y evita plantones." },
+      { label: "Paga online", title: "Paga al reservar", text: "Con tarjeta o Bizum. Asegura el hueco y evita plantones." },
       { label: "Cita confirmada", title: "Cita confirmada al instante", text: "Con su referencia y el recordatorio del día antes." },
-      { label: "La cita en la agenda", title: "La cita cae sola en la agenda", text: "Con la señal cobrada y lo que resta por pagar." },
+      { label: "La cita en la agenda", title: "La cita cae sola en la agenda", text: "Con el pago ya cobrado, sin cobrar nada en el centro." },
       { label: "Control del día", title: "Controla quién viene", text: "Llegó o no vino con un toque, y filtra por estado." },
       { label: "Día y semana", title: "Filtra por día y por semana", text: "El calendario muestra cuántas citas tiene cada día." },
-      { label: "Ventas", title: "Mira las ventas", text: "Ingresos por día, tratamientos que más venden, asistencia y señales retenidas." },
+      { label: "Ventas", title: "Mira las ventas", text: "Ingresos por día, tratamientos que más venden, asistencia y plantones ya cobrados." },
     ],
     outro: {
       title: "La agenda llena, sin llamadas",
       items: [
         ["Reservas 24 h", "Tus clientas reservan solas, a cualquier hora"],
-        ["Señal online", "Tarjeta o Bizum: menos plantones"],
+        ["Pago online", "Tarjeta o Bizum: menos plantones"],
         ["Agenda por profesional", "Nunca dos citas a la misma hora"],
         ["Duración de cada servicio", "Los huecos se calculan solos"],
         ["Control del día", "Llegó o no vino; por día, semana y estado"],
-        ["Ventas", "Ingresos, señales retenidas y cómo pagan"],
+        ["Ventas", "Ingresos, plantones ya cobrados y cómo pagan"],
       ],
     },
   },
@@ -101,7 +101,7 @@ async function pay({ comment }) {
 // ---------- Part 1: the customer ----------
 await load(URL);
 await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
-await load(URL);
+await load(SLUG === "belleza" ? `${URL}/reservar` : URL); // the beauty center's booking is its own page
 const colors = await page.evaluate(() => {
   const s = getComputedStyle(document.documentElement);
   return Object.fromEntries(["brand", "brand-ink", "blush", "cream", "ink", "muted", "line"].map((k) => [k, s.getPropertyValue(`--${k}`).trim()]));
@@ -148,11 +148,11 @@ if (SLUG === "estudio") {
   await glide(await offsetOf("[aria-label='Hora de la cita']", 170), 1300); await hold(2200); // the struck-through times are taken
   const free = await page.$$("[aria-label='Hora de la cita'] [role=radio]:not([data-disabled]):not([aria-disabled='true'])");
   await tap(free[Math.min(4, free.length - 1)]); await hold(1500);
-  await point(await find("button", "Reservar · señal")); await hold(700);
+  await point(await find("button", "Reservar y pagar")); await hold(700);
 
-  // 3. The deposit
+  // 3. The payment
   caption(3);
-  await tap(await find("button", "Reservar · señal")); await hold(600);
+  await tap(await find("button", "Reservar y pagar")); await hold(600);
   await pay({ comment: process.env.NOTES || "Tono nude, uñas cortas, por favor 💅" });
 }
 

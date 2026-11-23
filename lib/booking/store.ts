@@ -2,7 +2,7 @@ import { useSyncExternalStore } from "react";
 import { startOfArDay } from "@/lib/admin-dates";
 import { toAr } from "@/lib/pickup";
 import { classesOn, MINUTE, freeStaff, isBookableDay, type Booking, type Status } from "./availability";
-import { offerOf, type Venue, type VenueSlug } from "./venues";
+import { depositOf, offerOf, type Venue, type VenueSlug } from "./venues";
 
 // The bookings of a demo business live in localStorage, so the customer's page and the panel see each other in the
 // same browser (and sync between tabs). The first time, they start from believable bookings around today. A real
@@ -14,6 +14,9 @@ const DAY = 24 * 60 * MINUTE;
 
 const FIRST = ["Lucía", "Marta", "Carmen", "Paula", "Elena", "Sara", "Laura", "Irene", "Andrea", "Nuria", "Claudia", "Alba", "Raquel", "Ana", "Marina", "Silvia", "Cristina", "Patricia", "Beatriz", "Rocío", "Teresa", "Inma", "Julia", "Sonia", "Natalia", "Pilar"];
 const LAST = ["García", "Martínez", "López", "Sánchez", "Pérez", "Gómez", "Ruiz", "Hernández", "Díaz", "Moreno", "Muñoz", "Álvarez", "Romero", "Navarro", "Torres", "Gil", "Serrano", "Blanco", "Molina", "Ortega"];
+
+const FIRST_AR = ["Lucía", "Martina", "Camila", "Julieta", "Agustina", "Florencia", "Mariana", "Valentina", "Carolina", "Sofía", "Nicolás", "Matías", "Federico", "Lucas", "Julián", "Facundo", "Candela", "Milagros"];
+const LAST_AR = ["González", "Rodríguez", "Fernández", "López", "Martínez", "Pérez", "Gómez", "Díaz", "Sosa", "Romero", "Álvarez", "Torres", "Ruiz", "Acosta", "Benítez", "Medina"];
 
 function rng(seed: number) {
   let a = seed >>> 0;
@@ -30,9 +33,13 @@ function rng(seed: number) {
 export function seedBookings(venue: Venue, today: number): Booking[] {
   const now = today + 9 * 60 * MINUTE; // the seed is stable through the day
   const out: Booking[] = [];
-  const rand = rng(Math.floor(today / DAY) * 31 + (venue.slug === "estudio" ? 7 : 13));
-  const person = () => `${FIRST[Math.floor(rand() * FIRST.length)]} ${LAST[Math.floor(rand() * LAST.length)]}`;
-  const phone = () => `6${Math.floor(10 + rand() * 89)} ${Math.floor(100 + rand() * 899)} ${Math.floor(100 + rand() * 899)}`;
+  const rand = rng(Math.floor(today / DAY) * 31 + (venue.slug === "estudio" ? 7 : venue.slug === "nutricion" ? 19 : 13));
+  const ar = venue.locale === "es-AR";
+  const person = () => (ar ? `${FIRST_AR[Math.floor(rand() * FIRST_AR.length)]} ${LAST_AR[Math.floor(rand() * LAST_AR.length)]}` : `${FIRST[Math.floor(rand() * FIRST.length)]} ${LAST[Math.floor(rand() * LAST.length)]}`);
+  const phone = () => (ar ? `11 ${Math.floor(3000 + rand() * 6999)}-${Math.floor(1000 + rand() * 8999)}` : `6${Math.floor(10 + rand() * 89)} ${Math.floor(100 + rand() * 899)} ${Math.floor(100 + rand() * 899)}`);
+  // A practice with clients that come back (patients view): a fixed pool of people instead of a new one each time.
+  const pool = venue.patients ? Array.from({ length: 45 }, () => ({ name: person(), phone: phone() })) : null;
+  const who = () => (pool ? pool[Math.floor(rand() * pool.length)] : { name: person(), phone: phone() });
   const ref = () => `${venue.refPrefix}-${Math.floor(rand() * 0xffffff).toString(16).toUpperCase().padStart(6, "0")}`;
   const status = (start: number, minutes: number): Status => {
     if (start + minutes * MINUTE > now) return "confirmada";
@@ -40,6 +47,7 @@ export function seedBookings(venue: Venue, today: number): Booking[] {
   };
   const make = (offerId: string, staff: string, start: number, paid: (price: number) => number): Booking => {
     const offer = offerOf(venue, offerId)!;
+    const patient = who();
     return {
       id: crypto.randomUUID(),
       ref: ref(),
@@ -47,12 +55,13 @@ export function seedBookings(venue: Venue, today: number): Booking[] {
       staff,
       start,
       minutes: offer.minutes,
-      name: person(),
-      phone: phone(),
+      name: patient.name,
+      phone: patient.phone,
       notes: "",
       price: offer.price,
       paid: paid(offer.price),
-      method: rand() < 0.4 ? "bizum" : "tarjeta",
+      method: venue.payments[rand() < 0.4 ? 1 : 0],
+      ...(offer.modes && offer.modes.length > 1 ? { modality: rand() < 0.35 ? ("online" as const) : ("presencial" as const) } : {}),
       status: status(start, offer.minutes),
       createdAt: start - Math.floor(rand() * 5 + 1) * DAY,
     };
@@ -66,7 +75,7 @@ export function seedBookings(venue: Venue, today: number): Booking[] {
       for (const session of classesOn(venue, day, [])) {
         const wanted = d === 1 && session.offer.id === "reformer" ? session.capacity - 2 : Math.round(session.capacity * (0.3 + rand() * 0.6));
         const taken = Math.min(session.capacity, d < 0 ? Math.max(2, wanted) : wanted);
-        for (let i = 0; i < taken; i++) out.push(make(session.offer.id, session.staff, session.start, (price) => price));
+        for (let i = 0; i < taken; i++) out.push(make(session.offer.id, session.staff, session.start, (price) => depositOf(venue, price)));
       }
     } else {
       const open = venue.open[toAr(day).weekday]!;
@@ -77,7 +86,7 @@ export function seedBookings(venue: Venue, today: number): Booking[] {
           const offer = mine[Math.floor(rand() * mine.length)];
           const start = day + m * MINUTE;
           if (m + offer.minutes > open[1] || !freeStaff(venue, offer, start, out).some((s) => s.id === staff.id)) continue;
-          out.push(make(offer.id, staff.id, start, () => venue.deposit));
+          out.push(make(offer.id, staff.id, start, (price) => depositOf(venue, price)));
           m += Math.ceil(offer.minutes / 30) * 30 - 30;
         }
       }

@@ -176,8 +176,15 @@ Two standalone demos for businesses that live off appointments, in Spanish from 
 - **`/estudio`: Brisa Studio** (pilates, yoga, training). The customer picks a day in the calendar, sees that day's classes
   with the seats left, takes one and pays for it.
 - **`/belleza`: Lumi Nails & Beauty** (nails, lashes, aesthetics). The customer picks a treatment, a professional (or
-  "cualquiera"), a day and a time (taken times are struck through, and the durations are respected), and pays a small
-  deposit (señal, 5 €) to hold it.
+  "cualquiera"), a day and a time (taken times are struck through, and the durations are respected), and pays the full
+  price online (no deposit: fewer refunds to handle; a cancellation up to 12 h before is refunded). It is photo-led, phone first and widened from `lg` up. The home (`/belleza`) is hero photo,
+  gallery of work, three reviews, where / when / house rules and a button; the booking is its own page, `/belleza/reservar`
+  (`bookingPath` in the venue; a venue without it, like `/estudio`, keeps the booking as a section of its home). On a phone,
+  choosing a treatment opens a bottom sheet (professional, day, time and the pay button) instead of making the customer
+  scroll; the payment sheet replaces it and closing that one brings it back. From `lg` up the same steps sit in a sticky
+  side panel (`useMediaQuery` in `lib/use-media-query.ts` picks which one renders). The photos, reviews and policies are optional fields of the venue
+  (`photos`, `reviews`, `policies` in `lib/booking/venues.ts`; sections in `components/booking/venue-sections.tsx`), so
+  `/estudio` keeps its plain hero. The stock photos (Pexels) live in `public/booking/belleza/` with `CREDITS.md`.
 
 The customer's page and the business's panel are separate: the customer's header has no link to the panel, which is its own
 address with its own header (`/estudio/admin`, `/belleza/admin`; a real one sits behind a login) and two views:
@@ -189,7 +196,7 @@ address with its own header (`/estudio/admin`, `/belleza/admin`; a real one sits
 - **Ventas** (`/admin/ventas`): the last 7 or 30 days against the ones before: income, bookings, average, what was paid online,
   attendance (and what the no-shows left already paid), income per day, best classes or treatments, per instructor or
   professional, bookings per weekday, and card against Bizum. A booking is worth its full price if the customer came, the
-  deposit if not, nothing if cancelled (`saleValue` in `lib/booking/availability.ts`).
+  amount already paid if not, nothing if cancelled (`saleValue` in `lib/booking/availability.ts`).
 
 Payment is a simulated sheet (card or Bizum): nothing is charged, and a real business would use its own Stripe or Redsys
 account, paid to the business and never through ours. A booking made on the customer's page shows up in the panel
@@ -210,6 +217,42 @@ MSYS_NO_PATHCONV=1 npm run record-booking-demo -- belleza demo/estetica-unas/est
 Same rules as the others (frame by frame, 30 fps, one phone on 1920x1080, `-email.mp4` copy, a title per step: the `VENUES`
 list at the top of `scripts/record-booking-demo.mjs`). `NOTES` is the customer's comment (beauty); `TEST=1` records only the
 customer's part. If Chrome can't start (a sandboxed shell), set `CHROME_FLAGS="--no-sandbox --disable-gpu"`.
+
+### Nutrition practice template (Argentina)
+
+A third booking venue, **`/nutricion`: Raíz Nutrición** (a nutritionist's practice), for Argentina: pesos, voseo ("Reservá tu
+turno"), and a simulated Mercado Pago / card sheet instead of Bizum. It is the "complete service" template for a consulting
+practice with one professional (made for an Instagram nutritionist: Lic., Mat., turnos by WhatsApp):
+
+- **Home** (`/nutricion`): hero, consultations with price, duration and modality, how it works (3 steps), who the professional is,
+  reviews, recipes and tips, FAQ (native `<details>`), where / when / house rules and a button. The sections are `venue.home`
+  (`HomeSections`) in `lib/booking/venues.ts`, drawn by `VenueServices`, `VenueSteps`, `VenueAbout`, `VenueTips`, `VenueFaq` in
+  `components/booking/venue-sections.tsx`; a venue without photos gets them in place of the gallery.
+- **Booking** (`/nutricion/reservar`): consultation, **presencial or online** (`Offer.modes`; the booking keeps `modality`),
+  day, time (no "con quién" step: `venue.solo`), then a **30 % deposit** paid online (`venue.deposit`, `depositOf`); the rest is paid
+  at the consultorio. The confirmation says so, and for an online one it promises the video-call link by WhatsApp.
+- **Panel** (`/nutricion/admin`): Agenda (with the modality of each turno and the deposit), **Pacientes** (patients grouped by
+  phone: consultations, paid, last visit, next turno, search; `components/booking/patients-board.tsx`) and Ventas.
+
+What changed in the shared booking code to support it: `Venue.locale` (`es-ES` / `es-AR`: currency and voseo through `money`,
+`say`), `Venue.payments` (the two ways to pay, `payLabel`), `Venue.words` (cita / turno, centro / consultorio), `Venue.deposit`,
+`Venue.solo`, `Venue.patients`. The estudio and belleza demos keep their euros and Bizum.
+
+Vertical ad (9:16, 30 s, music and sound effects): made with [adkit](https://github.com/IFAKA/adkit) from `ads/nutricion/` (`ad.yaml`,
+`capture.yaml`, `sound.yaml`, `music.json`): the patient books and pays the deposit, a whip pan to the panel (new turno, patient file,
+sales), end card. It photographs the running app, so start `npm run dev -- -p 3100` first, then from an adkit clone (with `ffmpeg` and
+`ffprobe` on the PATH) run `adkit capture|render|check|tile <path>/ads/nutricion/ad.yaml`; use `capture --force` after changing the app.
+Result: `demo/nutricion/nutricion-anuncio-30s.mp4`. Local patch in the adkit clone: it needs ImageMagick for tall page shots, replaced by ffmpeg.
+
+Ads: `scripts/record-booking-ad.mjs` records the same flow as a fast ad (benefit titles, short pauses, 8 features in 30 s or 10 in 60 s):
+
+```bash
+npm run dev -- -p 3100                                       # in another terminal
+MSYS_NO_PATHCONV=1 npm run record-booking-ad -- 30 demo/nutricion/nutricion-anuncio-30s.mp4
+MSYS_NO_PATHCONV=1 npm run record-booking-ad -- 60 demo/nutricion/nutricion-anuncio-60s.mp4
+```
+
+Same rules (frame by frame, 30 fps, `-email.mp4` copy). `pace` in `createPhoneDemo` shortens the pause around each tap.
 
 ## Send one link
 

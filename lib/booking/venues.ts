@@ -3,7 +3,9 @@
 // and independent of the shop template (`SHOP`): see README, "Booking demos". Money is in euros, times are the
 // business's local time (the shared calendar works in a fixed offset, see lib/pickup.ts).
 
-export type VenueSlug = "estudio" | "belleza";
+export type VenueSlug = "estudio" | "belleza" | "nutricion";
+export type PayMethod = "tarjeta" | "bizum" | "mercadopago";
+export type Modality = "presencial" | "online";
 export type Staff = { id: string; name: string; role: string };
 export type Offer = {
   id: string;
@@ -17,12 +19,46 @@ export type Offer = {
   staff: string[];
   /** Seats of a class. */
   capacity?: number;
+  /** Where it can be done; absent = only at the place. More than one adds a "how" step to the booking. */
+  modes?: Modality[];
 };
 /** A class that repeats every week: the weekdays (0 = Sunday) and the start, in minutes after midnight. */
 export type TimetableRow = { offer: string; weekdays: number[]; at: number };
 
+export type Photo = { src: string; alt: string };
+export type Review = { name: string; text: string };
+
+/** The extra sections of a home page without photos (a consulting practice): how it works, who, tips, questions. */
+export type HomeSections = {
+  steps: { title: string; text: string }[];
+  about: { name: string; role: string; bio: string; credentials: string[] };
+  tips: { tag: string; title: string; text: string }[];
+  faq: { q: string; a: string }[];
+};
+
 export type Venue = {
   slug: VenueSlug;
+  /** Spain (euros, tuteo) or Argentina (pesos, voseo). */
+  locale: "es-ES" | "es-AR";
+  /** The two ways to pay in the booking sheet. */
+  payments: [PayMethod, PayMethod];
+  /** The share of the price paid online to hold the booking (0 to 1); absent = the full price. */
+  deposit?: number;
+  /** One professional only: the booking skips the "con quién" step. */
+  solo?: boolean;
+  /** The panel has a patients view (a practice with clients that come back). */
+  patients?: boolean;
+  /** The words for one booking and the place ("cita", "citas", "centro"). */
+  words: { appt: string; appts: string; place: string };
+  home?: HomeSections;
+  /** Optional photos (files in public/booking/<slug>/): when present the customer page is photo-led, with a gallery. */
+  photos?: { hero: Photo; gallery: Photo[]; studio: Photo };
+  /** Where the booking lives when it is its own page; without it the booking is a section (#reservar) of the home page. */
+  bookingPath?: string;
+  /** Optional short quotes from customers (example data). */
+  reviews?: Review[];
+  /** Optional house rules shown next to the address and hours. */
+  policies?: string[];
   mode: "classes" | "services";
   refPrefix: string;
   name: string;
@@ -34,8 +70,6 @@ export type Venue = {
   hours: { label: string; value: string }[];
   /** Opening and closing, in minutes after midnight, by weekday. Absent = closed. */
   open: Partial<Record<number, [number, number]>>;
-  /** Services only: what is paid online to hold the appointment (the rest is paid there). */
-  deposit: number;
   theme: Record<"cream" | "paper" | "blush" | "brand" | "brand-ink" | "ink" | "muted" | "line", string>;
   staff: Staff[];
   offers: Offer[];
@@ -49,6 +83,9 @@ const weekdays = [1, 2, 3, 4, 5];
 
 export const estudio: Venue = {
   slug: "estudio",
+  locale: "es-ES",
+  payments: ["tarjeta", "bizum"],
+  words: { appt: "reserva", appts: "reservas", place: "estudio" },
   mode: "classes",
   refPrefix: "BRI",
   name: "Brisa Studio",
@@ -63,7 +100,6 @@ export const estudio: Venue = {
     { label: "Domingos", value: "11:00 a 12:00" },
   ],
   open: { 1: [hm(7, 30), hm(21)], 2: [hm(7, 30), hm(21)], 3: [hm(7, 30), hm(21)], 4: [hm(7, 30), hm(21)], 5: [hm(7, 30), hm(21)], 6: [hm(10), hm(13, 30)], 0: [hm(11), hm(12)] },
-  deposit: 0,
   theme: { cream: "#f5f2ea", paper: "#ffffff", blush: "#e2eee6", brand: "#3d6b58", "brand-ink": "#2b4d3f", ink: "#1d2a24", muted: "#5d6b63", line: "#dde3d8" },
   staff: [
     { id: "marta", name: "Marta", role: "Pilates" },
@@ -96,6 +132,9 @@ export const estudio: Venue = {
 
 export const belleza: Venue = {
   slug: "belleza",
+  locale: "es-ES",
+  payments: ["tarjeta", "bizum"],
+  words: { appt: "cita", appts: "citas", place: "centro" },
   mode: "services",
   refPrefix: "LUM",
   name: "Lumi Nails & Beauty",
@@ -110,7 +149,26 @@ export const belleza: Venue = {
     { label: "Domingos", value: "Cerrado" },
   ],
   open: { 1: [hm(10), hm(20)], 2: [hm(10), hm(20)], 3: [hm(10), hm(20)], 4: [hm(10), hm(20)], 5: [hm(10), hm(20)], 6: [hm(10), hm(14)] },
-  deposit: 5,
+  bookingPath: "/belleza/reservar",
+  // Stock photos from Pexels (free to use, no attribution required): see public/booking/belleza/CREDITS.md.
+  photos: {
+    hero: { src: "/booking/belleza/hero.webp", alt: "Mano con uñas pintadas en verde suave sobre una manga blanca" },
+    gallery: [
+      { src: "/booking/belleza/gallery-1.webp", alt: "Uñas rosa nude con líneas de nail art en azul y naranja" },
+      { src: "/booking/belleza/gallery-2.webp", alt: "Uñas almendra rosa con pequeños destellos plateados" },
+      { src: "/booking/belleza/gallery-3.webp", alt: "Uñas beige brillantes con lazos dorados" },
+      { src: "/booking/belleza/gallery-4.webp", alt: "Uñas almendra con purpurina gris y francesa suave" },
+      { src: "/booking/belleza/gallery-5.webp", alt: "Manicurista pintando una uña con un pincel fino" },
+      { src: "/booking/belleza/gallery-6.webp", alt: "Manicura en tono topo, vista desde arriba" },
+    ],
+    studio: { src: "/booking/belleza/studio.webp", alt: "Muestrario de colores de esmalte sobre la mesa del centro" },
+  },
+  reviews: [
+    { name: "Laura T.", text: "La manicura rusa me duró tres semanas perfecta. Reservé desde el móvil en un minuto." },
+    { name: "Irene S.", text: "Trato muy cuidado y todo impecable. Carla acertó con el diseño a la primera." },
+    { name: "Marta G.", text: "Pagas al reservar y llegas sin preocuparte de nada. Vuelvo seguro." },
+  ],
+  policies: ["Pagas online al reservar; en el centro no se paga nada más.", "Cancela hasta 12 horas antes y te devolvemos el pago.", "Material esterilizado y de un solo uso."],
   theme: { cream: "#fbf4f1", paper: "#ffffff", blush: "#f8e2e9", brand: "#b0436c", "brand-ink": "#8a2f52", ink: "#2d1c22", muted: "#7a5f68", line: "#efdbdf" },
   staff: [
     { id: "carla", name: "Carla", role: "Uñas" },
@@ -132,10 +190,89 @@ export const belleza: Venue = {
   windowDays: 30,
 };
 
-export const venues: Record<VenueSlug, Venue> = { estudio, belleza };
+export const nutricion: Venue = {
+  slug: "nutricion",
+  locale: "es-AR",
+  payments: ["mercadopago", "tarjeta"],
+  deposit: 0.3,
+  solo: true,
+  patients: true,
+  words: { appt: "turno", appts: "turnos", place: "consultorio" },
+  mode: "services",
+  refPrefix: "RAI",
+  name: "Raíz Nutrición",
+  kind: "Nutrición clínica y deportiva",
+  tagline: "Sacá tu turno en un minuto, en el consultorio o por videollamada.",
+  address: "Av. Santa Fe 2350, CABA",
+  phone: "+54 11 5555 0123",
+  rating: "5,0",
+  hours: [
+    { label: "Lunes a viernes", value: "9:00 a 19:00" },
+    { label: "Sábados", value: "9:00 a 13:00" },
+    { label: "Domingos", value: "Cerrado" },
+  ],
+  open: { 1: [hm(9), hm(19)], 2: [hm(9), hm(19)], 3: [hm(9), hm(19)], 4: [hm(9), hm(19)], 5: [hm(9), hm(19)], 6: [hm(9), hm(13)] },
+  bookingPath: "/nutricion/reservar",
+  reviews: [
+    { name: "Carolina M.", text: "Por fin un plan que puedo sostener. Saqué el turno desde el celu y me llegó el recordatorio por WhatsApp." },
+    { name: "Julián P.", text: "Hice la primera consulta online y fue igual de completa que en persona. Muy claro todo." },
+    { name: "Martina S.", text: "Me armó la alimentación para mis entrenamientos y bajé tiempos en la carrera. Recomendadísima." },
+  ],
+  policies: ["Señás el 30 % online y el resto lo abonás en la consulta.", "Si cancelás hasta 24 horas antes, te devolvemos la seña.", "Las consultas online son por videollamada: te mandamos el link por WhatsApp."],
+  theme: { cream: "#fbf6ee", paper: "#ffffff", blush: "#fbe6d3", brand: "#bd5320", "brand-ink": "#8f3c13", ink: "#2a1e16", muted: "#755f50", line: "#eddfce" },
+  staff: [{ id: "sol", name: "Lic. Sol Márquez", role: "Nutricionista" }],
+  offers: [
+    { id: "primera", name: "Primera consulta", group: "Consultas", minutes: 60, price: 35000, blurb: "Historia clínica, hábitos y objetivos. Te vas con tu plan.", staff: ["sol"], modes: ["presencial", "online"] },
+    { id: "seguimiento", name: "Consulta de seguimiento", group: "Consultas", minutes: 40, price: 25000, blurb: "Ajustamos el plan según tu progreso.", staff: ["sol"], modes: ["presencial", "online"] },
+    { id: "deportiva", name: "Nutrición deportiva", group: "Deporte", minutes: 60, price: 38000, blurb: "Plan para entrenar y competir: carga, hidratación y recuperación.", staff: ["sol"], modes: ["presencial", "online"] },
+    { id: "antropometria", name: "Antropometría y composición corporal", group: "Deporte", minutes: 45, price: 30000, blurb: "Medidas con técnica ISAK: masa muscular y grasa.", staff: ["sol"], modes: ["presencial"] },
+    { id: "suplementos", name: "Plan de suplementación", group: "Deporte", minutes: 40, price: 24000, blurb: "Qué tomar, cuánto y cuándo, con respaldo científico.", staff: ["sol"], modes: ["presencial", "online"] },
+  ],
+  timetable: [],
+  windowDays: 30,
+  home: {
+    steps: [
+      { title: "Elegí tu turno", text: "Mirá los días y horarios libres y reservá en un minuto." },
+      { title: "Señá online", text: "Pagás el 30 % con Mercado Pago o tarjeta y el turno queda firme." },
+      { title: "Recibí el recordatorio", text: "Te escribimos por WhatsApp el día antes, con el link si es online." },
+    ],
+    about: {
+      name: "Lic. Sol Márquez",
+      role: "Licenciada en Nutrición · Mat. 0000/0",
+      bio: "Acompaño a personas que quieren comer mejor sin dietas imposibles: desde bajar de peso o ganar masa muscular hasta rendir en el deporte. Cada plan se arma a tu medida y se ajusta en cada consulta.",
+      credentials: ["Antropometrista ISAK nivel 2", "Nutrición deportiva avanzada", "Consultas presenciales y online"],
+    },
+    tips: [
+      { tag: "Receta", title: "Panqueques de avena y banana", text: "Tres ingredientes, diez minutos y proteína para arrancar el día." },
+      { tag: "Tip", title: "Cómo armar un plato equilibrado", text: "La mitad verduras, un cuarto proteínas y un cuarto carbohidratos." },
+      { tag: "Deporte", title: "Qué comer antes de entrenar", text: "Cuánto, cuándo y qué elegir según el tipo de sesión." },
+    ],
+    faq: [
+      { q: "¿Cuánto dura la primera consulta?", a: "Una hora: repasamos tu historia, tus hábitos y tus objetivos, y salís con un plan." },
+      { q: "¿Atendés online?", a: "Sí. La consulta por videollamada es igual de completa; te mandamos el link por WhatsApp." },
+      { q: "¿Cómo pago?", a: "Señás el 30 % al reservar, con Mercado Pago o tarjeta. El resto se abona en la consulta." },
+      { q: "¿Puedo cancelar o cambiar el turno?", a: "Sí, hasta 24 horas antes y te devolvemos la seña." },
+    ],
+  },
+};
 
+export const venues: Record<VenueSlug, Venue> = { estudio, belleza, nutricion };
+
+/** Where the "reservar" buttons go: the venue's own booking page, or the booking section of its home page. */
+export const bookingHref = (venue: Venue) => venue.bookingPath ?? "#reservar";
 export const offerOf = (venue: Venue, id: string) => venue.offers.find((o) => o.id === id);
 export const staffOf = (venue: Venue, id: string) => venue.staff.find((s) => s.id === id);
 
-const eurosFormat = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR", minimumFractionDigits: 0, maximumFractionDigits: 2 });
-export const euros = (n: number) => eurosFormat.format(n);
+const formats = new Map<string, Intl.NumberFormat>();
+/** A price in the venue's currency: euros (Spain) or pesos (Argentina), without decimals when they are zero. */
+export function money(venue: Venue, n: number) {
+  const currency = venue.locale === "es-AR" ? "ARS" : "EUR";
+  let f = formats.get(currency);
+  if (!f) formats.set(currency, (f = new Intl.NumberFormat(venue.locale, { style: "currency", currency, minimumFractionDigits: 0, maximumFractionDigits: 2 })));
+  return f.format(n);
+}
+/** What is paid online to book: the deposit (rounded to 100) or the full price. */
+export const depositOf = (venue: Venue, price: number) => (venue.deposit ? Math.round((price * venue.deposit) / 100) * 100 : price);
+/** Picks the text for the venue's way of speaking: tuteo (Spain) or voseo (Argentina). */
+export const say = (venue: Venue, tu: string, vos: string) => (venue.locale === "es-AR" ? vos : tu);
+export const payLabel: Record<PayMethod, string> = { tarjeta: "Tarjeta", bizum: "Bizum", mercadopago: "Mercado Pago" };

@@ -1,0 +1,504 @@
+{
+ "bpm": 120,
+ "meter": {
+  "beats": 4,
+  "unit": 4
+ },
+ "key": "D major",
+ "seed": 31,
+ "swing": 0.08,
+ "instruments": {
+  "pad": {
+   "model": "subtractive",
+   "preset": "pad",
+   "octave": 3,
+   "gain": -18,
+   "pan": 0,
+   "fx": [
+    {
+     "type": "reverb",
+     "rt60": 1.8,
+     "wet": 0.2
+    }
+   ]
+  },
+  "harp": {
+   "model": "pluck",
+   "preset": "harp",
+   "octave": 4,
+   "gain": -11,
+   "pan": -0.2,
+   "humanize": {
+    "timing_ms": 8,
+    "velocity": 0.1
+   },
+   "fx": [
+    {
+     "type": "reverb",
+     "rt60": 1.2,
+     "wet": 0.16
+    }
+   ]
+  },
+  "guitar": {
+   "model": "pluck",
+   "preset": "guitar",
+   "octave": 3,
+   "gain": -10,
+   "pan": 0.25,
+   "humanize": {
+    "timing_ms": 9,
+    "velocity": 0.1
+   },
+   "fx": [
+    {
+     "type": "reverb",
+     "rt60": 0.8,
+     "wet": 0.1
+    }
+   ]
+  },
+  "bass": {
+   "model": "pluck",
+   "preset": "bass",
+   "octave": 2,
+   "gain": -10,
+   "humanize": {
+    "timing_ms": 5,
+    "velocity": 0.06
+   }
+  },
+  "kalimba": {
+   "model": "modal",
+   "preset": "metal_bar",
+   "octave": 5,
+   "gain": -20,
+   "pan": 0.15,
+   "params": {
+    "decay": 0.6,
+    "hardness": 0.5
+   },
+   "fx": [
+    {
+     "type": "reverb",
+     "rt60": 1.0,
+     "wet": 0.18
+    }
+   ]
+  },
+  "cajon": {
+   "model": "drums",
+   "gain": -13,
+   "pan": -0.1,
+   "humanize": {
+    "timing_ms": 5,
+    "velocity": 0.1
+   },
+   "variations": 3
+  },
+  "shaker": {
+   "model": "drums",
+   "gain": -20,
+   "pan": 0.35,
+   "humanize": {
+    "timing_ms": 4,
+    "velocity": 0.15
+   },
+   "variations": 4
+  }
+ },
+ "patterns": {
+  "drone": {
+   "bars": 1,
+   "notes": [
+    [
+     0,
+     "c1",
+     4,
+     0.6
+    ]
+   ]
+  },
+  "comp_soft": {
+   "bars": 1,
+   "notes": [
+    [
+     0,
+     "chord",
+     2,
+     0.5
+    ],
+    [
+     2.5,
+     "chord",
+     1.5,
+     0.4
+    ]
+   ]
+  },
+  "harp_arp": {
+   "bars": 1,
+   "notes": [
+    [
+     0,
+     "c1",
+     0.5,
+     0.75
+    ],
+    [
+     0.5,
+     "c2",
+     0.5,
+     0.6
+    ],
+    [
+     1,
+     "c3",
+     0.5,
+     0.65
+    ],
+    [
+     1.5,
+     "c2+",
+     0.5,
+     0.55
+    ],
+    [
+     2,
+     "c1",
+     0.5,
+     0.7
+    ],
+    [
+     2.5,
+     "c2",
+     0.5,
+     0.55
+    ],
+    [
+     3,
+     "c3",
+     0.5,
+     0.65
+    ],
+    [
+     3.5,
+     "c2+",
+     0.5,
+     0.5
+    ]
+   ]
+  },
+  "guitar_strum": {
+   "bars": 1,
+   "notes": [
+    [
+     0,
+     "chord",
+     1,
+     0.65
+    ],
+    [
+     1.5,
+     "chord",
+     0.5,
+     0.5
+    ],
+    [
+     2.5,
+     "chord",
+     0.75,
+     0.55
+    ]
+   ]
+  },
+  "bassline": {
+   "bars": 1,
+   "notes": [
+    [
+     0,
+     "c1",
+     1.5,
+     0.9
+    ],
+    [
+     2,
+     "c3",
+     0.75,
+     0.7
+    ],
+    [
+     3.5,
+     "c1",
+     0.5,
+     0.55
+    ]
+   ]
+  },
+  "cajon_pat": {
+   "bars": 1,
+   "hits": [
+    [
+     0,
+     "cajon_bass",
+     0.8
+    ],
+    [
+     1.5,
+     "cajon_slap",
+     0.45
+    ],
+    [
+     2,
+     "cajon_bass",
+     0.65
+    ],
+    [
+     3,
+     "cajon_slap",
+     0.55
+    ]
+   ]
+  },
+  "shaker_pat": {
+   "bars": 1,
+   "hits": [
+    [
+     0.5,
+     "hat",
+     0.3
+    ],
+    [
+     1.5,
+     "hat",
+     0.35
+    ],
+    [
+     2.5,
+     "hat",
+     0.3
+    ],
+    [
+     3.5,
+     "hat",
+     0.4
+    ]
+   ]
+  },
+  "kalimba_sparkle": {
+   "bars": 1,
+   "notes": [
+    [
+     0,
+     "c3",
+     0.5,
+     0.6
+    ],
+    [
+     1,
+     "c2+",
+     0.5,
+     0.5
+    ],
+    [
+     2,
+     "c3",
+     0.5,
+     0.55
+    ],
+    [
+     3,
+     "c1+",
+     1,
+     0.5
+    ]
+   ]
+  },
+  "kalimba_hit": {
+   "bars": 1,
+   "notes": [
+    [
+     0,
+     "c1+",
+     2,
+     0.9
+    ]
+   ]
+  }
+ },
+ "sections": [
+  {
+   "name": "waiting_room",
+   "bars": 2,
+   "mood": "a low drone under the pile of chats: the agenda is full of messages",
+   "chords": [
+    "D"
+   ],
+   "tracks": {
+    "pad": "drone"
+   },
+   "automation": {
+    "pad": {
+     "gain": [
+      [
+       0,
+       -10
+      ],
+      [
+       1.75,
+       0
+      ]
+     ]
+    },
+    "master": {
+     "lowpass": [
+      [
+       0,
+       2500
+      ],
+      [
+       2,
+       9000
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "name": "doors_open",
+   "bars": 2,
+   "mood": "the practice opens: a harp arpeggio and a light cajon",
+   "chords": [
+    "D",
+    "G"
+   ],
+   "tracks": {
+    "pad": "drone",
+    "harp": "harp_arp",
+    "cajon": "cajon_pat",
+    "bass": "bassline"
+   }
+  },
+  {
+   "name": "page_tour",
+   "bars": 3,
+   "mood": "the page is shown: harp and light cajon, nothing is rushed",
+   "chords": [
+    "D",
+    "A",
+    "Bm"
+   ],
+   "tracks": {
+    "harp": "harp_arp",
+    "bass": "bassline",
+    "cajon": "cajon_pat",
+    "pad": "drone"
+   }
+  },
+  {
+   "name": "patient_books",
+   "bars": 10,
+   "mood": "the patient books alone: guitar joins, the groove settles and holds",
+   "chords": [
+    "Bm",
+    "G",
+    "D",
+    "A",
+    "Bm",
+    "G",
+    "D",
+    "A",
+    "G",
+    "A"
+   ],
+   "tracks": {
+    "harp": "harp_arp",
+    "guitar": "guitar_strum",
+    "bass": "bassline",
+    "cajon": "cajon_pat",
+    "shaker": "shaker_pat"
+   }
+  },
+  {
+   "name": "owner_hears",
+   "bars": 3,
+   "mood": "the nutritionist hears the new turno: a kalimba sparkles over the groove",
+   "chords": [
+    "D",
+    "G",
+    "A"
+   ],
+   "tracks": {
+    "harp": "harp_arp",
+    "guitar": "guitar_strum",
+    "bass": "bassline",
+    "cajon": "cajon_pat",
+    "shaker": "shaker_pat",
+    "kalimba": "kalimba_sparkle"
+   }
+  },
+  {
+   "name": "panel",
+   "bars": 7,
+   "mood": "the panel: agenda, files and sales, the same groove with the kalimba",
+   "chords": [
+    "D",
+    "G",
+    "A",
+    "G",
+    "D",
+    "A",
+    "Bm"
+   ],
+   "tracks": {
+    "harp": "harp_arp",
+    "guitar": "guitar_strum",
+    "bass": "bassline",
+    "cajon": "cajon_pat",
+    "shaker": "shaker_pat",
+    "kalimba": "kalimba_sparkle"
+   }
+  },
+  {
+   "name": "resolve",
+   "bars": 3,
+   "mood": "resolves on D like a plan that is done",
+   "chords": [
+    "G",
+    "A",
+    "D"
+   ],
+   "tracks": {
+    "harp": "comp_soft",
+    "guitar": "harp_arp",
+    "bass": "bassline",
+    "pad": "drone",
+    "kalimba": "kalimba_hit"
+   },
+   "automation": {
+    "guitar": {
+     "gain": [
+      [
+       0,
+       0
+      ],
+      [
+       3,
+       -8
+      ]
+     ]
+    }
+   }
+  }
+ ],
+ "master": {
+  "fx": [
+   {
+    "type": "saturate",
+    "drive": 0.1,
+    "mix": 0.3
+   }
+  ],
+  "gain": 0
+ }
+}

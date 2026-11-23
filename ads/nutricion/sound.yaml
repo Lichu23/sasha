@@ -1,0 +1,134 @@
+# Raíz Nutrición (a nutritionist): every sound is an object of the kitchen and the consulting room: a wooden spoon on a bowl,
+# a knife on a board, a kitchen timer, a glass of water, a measuring tape, a seed jar, a clinic door bell.
+seed: 33
+music: {file: music.json}
+
+sounds:
+  board_knock:
+    meaning: "A knife tapped on the wooden chopping board, one knock per chat message, because the nutritionist hears the queue pile up"
+    layers:
+      - {model: modal, preset: wood_block, note: E5, params: {decay: 0.12, hardness: 0.6, detune_cents: 20}, gain: -7}
+    fx: [{type: reverb, rt60: 0.3, wet: 0.06}]
+
+  waiting_room_murmur:
+    meaning: "Patients murmuring in a waiting room, the chat pile as a crowd that grows louder at the door"
+    layers:
+      - {model: murmur, params: {dur: 3.4, people: 22, syllable_hz: 4.5, warmth: 0.7}, gain: -6}
+    fx: [{type: lowpass, hz: 3500}]
+
+  juice_splash:
+    meaning: "A fruit squeezed so juice splashes, the messages burst into drops as the pile flies away"
+    layers:
+      - {model: splash, params: {size: 0.45, dur: 0.5}, gain: -7}
+      - {model: whoosh, params: {dur: 0.2, f_start: 2500, f_end: 700, width: 1.6, shape: fall}, gain: -12}
+
+  scale_tare:
+    meaning: "The kitchen scale clicking to zero, the noisy pile closing into one clean icon"
+    layers:
+      - {model: kick, params: {tune: 0.9, decay: 0.6}, gain: -7}
+      - {model: modal, preset: metal_bar, note: A3, params: {decay: 0.5, hardness: 0.5}, gain: -14}
+    fx: [{type: reverb, rt60: 0.5, wet: 0.1}]
+
+  bowl_set_down:
+    meaning: "A ceramic bowl set down on the table, a soft heavy thud that starts the real scene"
+    layers:
+      - {model: kick, params: {tune: 0.65, decay: 1.0, click: 0.05}, gain: -3}
+      - {model: modal, preset: ceramic_cup, note: D5, params: {decay: 0.2}, gain: -18}
+    fx: [{type: lowpass, hz: 1600}]
+
+  herb_breeze:
+    meaning: "A breeze through a handful of fresh herbs, a soft breath for the phone and the camera moving in"
+    layers:
+      - {model: whoosh, params: {dur: 0.5, f_start: 900, f_end: 3800, width: 1.5, shape: swell}, gain: -9}
+    fx: [{type: reverb, rt60: 0.4, wet: 0.08}]
+
+  tape_snap:
+    meaning: "A measuring tape snapping back into its case, for the quick spin from the patient to the nutritionist"
+    layers:
+      - {model: whoosh, params: {dur: 0.45, f_start: 400, f_end: 2600, width: 1.0, shape: swell}, gain: -7}
+      - {model: paper, params: {dur: 0.3, density: 30, bright: 0.2}, gain: -22}
+
+  spoon_bowl:
+    meaning: "A wooden spoon tapped on a glazed bowl, a small warm clink for every button the finger presses"
+    layers:
+      - {model: modal, preset: ceramic_cup, note: D7, params: {decay: 0.28, strike_pos: 0.15}, gain: -4}
+      - {model: modal, preset: wood_block, note: A5, params: {decay: 0.08, hardness: 1}, gain: -16}
+    fx: [{type: reverb, rt60: 0.35, wet: 0.1}]
+
+  recipe_page:
+    meaning: "A page of a recipe book turned, for the screen of the app changing"
+    layers:
+      - {model: paper, params: {dur: 0.25, density: 80, bright: 0.45, rustle: 0.3}, gain: -10}
+
+  kitchen_timer:
+    meaning: "The kitchen timer ringing once: the plan is ready, which is the moment the deposit is paid or a total arrives"
+    tune: chord
+    layers:
+      - {model: modal, preset: handbell, note: D6, params: {decay: 2.6, beat_hz: 1.8}, gain: -5}
+      - {model: fm, preset: fm_bell, note: D6, params: {dur: 0.1}, gain: -22}
+    fx: [{type: reverb, rt60: 1.6, wet: 0.18, damp_hz: 7000}]
+
+  clinic_door_bell:
+    meaning: "The little bell above the consulting room door when a patient walks in, so the nutritionist hears the new turno arrive"
+    tune: chord
+    layers:
+      - {model: modal, preset: bell, note: A5, params: {decay: 1.4, beat_hz: 2.4}, gain: -7}
+      - {model: modal, preset: bell, note: A5, at: 0.22, params: {decay: 1.2, velocity: 0.7}, gain: -10}
+    fx: [{type: reverb, rt60: 0.9, wet: 0.12}]
+
+  glass_fork:
+    meaning: "A fork tapped on a glass, the new turno landing in the nutritionist's agenda"
+    layers:
+      - {model: modal, preset: glass, note: B5, params: {decay: 0.6, hardness: 0.9}, gain: -8}
+      - {model: modal, preset: metal_bar, note: E7, at: 0.04, params: {decay: 0.2, velocity: 0.6}, gain: -16}
+    fx: [{type: reverb, rt60: 0.5, wet: 0.08}]
+
+  seed_jar:
+    meaning: "Seeds shaken in a glass jar while the sales number counts up, because every turno ends in a payment"
+    layers:
+      - {model: shaker, params: {dur: 0.9, density: 1.8, pitch: 1.5}, gain: -12}
+    fx: [{type: highpass, hz: 500}]
+
+  water_pour:
+    meaning: "Water poured into a glass as the sales bars grow, a rising pour that fills up and stops"
+    layers:
+      - {model: pour, params: {dur: 0.9, fill: 0.9, density: 120, wash: 0.3}, gain: -10}
+
+  spoon_knock:
+    meaning: "The spoon knocking twice on the wooden table when the brand name lands, a warm pair of knocks"
+    tune: chord
+    layers:
+      - {model: modal, preset: wood_block, note: D4, params: {decay: 0.35, hardness: 0.5, strike_pos: 0.3}, gain: -6}
+      - {model: modal, preset: wood_block, note: A4, at: 0.14, params: {decay: 0.3, velocity: 0.75}, gain: -9}
+    fx: [{type: reverb, rt60: 0.5, wet: 0.1}]
+
+cues:
+  ping: board_knock
+  riser-chaos: {sound: waiting_room_murmur, align: end}
+  bubble-pop: juice_splash
+  icon-morph: scale_tare
+  drop: bowl_set_down
+  app-open: herb_breeze
+  cta-whoosh: {sound: herb_breeze, gain: -2, reason: "the end card enters with the same herb breath as the phone"}
+  whip-out: tape_snap
+  whip-spin: {sound: tape_snap, gain: 1, reason: "the spin is the second half of the same tape snapping back"}
+  swipe: {sound: recipe_page, gain: -2, reason: "a finger scrolling the page is a recipe page turning, the same paper as the screen changing"}
+  tap: spoon_bowl
+  screen-swap: recipe_page
+  pulse: {sound: kitchen_timer, gain: -2, reason: "the confirmation rings the same kitchen timer as the sales total arriving: the plan is ready"}
+  count-done: {sound: kitchen_timer, gain: -3, reason: "a total arriving is the same kitchen timer as a deposit paid"}
+  final-hit: {sound: kitchen_timer, gain: 1, reason: "the ad ends on the kitchen timer, the plan ready"}
+  notification: clinic_door_bell
+  order-lands: glass_fork
+  count: seed_jar
+  bars-riser: water_pour
+  lockup: spoon_knock
+  # no sound on purpose: text is read, not heard
+  cut: silent
+  title-in: silent
+  title-out: silent
+  contact: silent
+
+mix:
+  loudness: {lufs: -14, truePeak: -1.5}
+  duckMusic: 2

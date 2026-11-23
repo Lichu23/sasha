@@ -57,9 +57,16 @@ export const ChevronIcon = ({ className }: IconProps) => (
   </svg>
 );
 
-/** The venue's mark: a lotus for the studio, a sparkle for the beauty center. */
+/** The venue's mark: a lotus for the studio, a sparkle for the beauty center, a leaf for the nutrition practice. */
 export function VenueMark({ venue, size = 28, className }: { venue: Venue; size?: number; className?: string }) {
   const common = { width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", className, "aria-hidden": true } as const;
+  if (venue.slug === "nutricion")
+    return (
+      <svg {...common}>
+        <path d="M5 19c0-7.2 4.4-12.6 14-14 .4 8.6-4.2 14-11.4 14.2" />
+        <path d="M5 19c2.2-4.4 5.2-7.6 9-9.6" />
+      </svg>
+    );
   return venue.slug === "estudio" ? (
     <svg {...common}>
       <path d="M12 4c2.6 2.4 3.6 5.2 3 8.4-.5 2.2-1.7 3.9-3 4.8-1.3-.9-2.5-2.6-3-4.8C8.4 9.2 9.4 6.4 12 4Z" />

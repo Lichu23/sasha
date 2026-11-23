@@ -50,7 +50,9 @@ const duration = (file) => {
   return Number(hh) * 3600 + Number(mm) * 60 + Number(ss);
 };
 
-export async function createPhoneDemo({ out, steps, introMs = 3200, outroMs = 5000 }) {
+export async function createPhoneDemo({ out, steps, introMs = 3200, outroMs = 5000, pace = 1 }) {
+  // pace < 1 shortens the pause before and after each tap (the fast ads); every frame is still a real 1/30 s step.
+  const lead = Math.round(450 * pace), after = Math.round(250 * pace);
   const work = out.replace(/\.mp4$/, ".work");
   rmSync(work, { recursive: true, force: true }); mkdirSync(work, { recursive: true });
   const started = Date.now();
@@ -121,11 +123,11 @@ export async function createPhoneDemo({ out, steps, introMs = 3200, outroMs = 50
     const el = typeof target === "string" ? await find(target) : target;
     if (!el?.asElement?.()) throw new Error(`tap target missing at ${page.url()}`);
     await el.evaluate((e) => e.scrollIntoView({ block: "nearest", behavior: "smooth" }));
-    await hold(450);
+    await hold(lead);
     const box = await el.boundingBox();
     const x = box.x + box.width / 2, y = box.y + box.height / 2;
     await page.evaluate((x, y) => window.__tap(x, y), x, y);
-    await hold(250);
+    await hold(after);
     if (js) await el.evaluate((e) => { e.focus?.(); e.click(); }); else await page.mouse.click(x, y);
   }
   /** Shows the touch marker on something without pressing it (a link that would open another app). */

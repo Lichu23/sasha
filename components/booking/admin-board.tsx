@@ -7,7 +7,7 @@ import { Segmented } from "@/components/ui/segmented";
 import { DAY_MS, dayLabel, formatTime, shortDay, startOfArDay } from "@/lib/admin-dates";
 import { classesOn, isActive, MINUTE, saleValue, type Booking, type Status } from "@/lib/booking/availability";
 import { bookingActions, useBookings } from "@/lib/booking/store";
-import { euros, offerOf, staffOf, type Venue } from "@/lib/booking/venues";
+import { money, offerOf, staffOf, type Venue } from "@/lib/booking/venues";
 import { toAr } from "@/lib/pickup";
 import { useNow } from "@/lib/use-now";
 import { CalendarIcon, ChevronIcon, ClockIcon, UserIcon } from "./ui";
@@ -68,8 +68,10 @@ export function AdminBoard({ venue }: { venue: Venue }) {
   const label = view === "dia" ? dayLabel(day, now) : `${shortDay(weekStart)} – ${shortDay(weekStart + 6 * DAY_MS)}`;
 
   return (
-    <main className="mx-auto w-full max-w-md px-4 pt-5 pb-12">
-      <h1 className="font-display text-3xl font-semibold">{venue.mode === "classes" ? "Reservas" : "Agenda"}</h1>
+    <main className="mx-auto w-full max-w-md px-4 pt-5 pb-12 lg:grid lg:max-w-6xl lg:grid-cols-[21rem_minmax(0,1fr)] lg:items-start lg:gap-x-10 lg:px-8 lg:pt-8">
+      {/* From lg up the controls (view, day, figures, filter) are a sidebar that stays in view; the bookings fill the rest. */}
+      <div className="lg:sticky lg:top-20">
+      <h1 className="font-display text-3xl font-semibold lg:text-4xl">{venue.mode === "classes" ? "Reservas" : "Agenda"}</h1>
 
       <Segmented label="Vista" value={view} onChange={setView} options={VIEWS} className="mt-3" />
 
@@ -102,6 +104,10 @@ export function AdminBoard({ venue }: { venue: Venue }) {
         marks={(d) => ({ label: counts.get(d) ? String(counts.get(d)) : undefined })}
       />
 
+      {view !== "semana" && !closed ? <DayStats venue={venue} day={day} bookings={bookings} mine={mine} /> : null}
+      </div>
+
+      <div>
       {view === "semana" ? (
         <WeekView
           venue={venue}
@@ -114,11 +120,10 @@ export function AdminBoard({ venue }: { venue: Venue }) {
           }}
         />
       ) : closed ? (
-        <p className="mt-6 rounded-2xl bg-paper px-4 py-8 text-center text-muted ring-1 ring-line">El centro está cerrado este día.</p>
+        <p className="mt-6 rounded-2xl bg-paper px-4 py-8 text-center text-muted ring-1 ring-line lg:mt-0">El {venue.words.place} está cerrado este día.</p>
       ) : (
         <>
-          <DayStats venue={venue} day={day} bookings={bookings} mine={mine} />
-          <div className="mt-4 -mx-4 overflow-x-auto px-4 [scrollbar-width:none]">
+          <div className="mt-4 -mx-4 overflow-x-auto px-4 [scrollbar-width:none] lg:mx-0 lg:mt-0 lg:mb-4 lg:px-0">
             <Segmented label="Estado" value={filter} onChange={setFilter} options={FILTERS} />
           </div>
           {venue.mode === "classes" ? (
@@ -128,6 +133,7 @@ export function AdminBoard({ venue }: { venue: Venue }) {
           )}
         </>
       )}
+      </div>
     </main>
   );
 }
@@ -155,7 +161,7 @@ function DayStats({ venue, day, bookings, mine }: { venue: Venue; day: number; b
       <div className="mt-4 grid grid-cols-3 gap-2">
         <Stat label="Reservas" value={String(active.length)} />
         <Stat label="Plazas libres" value={String(free)} />
-        <Stat label="Cobrado" value={euros(active.reduce((sum, b) => sum + b.paid, 0))} />
+        <Stat label="Cobrado" value={money(venue, active.reduce((sum, b) => sum + b.paid, 0))} />
       </div>
     );
   }
@@ -164,8 +170,8 @@ function DayStats({ venue, day, bookings, mine }: { venue: Venue; day: number; b
   const booked = active.reduce((sum, b) => sum + b.minutes, 0);
   return (
     <div className="mt-4 grid grid-cols-3 gap-2">
-      <Stat label="Citas" value={String(active.length)} />
-      <Stat label="Señales" value={euros(active.reduce((sum, b) => sum + b.paid, 0))} hint="cobradas" />
+      <Stat label={venue.words.appts[0].toUpperCase() + venue.words.appts.slice(1)} value={String(active.length)} />
+      <Stat label="Cobrado" value={money(venue, active.reduce((sum, b) => sum + b.paid, 0))} hint={venue.deposit ? "señas online" : "online"} />
       <Stat label="Ocupación" value={capacity ? `${Math.round((booked / capacity) * 100)} %` : "–"} />
     </div>
   );
@@ -176,7 +182,7 @@ function DayStats({ venue, day, bookings, mine }: { venue: Venue; day: number; b
 function WeekView({ venue, bookings, weekStart, today, open }: { venue: Venue; bookings: Booking[]; weekStart: number; today: number; open: (day: number) => void }) {
   const days = Array.from({ length: 7 }, (_, i) => weekStart + i * DAY_MS);
   return (
-    <ul aria-label="Semana" className="mt-4 grid gap-2">
+    <ul aria-label="Semana" className="mt-4 grid gap-2 lg:mt-0 lg:grid-cols-2 lg:gap-3">
       {days.map((d) => {
         const mine = bookings.filter((b) => startOfArDay(b.start) === d && isActive(b));
         const closed = venue.mode === "services" ? !venue.open[toAr(d).weekday] : classesOn(venue, d, []).length === 0;
@@ -184,7 +190,7 @@ function WeekView({ venue, bookings, weekStart, today, open }: { venue: Venue; b
         const detail =
           venue.mode === "classes"
             ? `${classesOn(venue, d, bookings).length} ${classesOn(venue, d, bookings).length === 1 ? "clase" : "clases"} · ${mine.length} ${mine.length === 1 ? "reserva" : "reservas"}`
-            : `${mine.length} citas · ${Math.round((mine.reduce((sum, b) => sum + b.minutes, 0) / Math.max(1, ((venue.open[toAr(d).weekday]?.[1] ?? 0) - (venue.open[toAr(d).weekday]?.[0] ?? 0)) * venue.staff.length)) * 100)} % ocupado`;
+            : `${mine.length} ${venue.words.appts} · ${Math.round((mine.reduce((sum, b) => sum + b.minutes, 0) / Math.max(1, ((venue.open[toAr(d).weekday]?.[1] ?? 0) - (venue.open[toAr(d).weekday]?.[0] ?? 0)) * venue.staff.length)) * 100)} % ocupado`;
         return (
           <li key={d}>
             <button
@@ -199,7 +205,7 @@ function WeekView({ venue, bookings, weekStart, today, open }: { venue: Venue; b
                 <span className="block text-sm text-muted">{closed ? "Cerrado" : detail}</span>
               </span>
               <span className="shrink-0 text-right">
-                <span className="block font-semibold tabular-nums">{closed ? "–" : euros(income)}</span>
+                <span className="block font-semibold tabular-nums">{closed ? "–" : money(venue, income)}</span>
                 <span className="block text-xs text-muted">{closed ? "" : "ingresos"}</span>
               </span>
             </button>
@@ -216,8 +222,8 @@ function ServicesDay({ venue, shown, fresh, setStatus }: { venue: Venue; shown: 
   const ordered = [...shown.filter((b) => b.ref === fresh), ...shown.filter((b) => b.ref !== fresh)];
   return (
     <>
-      {ordered.length === 0 ? <p className="mt-4 rounded-2xl bg-paper px-4 py-8 text-center text-muted ring-1 ring-line">No hay citas con este filtro.</p> : null}
-      <ul aria-label="Citas" className="mt-4 grid gap-3">
+      {ordered.length === 0 ? <p className="mt-4 rounded-2xl bg-paper px-4 py-8 text-center text-muted ring-1 ring-line lg:mt-0">No hay {venue.words.appts} con este filtro.</p> : null}
+      <ul aria-label="Citas" className="mt-4 grid gap-3 lg:mt-0 lg:grid-cols-2 lg:items-start">
         {ordered.map((b) => {
           const offer = offerOf(venue, b.offer);
           const chip = statusChip[b.status];
@@ -237,11 +243,12 @@ function ServicesDay({ venue, shown, fresh, setStatus }: { venue: Venue; shown: 
                 <span className="inline-flex items-center gap-1">
                   <UserIcon className="size-4" /> {b.name}
                 </span>
-                <span>con {staffOf(venue, b.staff)?.name}</span>
+                {venue.solo ? null : <span>con {staffOf(venue, b.staff)?.name}</span>}
+                {b.modality ? <span className="rounded-full bg-cream px-2 py-0.5 text-xs font-semibold ring-1 ring-line">{b.modality === "online" ? "Online" : "Presencial"}</span> : null}
               </p>
               <p className="mt-2 text-sm">
-                <span className="rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-800">Señal {euros(b.paid)} pagada</span>
-                <span className="ml-2 text-muted">Resta {euros(b.price - b.paid)} en el centro</span>
+                <span className="rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-800">{venue.deposit ? "Seña" : "Pagada"} {money(venue, b.paid)}</span>
+                {b.price > b.paid ? <span className="ml-2 text-muted">Resta {money(venue, b.price - b.paid)} en el {venue.words.place}</span> : null}
               </p>
               {b.notes ? <p className="mt-2 rounded-xl bg-cream px-3 py-2 text-sm">“{b.notes}”</p> : null}
               <div className="mt-3 flex gap-2">
@@ -281,8 +288,8 @@ function ClassesDay({ venue, day, bookings, shown, fresh, setStatus, filtered }:
 
   return (
     <>
-      {visible.length === 0 ? <p className="mt-4 rounded-2xl bg-paper px-4 py-8 text-center text-muted ring-1 ring-line">No hay clases ni reservas con este filtro.</p> : null}
-      <ul aria-label="Clases" className="mt-4 grid gap-3">
+      {visible.length === 0 ? <p className="mt-4 rounded-2xl bg-paper px-4 py-8 text-center text-muted ring-1 ring-line lg:mt-0">No hay clases ni reservas con este filtro.</p> : null}
+      <ul aria-label="Clases" className="mt-4 grid gap-3 lg:mt-0 lg:grid-cols-2 lg:items-start">
         {visible.map((s) => (
           <SessionCard key={s.key} venue={venue} session={s} attendees={shown.filter((b) => b.offer === s.offer.id && b.start === s.start && (filtered || isActive(b)))} fresh={fresh} setStatus={setStatus} />
         ))}
@@ -334,7 +341,7 @@ function SessionCard({ venue, session, attendees, fresh, setStatus }: { venue: V
                 </div>
                 <div className="mt-1 flex items-center justify-between gap-2 text-sm text-muted">
                   <span>
-                    {b.phone} · pagada {euros(b.paid)}
+                    {b.phone} · pagada {money(venue, b.paid)}
                   </span>
                   {b.status === "confirmada" ? (
                     <span className="flex gap-1">

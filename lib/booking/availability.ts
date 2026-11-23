@@ -1,6 +1,6 @@
 import { startOfArDay } from "@/lib/admin-dates";
 import { toAr } from "@/lib/pickup";
-import { offerOf, type Offer, type Staff, type Venue } from "./venues";
+import { offerOf, type Modality, type Offer, type PayMethod, type Staff, type Venue } from "./venues";
 
 // What can be booked: the classes of a day with their seats left (studio), and the free times of a treatment with
 // each professional (beauty center). Both read the same bookings the panel shows, so a booking made on the
@@ -23,9 +23,11 @@ export type Booking = {
   phone: string;
   notes: string;
   price: number;
-  /** What was paid online: the full class, or the deposit of a treatment. */
+  /** What was paid online: the full price, or the deposit when the venue asks for one. */
   paid: number;
-  method: "tarjeta" | "bizum";
+  method: PayMethod;
+  /** In person or by video call (offers that can be both). */
+  modality?: Modality;
   status: Status;
   createdAt: number;
 };
@@ -79,7 +81,7 @@ export const isBookableDay = (venue: Venue, day: number) => (venue.mode === "cla
 export const today = (now: number) => startOfArDay(now);
 
 /**
- * What a booking is worth in the sales: a customer who came is worth the full price (the deposit and what is paid at
- * the center), a no-show keeps the deposit, a cancellation is refunded, and one still to come counts what was paid.
+ * What a booking is worth in the sales: a customer who came is worth the full price, a no-show keeps what was already
+ * paid online, a cancellation is refunded, and one still to come counts what was paid.
  */
 export const saleValue = (b: Booking) => (b.status === "cancelada" ? 0 : b.status === "asistio" ? b.price : b.paid);

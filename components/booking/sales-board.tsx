@@ -6,12 +6,12 @@ import { Segmented } from "@/components/ui/segmented";
 import { DAY_MS, shortDay, startOfArDay } from "@/lib/admin-dates";
 import { isActive, saleValue, type Booking } from "@/lib/booking/availability";
 import { useBookings } from "@/lib/booking/store";
-import { euros, offerOf, staffOf, type Venue } from "@/lib/booking/venues";
+import { money, offerOf, payLabel, staffOf, type PayMethod, type Venue } from "@/lib/booking/venues";
 import { toAr } from "@/lib/pickup";
 import { useNow } from "@/lib/use-now";
 
 // The panel's sales view: what the business earned in the last 7 or 30 days against the ones before, by day, by
-// class / treatment, by weekday and by who gave it, how they pay, and how many came (the no-shows that kept the deposit).
+// class / treatment, by weekday and by who gave it, how they pay, and how many came (the no-shows that already paid).
 
 const PERIODS = [
   { value: 7, label: "Últimos 7 días" },
@@ -27,12 +27,13 @@ const WEEKDAYS = [
   { day: 0, label: "Dom" },
 ];
 const count = (v: number) => String(v);
-const euroRound = (v: number) => euros(Math.round(v));
 
 export function SalesBoard({ venue }: { venue: Venue }) {
   const bookings = useBookings(venue);
   const now = useNow();
   const [days, setDays] = useState<number>(30);
+  const euroRound = (v: number) => money(venue, Math.round(v));
+  const [firstPay, secondPay] = venue.payments;
 
   const data = useMemo(() => {
     if (!bookings || now === null) return null;
@@ -67,8 +68,8 @@ export function SalesBoard({ venue }: { venue: Venue }) {
     const byStaff = group((b) => b.staff, (id) => staffOf(venue, id)?.name ?? id, 5);
 
     const byWeekday: Datum[] = WEEKDAYS.map((w) => ({ key: String(w.day), label: w.label, value: active.filter((b) => toAr(b.start).weekday === w.day).length }));
-    const card = active.filter((b) => b.method === "tarjeta").reduce((s, b) => s + b.paid, 0);
-    const bizum = active.filter((b) => b.method === "bizum").reduce((s, b) => s + b.paid, 0);
+    const card = active.filter((b) => b.method === venue.payments[0]).reduce((s, b) => s + b.paid, 0);
+    const bizum = active.filter((b) => b.method === venue.payments[1]).reduce((s, b) => s + b.paid, 0);
 
     return {
       revenue,
@@ -88,14 +89,16 @@ export function SalesBoard({ venue }: { venue: Venue }) {
     };
   }, [bookings, now, days, venue]);
 
-  const unit = venue.mode === "classes" ? "reservas" : "citas";
+  const unit = venue.words.appts;
 
   return (
-    <main className="mx-auto w-full max-w-md px-4 pt-5 pb-12">
-      <h1 className="font-display text-3xl font-semibold">Ventas</h1>
-      <Segmented label="Período" value={days} onChange={setDays} options={PERIODS} className="mt-3" />
+    <main className="mx-auto w-full max-w-md px-4 pt-5 pb-12 lg:max-w-6xl lg:px-8 lg:pt-8">
+      <div className="lg:flex lg:items-end lg:justify-between lg:gap-6">
+        <h1 className="font-display text-3xl font-semibold lg:text-4xl">Ventas</h1>
+        <Segmented label="Período" value={days} onChange={setDays} options={PERIODS} className="mt-3 lg:mt-0 lg:w-96" />
+      </div>
 
-      <section aria-label="Resumen del período" className="mt-4 grid grid-cols-2 gap-2">
+      <section aria-label="Resumen del período" className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-6 lg:gap-3">
         <div className="col-span-2 rounded-2xl bg-ink p-5 text-cream">
           <p className="text-sm text-cream/70">Ingresos</p>
           <p className="mt-1 font-sans text-5xl font-semibold tracking-tight tabular-nums">{data ? euroRound(data.revenue) : "–"}</p>
@@ -107,20 +110,20 @@ export function SalesBoard({ venue }: { venue: Venue }) {
             <p className="mt-2 text-sm text-cream/70">Sin datos anteriores para comparar</p>
           )}
         </div>
-        <Tile label={venue.mode === "classes" ? "Reservas" : "Citas"} value={data ? String(data.count) : "–"} />
-        <Tile label={venue.mode === "classes" ? "Por reserva" : "Ticket medio"} value={data ? euros(Math.round(data.avg * 10) / 10) : "–"} />
-        <Tile label="Cobrado online" value={data ? euroRound(data.online) : "–"} hint={venue.mode === "services" ? "señales" : "pagos al reservar"} />
+        <Tile label={unit[0].toUpperCase() + unit.slice(1)} value={data ? String(data.count) : "–"} />
+        <Tile label={venue.mode === "classes" ? "Por reserva" : "Ticket medio"} value={data ? money(venue, venue.locale === "es-AR" ? Math.round(data.avg) : Math.round(data.avg * 10) / 10) : "–"} />
+        <Tile label="Cobrado online" value={data ? euroRound(data.online) : "–"} hint="pagos al reservar" />
         <Tile label="Asistencia" value={data?.attendance != null ? `${Math.round(data.attendance * 100)} %` : "–"} hint={data ? `${data.missed} no vinieron` : undefined} />
       </section>
 
       {data && data.missed > 0 ? (
         <p className="mt-3 rounded-2xl bg-blush px-4 py-3 text-sm text-brand-ink">
-          Los {data.missed} plantones de este período dejaron <b>{euros(data.kept)}</b> ya cobrados por adelantado, en vez de huecos vacíos sin ingreso.
+          Los {data.missed} plantones de este período dejaron <b>{money(venue, data.kept)}</b> ya cobrados por adelantado, en vez de huecos vacíos sin ingreso.
         </p>
       ) : null}
 
-      <div className={`mt-3 grid gap-3 ${data ? "" : "opacity-50"}`}>
-        <Panel id="by-day" title="Ingresos por día" hint="Euros de cada día">
+      <div className={`mt-3 grid gap-3 lg:grid-cols-2 lg:gap-4 ${data ? "" : "opacity-50"}`}>
+        <Panel id="by-day" title="Ingresos por día" hint={`${venue.locale === "es-AR" ? "Pesos" : "Euros"} de cada día`} className="lg:col-span-2">
           {data ? (
             <>
               <ColumnChart data={data.byDay} format={euroRound} labelEvery={days > 7 ? 5 : 1} />
@@ -129,13 +132,15 @@ export function SalesBoard({ venue }: { venue: Venue }) {
           ) : null}
         </Panel>
 
-        <Panel id="by-offer" title={venue.mode === "classes" ? "Clases que más ingresan" : "Tratamientos que más ingresan"} hint="Euros en el período">
+        <Panel id="by-offer" title={venue.mode === "classes" ? "Clases que más ingresan" : venue.slug === "nutricion" ? "Consultas que más ingresan" : "Tratamientos que más ingresan"} hint={`${venue.locale === "es-AR" ? "Pesos" : "Euros"} en el período`}>
           {data?.byOffer.length ? <RankedBars data={data.byOffer} format={euroRound} /> : <p className="text-sm text-muted">Sin ventas en el período.</p>}
         </Panel>
 
-        <Panel id="by-staff" title={venue.mode === "classes" ? "Por profesor" : "Por profesional"} hint="Euros en el período">
-          {data?.byStaff.length ? <RankedBars data={data.byStaff} format={euroRound} /> : <p className="text-sm text-muted">Sin ventas en el período.</p>}
-        </Panel>
+        {venue.solo ? null : (
+          <Panel id="by-staff" title={venue.mode === "classes" ? "Por profesor" : "Por profesional"} hint={`${venue.locale === "es-AR" ? "Pesos" : "Euros"} en el período`}>
+            {data?.byStaff.length ? <RankedBars data={data.byStaff} format={euroRound} /> : <p className="text-sm text-muted">Sin ventas en el período.</p>}
+          </Panel>
+        )}
 
         <Panel id="by-weekday" title={`${unit[0].toUpperCase()}${unit.slice(1)} por día de la semana`} hint="Qué días se llena más">
           {data ? (
@@ -147,10 +152,10 @@ export function SalesBoard({ venue }: { venue: Venue }) {
         </Panel>
 
         <Panel id="methods" title="Cómo pagan" hint="Pagos online del período">
-          {data ? <Methods card={data.card} bizum={data.bizum} /> : null}
+          {data ? <Methods venue={venue} first={firstPay} second={secondPay} card={data.card} bizum={data.bizum} /> : null}
         </Panel>
       </div>
-      <p className="mt-6 text-center text-xs text-muted">Datos de ejemplo. Los ingresos cuentan lo que vale cada {venue.mode === "classes" ? "reserva" : "cita"}: completa si vino, la señal si no vino, nada si se canceló.</p>
+      <p className="mt-6 text-center text-xs text-muted">Datos de ejemplo. Los ingresos cuentan lo que vale cada {venue.words.appt}: completa si vino, lo ya pagado si no vino, nada si se canceló (se devuelve).</p>
     </main>
   );
 }
@@ -165,9 +170,9 @@ function Tile({ label, value, hint }: { label: string; value: string; hint?: str
   );
 }
 
-function Panel({ id, title, hint, children }: { id: string; title: string; hint: string; children: React.ReactNode }) {
+function Panel({ id, title, hint, className = "", children }: { id: string; title: string; hint: string; className?: string; children: React.ReactNode }) {
   return (
-    <section aria-labelledby={id} className="rounded-2xl bg-paper p-5 ring-1 ring-line">
+    <section aria-labelledby={id} className={`rounded-2xl bg-paper p-5 ring-1 ring-line ${className}`}>
       <h2 id={id} className="font-semibold">
         {title}
       </h2>
@@ -177,31 +182,31 @@ function Panel({ id, title, hint, children }: { id: string; title: string; hint:
   );
 }
 
-function Methods({ card, bizum }: { card: number; bizum: number }) {
+function Methods({ venue, first, second, card, bizum }: { venue: Venue; first: PayMethod; second: PayMethod; card: number; bizum: number }) {
   const total = card + bizum;
   if (total === 0) return <p className="text-sm text-muted">Sin pagos en el período.</p>;
   const pct = Math.round((card / total) * 100);
   return (
     <>
-      <div className="flex h-4 overflow-hidden rounded-full ring-1 ring-line" role="img" aria-label={`Tarjeta ${pct} %, Bizum ${100 - pct} %`}>
+      <div className="flex h-4 overflow-hidden rounded-full ring-1 ring-line" role="img" aria-label={`${payLabel[first]} ${pct} %, ${payLabel[second]} ${100 - pct} %`}>
         <span className="bg-brand" style={{ width: `${pct}%` }} />
         <span className="bg-brand/35" style={{ width: `${100 - pct}%` }} />
       </div>
       <dl className="mt-3 grid gap-1.5 text-sm">
         <div className="flex items-center justify-between">
           <dt className="flex items-center gap-2">
-            <span aria-hidden className="size-3 rounded-full bg-brand" /> Tarjeta
+            <span aria-hidden className="size-3 rounded-full bg-brand" /> {payLabel[first]}
           </dt>
           <dd className="font-semibold tabular-nums">
-            {euros(card)} · {pct} %
+            {money(venue, card)} · {pct} %
           </dd>
         </div>
         <div className="flex items-center justify-between">
           <dt className="flex items-center gap-2">
-            <span aria-hidden className="size-3 rounded-full bg-brand/35" /> Bizum
+            <span aria-hidden className="size-3 rounded-full bg-brand/35" /> {payLabel[second]}
           </dt>
           <dd className="font-semibold tabular-nums">
-            {euros(bizum)} · {100 - pct} %
+            {money(venue, bizum)} · {100 - pct} %
           </dd>
         </div>
       </dl>
