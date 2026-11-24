@@ -62,4 +62,7 @@ export default defineShop({
   },
 
   admin: true,
+
+  // Pitch page at /demo: the video (unlisted on YouTube) and the links to try the store and the panel.
+  demo: { youtubeId: "Wv9L_OAILaw" },
 });
