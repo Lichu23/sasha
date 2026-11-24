@@ -71,14 +71,17 @@ const headline = management ? "Así podría ser la gestión de" : "Así podría 
 
 export default function DemoPage() {
   return (
-    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 pt-[max(2.5rem,env(safe-area-inset-top))] pb-[max(2.5rem,env(safe-area-inset-bottom))] sm:px-6">
-      <header className="flex flex-col items-center text-center">
-        {/* One title only: the headline already names the shop, so the logo stands alone above it (no second name
-            next to it, which on a phone wrapped onto two lines). A shop with a wordmark has it inside the headline. */}
-        {shop.wordmark ? null : <ShopLogo size={72} />}
+    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 pt-[max(1.25rem,env(safe-area-inset-top))] pb-[max(2.5rem,env(safe-area-inset-bottom))] sm:px-6 sm:pt-[max(2.5rem,env(safe-area-inset-top))]">
+      <header
+        className={`flex items-center ${shop.wordmark ? "flex-col text-center" : "justify-center gap-3.5 text-left sm:flex-col sm:gap-0 sm:text-center"}`}
+      >
+        {/* One title only: the headline already names the shop, so the logo stands alone (no second name next to it).
+            On a phone it sits beside the headline to save height; from `sm` up it goes above, bigger. A shop with a
+            wordmark has it inside the headline. */}
+        {shop.wordmark ? null : <ShopLogo size={56} className="shrink-0 sm:mb-6 sm:size-[72px]" />}
         <h1
           aria-label={`${headline} ${shop.shortName}`}
-          className={`${shop.wordmark ? "" : "mt-6 "}font-display text-3xl leading-tight font-semibold tracking-tight text-balance sm:text-4xl`}
+          className="font-display text-2xl leading-tight font-semibold tracking-tight text-balance sm:text-4xl"
         >
           {headline}{" "}
           {shop.wordmark ? (
@@ -99,7 +102,7 @@ export default function DemoPage() {
       </header>
 
       {youtubeId ? (
-        <section aria-labelledby="video" className="mt-8">
+        <section aria-labelledby="video" className="mt-5 sm:mt-8">
           <h2 id="video" className="sr-only">
             Video de cómo funciona
           </h2>
