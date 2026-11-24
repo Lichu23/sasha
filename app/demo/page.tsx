@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ShopBrand } from "@/components/shop-logo";
+import { ShopLogo } from "@/components/shop-logo";
 import { ArrowIcon } from "@/components/icons";
 import { isConsulta, management, paysOnline, reservations, shop } from "@/lib/shop";
 
@@ -73,12 +73,9 @@ export default function DemoPage() {
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 pt-[max(2.5rem,env(safe-area-inset-top))] pb-[max(2.5rem,env(safe-area-inset-bottom))] sm:px-6">
       <header className="flex flex-col items-center text-center">
-        {/* A shop with a wordmark has its logo in the title instead of its name, so it isn't shown twice. */}
-        {shop.wordmark ? null : (
-          <div className="flex items-center gap-3 font-display text-2xl font-semibold">
-            <ShopBrand size={56} name={<span>{shop.name}</span>} />
-          </div>
-        )}
+        {/* One title only: the headline already names the shop, so the logo stands alone above it (no second name
+            next to it, which on a phone wrapped onto two lines). A shop with a wordmark has it inside the headline. */}
+        {shop.wordmark ? null : <ShopLogo size={72} />}
         <h1
           aria-label={`${headline} ${shop.shortName}`}
           className={`${shop.wordmark ? "" : "mt-6 "}font-display text-3xl leading-tight font-semibold tracking-tight text-balance sm:text-4xl`}
