@@ -50,3 +50,8 @@ next-env.d.ts
 
 # private plans and notes (only README.md is published)
 /plans/
+
+# markdown notes stay local (README.md files are published; already tracked ones keep being tracked)
+*.md
+!README.md
+!**/README.md

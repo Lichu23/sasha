@@ -36,27 +36,48 @@ const started = Date.now();
 
 // ---------- The virtual clock, installed in every document before its own scripts (scripts/lib/virtual-clock.mjs) ----------
 
-// A visible touch marker in the shop's brand color (runs on the virtual clock).
+// A touch marker that reads on any background (runs on the virtual clock): a disc in the brand color with a white
+// ring and a dark outline (so it shows on pink, white and photos alike) lands on the button, presses down at the
+// moment of the tap and sends out a ripple, then fades. `tap()` holds ~520 ms so the viewer sees it before the click.
 const marker = () => {
   window.__tap = (x, y) => {
-    const brand = getComputedStyle(document.documentElement).getPropertyValue("--brand").trim() || "#333";
-    const dot = document.createElement("div");
-    Object.assign(dot.style, {
-      position: "fixed", left: `${x - 22}px`, top: `${y - 22}px`, width: "44px", height: "44px",
-      borderRadius: "50%", background: `color-mix(in srgb, ${brand} 32%, transparent)`, border: `2px solid ${brand}`,
-      zIndex: 2147483647, pointerEvents: "none", transform: "scale(.6)", opacity: "1",
-      transition: "transform .45s ease-out, opacity .45s ease-out",
+    const css = getComputedStyle(document.documentElement);
+    const brand = css.getPropertyValue("--brand").trim() || "#333";
+    const ink = css.getPropertyValue("--ink").trim() || "#222";
+    const make = (size, style) => {
+      const d = document.createElement("div");
+      Object.assign(d.style, {
+        position: "fixed", left: `${x - size / 2}px`, top: `${y - size / 2}px`, width: `${size}px`, height: `${size}px`,
+        borderRadius: "50%", zIndex: 2147483647, pointerEvents: "none", ...style,
+      });
+      document.body.appendChild(d);
+      return d;
+    };
+    const dot = make(62, {
+      background: `color-mix(in srgb, ${brand} 72%, transparent)`, border: "4px solid #fff",
+      boxShadow: `0 0 0 2px ${ink}, 0 8px 22px rgba(0,0,0,.35)`,
+      transform: "scale(1.8)", opacity: "0", transition: "transform .3s cubic-bezier(.2,.8,.2,1), opacity .2s ease-out",
     });
-    document.body.appendChild(dot);
-    requestAnimationFrame(() => { dot.style.transform = "scale(1.4)"; dot.style.opacity = "0"; });
-    setTimeout(() => dot.remove(), 600);
+    const ripple = make(62, {
+      border: `4px solid ${brand}`, boxShadow: "0 0 0 2px #fff", transform: "scale(.8)", opacity: "0",
+      transition: "transform .75s ease-out, opacity .75s ease-out",
+    });
+    requestAnimationFrame(() => { dot.style.transform = "scale(1)"; dot.style.opacity = "1"; });
+    setTimeout(() => { // the press
+      dot.style.transform = "scale(.8)";
+      ripple.style.opacity = "1";
+      requestAnimationFrame(() => { ripple.style.transform = "scale(2.8)"; ripple.style.opacity = "0"; });
+    }, 430);
+    setTimeout(() => { dot.style.opacity = "0"; }, 1000);
+    setTimeout(() => { dot.remove(); ripple.remove(); }, 1400);
   };
 };
 
 // ---------- Frame pump ----------
 const browser = await puppeteer.launch({
   executablePath: CHROME, headless: true, defaultViewport: null,
-  args: [`--force-device-scale-factor=${DPR}`, "--window-size=390,844", "--disable-renderer-backgrounding", "--disable-background-timer-throttling"],
+  // --disable-gpu: with the GPU process, headless Chrome took ~1.1 s per screenshot on this PC; without it, ~40 ms.
+  args: [`--force-device-scale-factor=${DPR}`, "--window-size=390,844", "--disable-renderer-backgrounding", "--disable-background-timer-throttling", "--disable-gpu"],
 });
 const page = (await browser.pages())[0] ?? (await browser.newPage());
 await page.setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148");
@@ -169,7 +190,7 @@ async function tap(target, js = false) {
   const box = await el.boundingBox();
   const x = box.x + box.width / 2, y = box.y + box.height / 2;
   await page.evaluate((x, y) => window.__tap(x, y), x, y);
-  await hold(250);
+  await hold(520);
   if (js) await el.evaluate((e) => { e.focus?.(); e.click(); }); else await page.mouse.click(x, y);
 }
 async function type(text, perChar = 55) {
@@ -198,7 +219,9 @@ if (await page.$("#como")) { await glide(await offsetOf("#como"), 1800); await h
 await glide(await offsetOf("#favoritas"), 1600); await hold(900);
 await page.evaluate(() => document.querySelector("#favoritas").closest("section").querySelector("ul").scrollBy({ left: 300, behavior: "smooth" }));
 await hold(1500);
-await glide(0, 1800); await hold(900);
+// All the way down to the footer, then a long eased glide back to the top of the home.
+await glide(await page.evaluate(() => document.documentElement.scrollHeight), 2800); await hold(1400);
+await glide(0, 3200); await hold(1000);
 
 if (!TEST) {
   // 2. The menu: just scroll through it
@@ -247,7 +270,7 @@ await tap("[role=dialog] button[aria-label^='Sumar']"); await hold(900);
   const add = await find("[role=dialog] button", "Agregar");
   const box = await add.boundingBox();
   await page.evaluate((x, y) => window.__tap(x, y), box.x + box.width / 2, box.y + box.height / 2 - 12);
-  await hold(250);
+  await hold(520);
   await add.evaluate((e) => e.click());
   await hold(1900);
 }

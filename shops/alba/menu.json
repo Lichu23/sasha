@@ -1,0 +1,295 @@
+{
+  "salon": [
+    {
+      "id": "desayunos-y-meriendas",
+      "name": "Desayunos y meriendas",
+      "products": [
+        {
+          "id": 1001,
+          "name": "Café con leche",
+          "description": "Con 2 medialunas de manteca.",
+          "price": 5200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1002,
+          "name": "Cappuccino",
+          "description": "Con espuma de leche y canela.",
+          "price": 4800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1003,
+          "name": "Submarino",
+          "description": "Leche caliente con barra de chocolate.",
+          "price": 5600,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 5600
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1004,
+          "name": "Medialunas x3",
+          "description": "De manteca, recién horneadas.",
+          "price": 4500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1005,
+          "name": "Tostón de pan de campo",
+          "description": "Palta, huevo, cherrys y mix de semillas.",
+          "price": 11900,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 11900
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "algo-dulce",
+      "name": "Algo dulce",
+      "products": [
+        {
+          "id": 1101,
+          "name": "Porción de cheesecake",
+          "description": "Con frutos rojos.",
+          "price": 7800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1102,
+          "name": "Porción de torta Oreo",
+          "description": "Crema de vainilla y galletitas.",
+          "price": 7500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 1103,
+          "name": "Porción de red velvet",
+          "description": "Con crema de queso.",
+          "price": 7800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7800
+            }
+          ],
+          "image": null
+        }
+      ]
+    }
+  ],
+  "takeaway": [
+    {
+      "id": "tortas",
+      "name": "Tortas",
+      "products": [
+        {
+          "id": 2001,
+          "name": "Torta Oreo",
+          "description": "Bizcochuelo de vainilla, crema y galletitas Oreo.",
+          "price": 32000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 32000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 44000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2002,
+          "name": "Torta Red Velvet",
+          "description": "Bizcochuelo rojo y crema de queso.",
+          "price": 34000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 34000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 47000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2003,
+          "name": "Torta Chocolate y dulce de leche",
+          "description": "Bizcochuelo de chocolate, dulce de leche y crema.",
+          "price": 29000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 29000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 41000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2004,
+          "name": "Torta Lemon Pie",
+          "description": "Masa sablée, crema de limón y merengue.",
+          "price": 28000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 28000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 39000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2005,
+          "name": "Torta Dulce de leche",
+          "description": "Bizcochuelo, dulce de leche y crema, con maní.",
+          "price": 31000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 31000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 43000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "para-compartir",
+      "name": "Para compartir",
+      "products": [
+        {
+          "id": 2101,
+          "name": "Cheesecake de frutos rojos",
+          "description": "Entero, con salsa de frutos rojos.",
+          "price": 30000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 30000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2102,
+          "name": "Docena de medialunas",
+          "description": "De manteca, para llevar.",
+          "price": 13500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 13500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2103,
+          "name": "Box de desayuno para 2",
+          "description": "2 cafés, jugo, medialunas y tostón.",
+          "price": 24500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 24500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 2104,
+          "name": "Mini tortas x6",
+          "description": "Surtidas: Oreo, red velvet y lemon pie.",
+          "price": 18000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 18000
+            }
+          ],
+          "image": null
+        }
+      ]
+    }
+  ],
+  "rating": null,
+  "reviews": []
+}
