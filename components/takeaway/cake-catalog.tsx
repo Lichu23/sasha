@@ -33,9 +33,14 @@ export function CakeCatalog({ sections }: { sections: Section[] }) {
     setOpen(true);
   };
 
-  // The card's + skips the detail: the most popular size (the largest), one unit.
+  // The card's + adds a product with a single option right away (one unit). With several sizes it opens the detail
+  // instead, so the customer sees and picks the size rather than getting one added without knowing which.
   // The photo flies to the cart first, so the badge counts it as it lands.
   const quickAdd = async (cake: Product, photo: Element | null | undefined) => {
+    if (cake.sizes.length > 1) {
+      select(cake);
+      return;
+    }
     await flyToCart(photo);
     actions.add(cake.id, cake.sizes.at(-1)!.id, 1);
     confirmAdded(cake.name);
@@ -76,7 +81,7 @@ export function CakeCatalog({ sections }: { sections: Section[] }) {
                   delay: (i % 4) * 0.05,
                 }}
               >
-                {/* Two sibling buttons, as buttons can't nest: the card opens the detail, the + adds right away. */}
+                {/* Two sibling buttons, as buttons can't nest: the card opens the detail, the + adds right away (or opens the detail when there are sizes to pick). */}
                 <div className="group relative">
                   <button type="button" onClick={() => select(cake)} className="block w-full text-left">
                     <div data-fly-photo className="relative aspect-square overflow-hidden rounded-3xl bg-blush">
