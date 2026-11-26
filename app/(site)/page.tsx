@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/reveal";
 import { HeroIntro } from "@/components/home/hero-intro";
+import { MatchesSection } from "@/components/home/matches";
 import { ScheduleLines } from "@/components/schedule-lines";
 import { WeekSchedule } from "@/components/week-schedule";
 import { ArrowIcon, BagIcon, ClockIcon, CupIcon, DeliveryIcon, PinIcon, StarIcon, WhatsappIcon } from "@/components/icons";
@@ -18,11 +19,14 @@ import {
   salonLabels,
   shop,
   shortName,
+  takesOrders,
   whatsappLink,
 } from "@/lib/shop";
 import { formatPrice, rating, reviews, salonMenu, takeawayMenu } from "@/lib/menu";
 
-const cakes = takeawayMenu.flatMap((c) => c.products).filter((p) => p.image);
+// What the favourites come from: the take-away catalog, or the menu of a restaurant with no take-away.
+const catalogHref = takesOrders ? "/take-away" : "/salon";
+const cakes = (takesOrders ? takeawayMenu : salonMenu).flatMap((c) => c.products).filter((p) => p.image);
 const FEATURED_COUNT = 4;
 // The shop's favourites first, topped up with other products that have a photo.
 const featuredCakes = [
@@ -53,18 +57,28 @@ export default function HomePage() {
           <HeroIntro>
             <h1 className="font-display text-5xl leading-[1.02] font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl">
               {shop.home.title[0]}
-              <em className="font-normal text-brand italic">{shop.home.title[1]}</em>
+              <em className={`font-normal text-brand ${shop.home.upright ? "not-italic" : "italic"}`}>{shop.home.title[1]}</em>
               {shop.home.title[2]}
             </h1>
             <p className="mt-5 max-w-md text-lg text-muted text-pretty">{shop.home.intro}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/take-away"
-                className="group inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3.5 font-semibold text-white shadow-lg shadow-brand/25 transition-[background-color,transform] hover:bg-brand-ink active:scale-[0.97]"
-              >
-                {orderCta}
-                <ArrowIcon className="transition-transform group-hover:translate-x-0.5" />
-              </Link>
+              {takesOrders ? (
+                <Link
+                  href="/take-away"
+                  className="group inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3.5 font-semibold text-white shadow-lg shadow-brand/25 transition-[background-color,transform] hover:bg-brand-ink active:scale-[0.97]"
+                >
+                  {orderCta}
+                  <ArrowIcon className="transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              ) : reservations ? (
+                <Link
+                  href="/reservas"
+                  className="group inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3.5 font-semibold text-white shadow-lg shadow-brand/25 transition-[background-color,transform] hover:bg-brand-ink active:scale-[0.97]"
+                >
+                  Reservar mesa
+                  <ArrowIcon className="transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              ) : null}
               {shop.salon ? (
                 <Link
                   href="/salon"
@@ -73,7 +87,7 @@ export default function HomePage() {
                   {salonLabels.cta}
                 </Link>
               ) : null}
-              {reservations ? (
+              {reservations && takesOrders ? (
                 <Link
                   href="/reservas"
                   className="inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3.5 font-semibold ring-1 ring-line transition-[background-color,transform] hover:bg-blush active:scale-[0.97]"
@@ -139,7 +153,7 @@ export default function HomePage() {
       </section>
 
       {/* Only shops with a salón need the choice; otherwise ordering is the whole point. */}
-      {shop.salon ? (
+      {shop.salon && takesOrders ? (
         <section aria-labelledby="como" className="mx-auto mb-24 max-w-6xl px-4 sm:px-6">
           <Reveal>
             <h2 id="como" className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -174,20 +188,20 @@ export default function HomePage() {
       <section aria-labelledby="favoritas" className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold tracking-wide text-brand uppercase">Por encargo</p>
+            <p className="text-sm font-semibold tracking-wide text-brand uppercase">{takesOrders ? "Por encargo" : "De la casa"}</p>
             <h2 id="favoritas" className="mt-1 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-              Las favoritas de la casa
+              {takesOrders ? "Las favoritas de la casa" : "Lo que más se pide"}
             </h2>
           </div>
-          <Link href="/take-away" className="inline-flex items-center gap-1.5 font-semibold text-brand-ink hover:underline">
-            Ver {noun.g("las", "los")} {noun.count(cakes.length)} <ArrowIcon />
+          <Link href={catalogHref} className="inline-flex items-center gap-1.5 font-semibold text-brand-ink hover:underline">
+            {takesOrders ? `Ver ${noun.g("las", "los")} ${noun.count(cakes.length)}` : "Ver el menú completo"} <ArrowIcon />
           </Link>
         </Reveal>
         <ul className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-2 after:w-px after:shrink-0 sm:mx-0 sm:after:hidden sm:scroll-px-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
           {featuredCakes.map((cake, i) => (
             <li key={cake.id} className="w-[72%] shrink-0 snap-start sm:w-auto">
               <Reveal delay={i * 0.06}>
-                <Link href="/take-away" className="group block">
+                <Link href={catalogHref} className="group block">
                   <div className="relative aspect-square overflow-hidden rounded-3xl bg-blush">
                     <Image
                       src={cake.image!}
@@ -208,6 +222,31 @@ export default function HomePage() {
           ))}
         </ul>
       </section>
+
+      {shop.promos?.length ? (
+        <section aria-labelledby="promos" className="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
+          <Reveal>
+            <p className="text-sm font-semibold tracking-wide text-brand uppercase">Promociones</p>
+            <h2 id="promos" className="mt-1 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+              Para venir con ganas
+            </h2>
+          </Reveal>
+          <ul className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-2 after:w-px after:shrink-0 sm:mx-0 sm:grid sm:scroll-px-0 sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:after:hidden lg:grid-cols-4">
+            {shop.promos.map((promo, i) => (
+              <li key={promo.title} className="w-[72%] shrink-0 snap-start sm:w-auto">
+                <Reveal delay={i * 0.06} className="h-full">
+                  <div className="h-full rounded-3xl bg-brand p-6 text-white">
+                    <h3 className="font-display text-2xl leading-tight">{promo.title}</h3>
+                    <p className="mt-2 text-white/85">{promo.text}</p>
+                  </div>
+                </Reveal>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {shop.matches?.length && reservations ? <MatchesSection /> : null}
 
       {reviews.length ? (
         <section aria-labelledby="opiniones" className="mx-auto mt-24 max-w-6xl px-4 sm:px-6">

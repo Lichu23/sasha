@@ -85,6 +85,8 @@ export type ShopConfig = {
     /** Hero title in three parts: the middle one is highlighted in the brand color. */
     title: readonly [before: string, highlight: string, after: string];
     intro: string;
+    /** The highlighted word stays upright instead of italic: for display fonts with no italic (a slab serif). */
+    upright?: boolean;
     /** Product names for "Las favoritas de la casa". Falls back to the first ones with a photo. */
     featured?: string[];
   };
@@ -127,7 +129,38 @@ export type ShopConfig = {
     stayMinutes?: number;
     /** Hours of notice before a reservation. Default 2. */
     minNoticeHours?: number;
+    /**
+     * How a reservation is confirmed. "whatsapp" (default): it is asked for and agreed on WhatsApp, like a consulta.
+     * "email": it is confirmed at once, the customer gets a confirmation email (with the cancel link) and the shop
+     * sees it in /admin/reservas; no WhatsApp in the flow. Demo: the email is a simulated Gmail at /reservas/mail.
+     */
+    confirmation?: "whatsapp" | "email";
+    /** Hours before the reservation until which the customer can cancel from the email. Default 3. */
+    cancelHours?: number;
+    /** Whether the shop takes a deposit (seña). Default false: the email then says nothing is charged. */
+    deposit?: boolean;
   };
+
+  /**
+   * Matches the shop shows on the home page ("Partidos"): each has a "Reservar mesa" button that opens the form with
+   * that day and time chosen. `inDays` counts from today so the demo never goes stale; a live shop would enter dates.
+   */
+  matches?: {
+    id: string;
+    home: string;
+    away: string;
+    competition: string;
+    /** Days from today. */
+    inDays: number;
+    /** Kick-off, 24 h (17 or 17.5). */
+    hour: number;
+  }[];
+
+  /** Promotions shown on the home page: { title: "2x1 en pastas", text: "Lunes y martes, turno noche." }. */
+  promos?: { title: string; text: string }[];
+
+  /** The shop does not sell for take-away: no order catalog, cart or Pedidos tab. Needs `salon`. */
+  noTakeaway?: boolean;
 
   orders: {
     /** What is ordered: { one: "torta", other: "tortas", feminine: true }. */

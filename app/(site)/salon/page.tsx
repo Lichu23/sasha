@@ -5,7 +5,7 @@ import { CategoryNav } from "@/components/category-nav";
 import { MenuItem } from "@/components/menu-item";
 import { Reveal } from "@/components/reveal";
 import { ArrowIcon, ClockIcon } from "@/components/icons";
-import { leadTimeLabel, noun, salonLabels, shop } from "@/lib/shop";
+import { leadTimeLabel, noun, reservations, salonLabels, shop, takesOrders } from "@/lib/shop";
 import { ScheduleLines } from "@/components/schedule-lines";
 import { categorySlug, salonMenu } from "@/lib/menu";
 
@@ -54,20 +54,35 @@ export default function SalonPage() {
           </section>
         ))}
 
-        <Reveal className="mt-16 flex flex-col items-start gap-4 rounded-[2rem] bg-ink p-8 text-cream sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="font-display text-2xl font-semibold">{shop.orders.salonUpsell ?? `¿Querés encargar ${noun.other}?`}</p>
-            <p className="mt-1 text-cream/75">
-              {noun.g("Encargala", "Encargalo")} online{leadTimeLabel ? ` con ${leadTimeLabel} de anticipación` : ""}.
-            </p>
-          </div>
-          <Link
-            href="/take-away"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-brand px-6 py-3 font-semibold text-white hover:bg-brand-ink"
-          >
-            Ir a take away <ArrowIcon />
-          </Link>
-        </Reveal>
+        {takesOrders ? (
+          <Reveal className="mt-16 flex flex-col items-start gap-4 rounded-[2rem] bg-ink p-8 text-cream sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-display text-2xl font-semibold">{shop.orders.salonUpsell ?? `¿Querés encargar ${noun.other}?`}</p>
+              <p className="mt-1 text-cream/75">
+                {noun.g("Encargala", "Encargalo")} online{leadTimeLabel ? ` con ${leadTimeLabel} de anticipación` : ""}.
+              </p>
+            </div>
+            <Link
+              href="/take-away"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-brand px-6 py-3 font-semibold text-white hover:bg-brand-ink"
+            >
+              Ir a take away <ArrowIcon />
+            </Link>
+          </Reveal>
+        ) : reservations ? (
+          <Reveal className="mt-16 flex flex-col items-start gap-4 rounded-[2rem] bg-ink p-8 text-cream sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-display text-2xl font-semibold">¿Te guardamos una mesa?</p>
+              <p className="mt-1 text-cream/75">Reservá el día, el horario y cuántos son. Cumpleaños y partidos también.</p>
+            </div>
+            <Link
+              href="/reservas"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-brand px-6 py-3 font-semibold text-white hover:bg-brand-ink"
+            >
+              Reservar mesa <ArrowIcon />
+            </Link>
+          </Reveal>
+        ) : null}
       </div>
     </>
   );

@@ -1,0 +1,536 @@
+{
+  "salon": [
+    {
+      "id": "menu-del-dia",
+      "name": "Menú del día",
+      "products": [
+        {
+          "id": 3001,
+          "name": "Spaghetti a la bolognesa",
+          "description": "Con pan de ajo. Incluye postre: frutillas o durazno a la crema, budín de pan o flan.",
+          "price": 20000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 20000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3002,
+          "name": "Lasagna",
+          "description": "Gratinada, con salsa bolognesa. Incluye postre: frutillas o durazno a la crema, budín de pan o flan.",
+          "price": 20000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 20000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3003,
+          "name": "Canelones",
+          "description": "Con salsa de tomate y queso gratinado. Incluye postre: frutillas o durazno a la crema, budín de pan o flan.",
+          "price": 20000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 20000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3004,
+          "name": "Bondiola al puerro",
+          "description": "Menú popular. Incluye bebida, café y postre.",
+          "price": 20000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 20000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "platos-de-la-casa",
+      "name": "Platos de la casa",
+      "products": [
+        {
+          "id": 3010,
+          "name": "Milanesa de carne o pollo con tallarines",
+          "description": "Incluye postre: frutillas o durazno a la crema, budín de pan o flan.",
+          "price": 18000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 18000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3011,
+          "name": "Pastel de carne",
+          "description": "Carne picada y puré gratinado. Incluye postre: frutillas o durazno a la crema, budín de pan o flan.",
+          "price": 25000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 25000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3012,
+          "name": "Guiso de lentejas",
+          "description": "Como lo hacía la abuela. Incluye postre: frutillas o durazno a la crema, budín de pan o flan.",
+          "price": 25000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 25000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3013,
+          "name": "Milanesa napolitana con papas fritas",
+          "description": "Con jamón, salsa de tomate y mozzarella gratinada.",
+          "price": 24000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 24000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3014,
+          "name": "Milanesa a caballo",
+          "description": "Con dos huevos fritos y papas fritas.",
+          "price": 23000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 23000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "pastas",
+      "name": "Pastas · 2x1 lunes y martes de noche",
+      "products": [
+        {
+          "id": 3020,
+          "name": "Ravioles de verdura y ricota",
+          "description": "Con tuco o crema. 2x1 lunes y martes, turno noche.",
+          "price": 19000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 19000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3021,
+          "name": "Ñoquis con tuco",
+          "description": "Caseros, con salsa de tomate. 2x1 lunes y martes, turno noche.",
+          "price": 17000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 17000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3022,
+          "name": "Tallarines con salsa mixta",
+          "description": "Con tuco y crema. 2x1 lunes y martes, turno noche.",
+          "price": 17000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 17000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3023,
+          "name": "Sorrentinos de jamón y queso",
+          "description": "Con salsa rosa. 2x1 lunes y martes, turno noche.",
+          "price": 21000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 21000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "pizzas",
+      "name": "Pizzas · 2x1 los miércoles",
+      "products": [
+        {
+          "id": 3030,
+          "name": "Pizza muzzarella",
+          "description": "Con aceitunas y orégano. 2x1 los miércoles.",
+          "price": 12000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 12000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3031,
+          "name": "Fugazzeta",
+          "description": "Con cebolla y muzzarella. 2x1 los miércoles.",
+          "price": 15000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 15000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3032,
+          "name": "Pizza especial",
+          "description": "Jamón, huevo y morrones. 2x1 los miércoles.",
+          "price": 16000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 16000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "para-picar",
+      "name": "Para picar",
+      "products": [
+        {
+          "id": 3040,
+          "name": "Empanadas",
+          "description": "De carne, jamón y queso o humita. Al horno.",
+          "price": 2500,
+          "sizes": [
+            {
+              "id": "unidad",
+              "label": "Unidad",
+              "price": 2500
+            },
+            {
+              "id": "docena",
+              "label": "Docena",
+              "price": 28000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3041,
+          "name": "Provoleta",
+          "description": "A la parrilla, con orégano y tomate.",
+          "price": 9500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3042,
+          "name": "Rabas",
+          "description": "Con limón y salsa tártara.",
+          "price": 16500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 16500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3043,
+          "name": "Picada para dos",
+          "description": "Fiambres, quesos, aceitunas y pan.",
+          "price": 26000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 26000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "cafeteria",
+      "name": "Cafetería",
+      "products": [
+        {
+          "id": 3050,
+          "name": "Café",
+          "description": "",
+          "price": 3200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3051,
+          "name": "Cortado",
+          "description": "",
+          "price": 3500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3052,
+          "name": "Café con leche",
+          "description": "",
+          "price": 4200,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4200
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3053,
+          "name": "Medialunas",
+          "description": "Tres, de manteca.",
+          "price": 4800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3054,
+          "name": "Tostado de jamón y queso",
+          "description": "En pan de miga.",
+          "price": 8500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8500
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "postres",
+      "name": "Postres",
+      "products": [
+        {
+          "id": 3060,
+          "name": "Flan casero",
+          "description": "Con dulce de leche y crema.",
+          "price": 6500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3061,
+          "name": "Budín de pan",
+          "description": "Con caramelo.",
+          "price": 6000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3062,
+          "name": "Frutillas a la crema",
+          "description": "",
+          "price": 6500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3063,
+          "name": "Durazno a la crema",
+          "description": "",
+          "price": 6500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 6500
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "bebidas",
+      "name": "Bebidas",
+      "products": [
+        {
+          "id": 3070,
+          "name": "Gaseosa",
+          "description": "",
+          "price": 3500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 3500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3071,
+          "name": "Agua mineral",
+          "description": "",
+          "price": 2800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 2800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3072,
+          "name": "Cerveza",
+          "description": "Botella de un litro.",
+          "price": 8500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 8500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3073,
+          "name": "Copa de vino de la casa",
+          "description": "",
+          "price": 4800,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 4800
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3074,
+          "name": "Fernet con Coca",
+          "description": "",
+          "price": 7000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 7000
+            }
+          ],
+          "image": null
+        }
+      ]
+    }
+  ],
+  "takeaway": [],
+  "rating": null,
+  "reviews": []
+}

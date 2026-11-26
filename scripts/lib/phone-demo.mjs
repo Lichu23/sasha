@@ -59,7 +59,7 @@ export async function createPhoneDemo({ out, steps, introMs = 3200, outroMs = 50
 
   const browser = await puppeteer.launch({
     executablePath: CHROME, headless: true, defaultViewport: null,
-    args: [`--force-device-scale-factor=${DPR}`, "--window-size=390,844", "--disable-renderer-backgrounding", "--disable-background-timer-throttling", ...(process.env.CHROME_FLAGS ? process.env.CHROME_FLAGS.split(" ") : [])],
+    args: [`--force-device-scale-factor=${DPR}`, "--window-size=390,844", "--disable-renderer-backgrounding", "--disable-background-timer-throttling", "--disable-gpu", ...(process.env.CHROME_FLAGS ? process.env.CHROME_FLAGS.split(" ") : [])],
   });
   const page = (await browser.pages())[0] ?? (await browser.newPage());
   await page.setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148");

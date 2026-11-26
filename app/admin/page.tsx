@@ -3,13 +3,15 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { OrdersBoard, OrdersBoardFromUrl } from "@/components/admin/orders-board";
 import { PageTransition } from "@/components/page-transition";
-import { management } from "@/lib/shop";
+import { management, takesOrders } from "@/lib/shop";
 
 export const metadata: Metadata = { title: "Pedidos" };
 
 export default function AdminOrdersPage() {
   // Management shops have no online orders: the panel opens on the Caja.
   if (management) redirect("/admin/caja");
+  // A restaurant with no take-away: the panel opens on the reservations.
+  if (!takesOrders) redirect("/admin/reservas");
 
   return (
     <PageTransition>

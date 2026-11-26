@@ -116,7 +116,16 @@ export const isConsulta = !paysOnline;
 export const management = shop.management ? { paymentMethods: shop.management.paymentMethods } : null;
 
 /** Table reservations: the shop has a salón and set `reservations`. */
-export const reservations = shop.salon && shop.reservations ? { stayMinutes: 90, minNoticeHours: 2, ...shop.reservations } : null;
+export const reservations =
+  shop.salon && shop.reservations
+    ? { stayMinutes: 90, minNoticeHours: 2, cancelHours: 3, deposit: false, ...shop.reservations, confirmation: shop.reservations.confirmation ?? ("whatsapp" as const) }
+    : null;
+
+/** Reservations are confirmed at once and the customer gets an email (no WhatsApp in the flow). */
+export const confirmsByEmail = reservations?.confirmation === "email";
+
+/** The shop sells for take-away (cart, catalog, Pedidos tab). False for a restaurant that only takes reservations. */
+export const takesOrders = !(shop.salon && shop.noTakeaway);
 
 /** Demo: consultas open the simulated chat at /whatsapp instead of the real WhatsApp. */
 export const simulatedWhatsapp = isConsulta && Boolean(shop.orders.simulatedWhatsapp);

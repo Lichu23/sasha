@@ -18,7 +18,7 @@ import {
   type Reservation,
   type ReservationStatus,
 } from "@/lib/reservations";
-import { REFERENCE, shop, simulatedWhatsapp } from "@/lib/shop";
+import { confirmsByEmail, REFERENCE, shop, simulatedWhatsapp } from "@/lib/shop";
 import { useNow } from "@/lib/use-now";
 
 // The shop's side of the table reservations: the day's reservations, to confirm, modify or cancel after talking to
@@ -103,10 +103,12 @@ export function ReservationsBoard({ highlight }: { highlight: string | null }) {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-semibold tracking-tight">Reservas</h1>
-          <p className="text-sm text-muted">Mesas del salón, para confirmar y llevar el día.</p>
+          <p className="text-sm text-muted">
+            {confirmsByEmail ? "Mesas del salón. Cada reserva se confirma sola por email." : "Mesas del salón, para confirmar y llevar el día."}
+          </p>
         </div>
         <dl className="flex gap-2 text-sm">
-          <Stat label="Por confirmar" value={view?.toConfirm} warn />
+          {confirmsByEmail ? <Stat label="Reservas ese día" value={view?.summary.reservations} /> : <Stat label="Por confirmar" value={view?.toConfirm} warn />}
           <Stat label="Personas ese día" value={view?.summary.people} />
         </dl>
       </div>
@@ -118,7 +120,7 @@ export function ReservationsBoard({ highlight }: { highlight: string | null }) {
               <span className="absolute inset-0 animate-ping rounded-full bg-brand/60 motion-reduce:animate-none" />
               <span className="relative size-2.5 rounded-full bg-brand" />
             </span>
-            Recién llegada de la web
+            {confirmsByEmail ? "Reserva nueva de la web" : "Recién llegada de la web"}
           </h2>
           <div className="rounded-3xl ring-2 ring-brand">
             <ReservationCard r={view.fresh} now={now!} list={list!} />
@@ -293,6 +295,7 @@ function Editor({ r, list, now, onDone }: { r: Reservation; list: readonly Reser
       <label className="block text-sm font-semibold">
         Nota para el cliente (opcional)
         <input name="note" value={note} onChange={(e) => setNote(e.target.value)} maxLength={140} autoComplete="off" placeholder="Ej: mesa en la ventana, como pediste…" className={field} />
+        {confirmsByEmail ? <span className="mt-1 block text-xs font-normal text-muted">Le mandamos un email al cliente con el cambio y esta nota.</span> : null}
       </label>
 
       <div className="grid grid-cols-2 gap-2 sm:flex">
@@ -372,7 +375,9 @@ function ReservationCard({ r, now, list }: { r: Reservation; now: number; list: 
         editing ? <Editor r={r} list={list} now={now} onDone={() => setEditing(false)} /> : <ConsultaActions r={r} onEdit={() => setEditing(true)} />
       ) : null}
 
-      {r.status === "confirmada" ? (
+      {confirmsByEmail && r.status === "confirmada" && editing ? <Editor r={r} list={list} now={now} onDone={() => setEditing(false)} /> : null}
+
+      {r.status === "confirmada" && !(confirmsByEmail && editing) ? (
         <div className="mt-3 grid grid-cols-2 gap-2">
           <button type="button" onClick={() => reservationActions.setStatus(r.ref, "asistio")} className={`${choice} bg-emerald-600 text-white ring-emerald-600 hover:bg-emerald-700`}>
             <span className="inline-flex items-center gap-1.5">
@@ -387,7 +392,31 @@ function ReservationCard({ r, now, list }: { r: Reservation; now: number; list: 
         </div>
       ) : null}
 
-      {r.phone ? (
+      {confirmsByEmail && r.status === "confirmada" && !editing ? (
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <button type="button" onClick={() => setEditing(true)} className={`${choice} bg-paper hover:bg-cream`}>
+            Modificar
+          </button>
+          <button type="button" onClick={() => reservationActions.cancel(r.ref)} className={`${choice} bg-paper text-muted hover:bg-cream`}>
+            Cancelar reserva
+          </button>
+        </div>
+      ) : null}
+
+      {confirmsByEmail && r.email ? (
+        <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
+          <span className="break-all">{r.email}</span>
+          <Link
+            href={`/correo?ref=${r.ref}&tipo=${r.status === "cancelada" ? "cancelacion" : r.modified ? "modificacion" : "confirmacion"}`}
+            data-cta="ver-mail"
+            className="inline-flex min-h-11 items-center font-semibold text-brand-ink underline [touch-action:manipulation]"
+          >
+            {r.status === "cancelada" ? "Ver el email de cancelación" : r.modified ? "Ver el email del cambio" : "Ver el email de confirmación"}
+          </Link>
+        </p>
+      ) : null}
+
+      {r.phone && !confirmsByEmail ? (
         <div className="mt-3">
           {simulatedWhatsapp ? (
             <Link

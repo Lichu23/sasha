@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { CakeCatalog } from "@/components/takeaway/cake-catalog";
 import { CategoryNav } from "@/components/category-nav";
 import { EarliestPickup, TakeawayNotice } from "@/components/takeaway/takeaway-notice";
 import { CalendarIcon } from "@/components/icons";
 import { categorySlug, takeawayMenu } from "@/lib/menu";
-import { leadTimeLabel, pickupPlaces, shop } from "@/lib/shop";
+import { leadTimeLabel, pickupPlaces, shop, takesOrders } from "@/lib/shop";
 
 export const metadata: Metadata = {
   title: shop.orders.title,
@@ -20,6 +21,9 @@ const sections = takeawayMenu.map((c) => ({
 const navItems = sections.length > 1 ? sections.map(({ slug, name }) => ({ slug, name })) : null;
 
 export default function TakeawayPage() {
+  // A restaurant that only takes reservations has no take-away.
+  if (!takesOrders) notFound();
+
   return (
     <div className="pb-28">
       {leadTimeLabel ? <TakeawayNotice /> : null}

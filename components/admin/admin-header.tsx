@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { m } from "motion/react";
 import { ShopBrand } from "@/components/shop-logo";
-import { management, reservations, shop } from "@/lib/shop";
+import { management, reservations, shop, takesOrders } from "@/lib/shop";
 import { useTappedNav } from "@/lib/use-tapped-nav";
 
 const tabs = management
@@ -13,9 +13,9 @@ const tabs = management
       { href: "/admin/ventas", label: "Resumen" },
     ]
   : [
-      { href: "/admin", label: "Pedidos" },
+      ...(takesOrders ? [{ href: "/admin", label: "Pedidos" }] : []),
       ...(reservations ? [{ href: "/admin/reservas", label: "Reservas" }] : []),
-      { href: "/admin/ventas", label: "Ventas" },
+      ...(takesOrders ? [{ href: "/admin/ventas", label: "Ventas" }] : []),
     ];
 
 export function AdminHeader() {
@@ -27,7 +27,7 @@ export function AdminHeader() {
     // Named so it stays fixed while page content slides (see globals.css).
     <header style={{ viewTransitionName: "admin-header" }} className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-5xl items-center gap-1.5 px-3 sm:gap-3 sm:px-6">
-        <Link href={management ? "/admin/caja" : "/admin"} className="flex items-center gap-2" aria-label={`Panel de ${shop.shortName}`}>
+        <Link href={management ? "/admin/caja" : takesOrders ? "/admin" : "/admin/reservas"} className="flex items-center gap-2" aria-label={`Panel de ${shop.shortName}`}>
           <ShopBrand size={30} name={null} />
           <span className="hidden font-display font-semibold sm:inline">Panel</span>
         </Link>

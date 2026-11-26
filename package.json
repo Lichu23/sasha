@@ -19,6 +19,7 @@
     "record-consulta-demo": "node scripts/record-consulta-demo.mjs",
     "record-order-demo": "node scripts/record-order-demo.mjs",
     "record-reservas-demo": "node scripts/record-reservas-demo.mjs",
+    "record-bodegon-demo": "node scripts/record-bodegon-demo.mjs",
     "record-gestion-demo": "node scripts/record-gestion-demo.mjs",
     "record-booking-demo": "node scripts/record-booking-demo.mjs",
     "record-nutricion-demo": "node scripts/record-nutricion-demo.mjs"

@@ -5,14 +5,14 @@ import { AnimatePresence, m } from "motion/react";
 import { useCart } from "@/components/cart/cart-provider";
 import { BagIcon } from "@/components/icons";
 import { ShopBrand } from "@/components/shop-logo";
-import { reservations, salonLabels, shop } from "@/lib/shop";
+import { reservations, salonLabels, shop, takesOrders } from "@/lib/shop";
 import { useTappedNav } from "@/lib/use-tapped-nav";
 
 const links = [
   { href: "/", label: "Inicio" },
   ...(shop.salon ? [{ href: "/salon", label: salonLabels.nav }] : []),
   // Without a salon, the order catalog is the shop's only menu.
-  { href: "/take-away", label: shop.salon ? "Take away" : "Menú" },
+  ...(takesOrders ? [{ href: "/take-away", label: shop.salon ? "Take away" : "Menú" }] : []),
   ...(reservations ? [{ href: "/reservas", label: "Reservas" }] : []),
 ];
 
@@ -63,6 +63,7 @@ export function SiteHeader() {
           </ul>
         </nav>
 
+        {takesOrders ? (
         <button
           type="button"
           onClick={actions.open}
@@ -87,6 +88,7 @@ export function SiteHeader() {
             ) : null}
           </AnimatePresence>
         </button>
+        ) : null}
       </div>
     </header>
   );

@@ -4,7 +4,7 @@ import { useSyncExternalStore } from "react";
 import { dayLabel } from "@/lib/admin-dates";
 import { FIRST_NAMES, LAST_NAMES, random, type ChatMessage } from "@/lib/orders";
 import { fromAr, toAr } from "@/lib/pickup";
-import { reservations, shiftsOn, shop } from "@/lib/shop";
+import { confirmsByEmail, reservations, shiftsOn, shop } from "@/lib/shop";
 import { slug } from "@/shops/current";
 
 // Table reservations (shops with `reservations` in shop.ts). A customer asks for a day, a time and a party size on
@@ -21,6 +21,8 @@ export type Reservation = {
   people: number;
   name: string;
   phone: string;
+  /** The customer's email, when the shop confirms by email (`reservations.confirmation`). */
+  email?: string;
   notes: string;
   /** consulta → confirmada → asistio | noshow, or cancelada. */
   status: ReservationStatus;
@@ -33,6 +35,10 @@ export type Reservation = {
   /** The (simulated) WhatsApp chat about this reservation, as in lib/orders.ts. */
   messages?: ChatMessage[];
   draft?: string;
+  /** Who cancelled it: the customer from the email link, or the shop from the panel. */
+  cancelledBy?: "cliente" | "local";
+  /** The match (shop.matches id) the table was asked for. */
+  matchId?: string;
   /** Sample data generated for the demo, as opposed to a reservation made in the site. */
   sample: boolean;
 };
@@ -43,6 +49,11 @@ const NOTICE_MS = (reservations?.minNoticeHours ?? 2) * 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 const BOOKING_WINDOW_DAYS = 14;
 const HOUR_MS = 60 * 60 * 1000;
+
+export const cancelHours = reservations?.cancelHours ?? 3;
+
+/** Until when the customer can cancel from the email: some hours before the table. */
+export const cancelDeadline = (r: Pick<Reservation, "at">) => r.at - cancelHours * HOUR_MS;
 
 export const maxPartySize = reservations?.maxPartySize ?? 0;
 export const totalSeats = SEATS;
@@ -145,6 +156,13 @@ export function useReservations(): Reservation[] | null {
   return useSyncExternalStore(store.subscribe, store.getSnapshot, () => null);
 }
 
+/** One reservation by its number: null while loading (server render, first paint), undefined when there is none. */
+export function useReservation(ref: string | null): Reservation | null | undefined {
+  const list = useReservations();
+  if (list === null) return null;
+  return ref ? list.find((r) => r.ref === ref) : undefined;
+}
+
 const patch = (ref: string, change: (r: Reservation) => Reservation) => store.update((list) => list.map((r) => (r.ref === ref ? change(r) : r)));
 
 export const reservationActions = {
@@ -153,7 +171,10 @@ export const reservationActions = {
     store.update((list) => (list.some((r) => r.ref === reservation.ref) ? list : [reservation, ...list]));
   },
   confirm: (ref: string) => patch(ref, (r) => ({ ...r, status: "confirmada" })),
-  cancel: (ref: string) => patch(ref, (r) => ({ ...r, status: "cancelada" })),
+  /** The shop cancels it from the panel. */
+  cancel: (ref: string) => patch(ref, (r) => ({ ...r, status: "cancelada", cancelledBy: "local" })),
+  /** The customer cancels it from the link in the email. */
+  cancelByCustomer: (ref: string) => patch(ref, (r) => ({ ...r, status: "cancelada", cancelledBy: "cliente" })),
   setStatus: (ref: string, status: ReservationStatus) => patch(ref, (r) => ({ ...r, status })),
   /** The shop changes the time or the party size after talking to the customer; what was asked for is kept. */
   edit: (ref: string, change: { at: number; people: number; shopNote: string }) =>
@@ -176,6 +197,13 @@ export const reservationActions = {
 // Sample data: a few reservations a day, never over the seats. Tomorrow has a lunch full of parties of eight, so the
 // demo shows a time with no room.
 
+const slugName = (name: string) =>
+  name
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z]+/g, ".");
+
 const NOTES = ["", "", "", "Cumpleaños", "Con cochecito", "Mesa tranquila, por favor", "Una persona celíaca"];
 
 function sampleReservations(now: number): Reservation[] {
@@ -184,17 +212,21 @@ function sampleReservations(now: number): Reservation[] {
   const pick = <T,>(items: readonly T[]) => items[Math.floor(rand() * items.length)];
   const out: Reservation[] = [];
 
-  const make = (at: number, people: number, status: ReservationStatus, notes: string): Reservation => ({
+  const make = (at: number, people: number, status: ReservationStatus, notes: string): Reservation => {
+    const name = `${pick(FIRST_NAMES)} ${pick(LAST_NAMES)}`;
+    return {
     ref: `${shop.orders.referencePrefix}-${Math.floor(rand() * 0xffffffff).toString(16).toUpperCase().padStart(8, "0")}`,
     createdAt: Math.min(now - HOUR_MS, at - (1 + rand() * 3) * DAY_MS),
     at,
     people,
-    name: `${pick(FIRST_NAMES)} ${pick(LAST_NAMES)}`,
+    name,
+    email: confirmsByEmail ? `${slugName(name)}@gmail.com` : undefined,
     phone: `11 ${String(2000 + Math.floor(rand() * 7999))}-${String(1000 + Math.floor(rand() * 8999))}`,
     notes,
     status,
     sample: true,
-  });
+  };
+  };
 
   for (let offset = -3; offset <= 7; offset++) {
     const dayStart = fromAr(today.year, today.month, today.date + offset, 0);
@@ -203,7 +235,7 @@ function sampleReservations(now: number): Reservation[] {
 
     if (offset === 1) {
       const busy = slots[Math.floor(slots.length / 2)];
-      for (let i = 0; i < SEATS / 8; i++) out.push(make(busy, 8, "confirmada", i === 0 ? "Almuerzo de la empresa" : ""));
+      for (let i = 0; i < Math.floor(SEATS / 8); i++) out.push(make(busy, 8, "confirmada", i === 0 ? "Almuerzo de la empresa" : ""));
     }
 
     const count = offset < 0 ? 3 + Math.floor(rand() * 3) : 2 + Math.floor(rand() * 4);
@@ -211,7 +243,7 @@ function sampleReservations(now: number): Reservation[] {
       const at = pick(slots);
       const people = 2 + Math.floor(rand() * 5);
       if (SEATS - seatsUsed(at, out) < people) continue;
-      const status: ReservationStatus = at < now ? (rand() < 0.88 ? "asistio" : "noshow") : rand() < 0.3 ? "consulta" : "confirmada";
+      const status: ReservationStatus = at < now ? (rand() < 0.88 ? "asistio" : "noshow") : rand() < 0.3 && !confirmsByEmail ? "consulta" : "confirmada";
       out.push(make(at, people, status, pick(NOTES)));
     }
   }
