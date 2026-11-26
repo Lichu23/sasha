@@ -1,0 +1,184 @@
+{
+  "salon": [],
+  "takeaway": [
+    {
+      "id": "tortas",
+      "name": "Tortas",
+      "products": [
+        {
+          "id": 3001,
+          "name": "Torta Oreo",
+          "description": "Bizcochuelo de vainilla, crema y galletitas Oreo.",
+          "price": 32000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 32000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 44000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3002,
+          "name": "Torta Red Velvet",
+          "description": "Bizcochuelo rojo y crema de queso.",
+          "price": 34000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 34000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 47000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3003,
+          "name": "Torta Chocolate y dulce de leche",
+          "description": "Bizcochuelo de chocolate, dulce de leche y crema.",
+          "price": 29000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 29000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 41000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3004,
+          "name": "Key Lime Pie",
+          "description": "Masa de galletitas, crema de lima y crema batida.",
+          "price": 30000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 30000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 42000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3005,
+          "name": "Cheesecake de frutos rojos",
+          "description": "Base crocante, crema suave y salsa de frutos rojos.",
+          "price": 30000,
+          "sizes": [
+            {
+              "id": "18cm",
+              "label": "18 cm",
+              "price": 30000
+            },
+            {
+              "id": "24cm",
+              "label": "24 cm",
+              "price": 42000
+            }
+          ],
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "cajitas-y-dulces",
+      "name": "Cajitas y dulces",
+      "products": [
+        {
+          "id": 3101,
+          "name": "Cajita de brownies x6",
+          "description": "De chocolate semiamargo, húmedos por dentro.",
+          "price": 14000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 14000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3102,
+          "name": "Cookies x6",
+          "description": "Con chips de chocolate, recién horneadas.",
+          "price": 9500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 9500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3103,
+          "name": "Cupcakes x6",
+          "description": "Surtidos, con crema de frutilla y vainilla.",
+          "price": 13500,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 13500
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3104,
+          "name": "Frutillas con chocolate x12",
+          "description": "Bañadas en chocolate blanco y semiamargo.",
+          "price": 16000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 16000
+            }
+          ],
+          "image": null
+        },
+        {
+          "id": 3105,
+          "name": "Cajita de macarons x12",
+          "description": "Surtidos, para regalar.",
+          "price": 18000,
+          "sizes": [
+            {
+              "id": "unica",
+              "label": "Tamaño único",
+              "price": 18000
+            }
+          ],
+          "image": null
+        }
+      ]
+    }
+  ],
+  "rating": null,
+  "reviews": []
+}

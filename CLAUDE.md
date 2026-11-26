@@ -2,6 +2,13 @@
 
 # Project rules
 
+## Prospecting: search all of Argentina
+
+When looking for businesses to sell to (bodegones, restaurants, shops, studios, clinics, etc.), search **all of
+Argentina**, not only Rosario. Spread the leads across cities and provinces (Buenos Aires, Córdoba, Mendoza,
+Rosario, Tucumán, Mar del Plata, Salta, Neuquén, etc.). Rosario is only where the demos were built. Lead lists
+go in `demo/prospectos-argentina.md`. Never send a message without the user's explicit OK.
+
 ## Demo videos: always frame by frame at 30 fps
 
 Every shop demo video is recorded **frame by frame at 30 fps** with `scripts/record-demo.mjs`
